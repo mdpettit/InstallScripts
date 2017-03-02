@@ -1,0 +1,110 @@
+#!/bin/sh
+#exit immediately if a command exists with a non-zero status
+set -e
+#
+# Usage:
+#   'curl -sSL https://mdpettit.github.io/InstallScripts/installmirthconnect.txt | sh'
+# or:
+#   'wget -qO- https://mdpettit.github.io/InstallScripts/installelasticsearch.txt | sh'
+#
+
+defaultpassword="R3mot357"
+
+echo "Starting setup..."
+u="$(whoami)"
+echo "User name: $u"
+
+# http://stackoverflow.com/questions/8529181/which-terminal-command-to-get-just-ip-address-and-nothing-else
+myip=$(ip -4 addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
+#myip=$(hostname -i)
+
+javaOpts="-Djava.security.auth.login.config=SQLJDBCDriver.conf -Djava.security.krb5.conf=/etc/krb5.conf"
+
+echo "==== Creating update script ===="
+
+installfolder="/opt/install/"
+installscriptfile="updatedocker"
+installscript="$installfolder$installscriptfile"
+
+mkdir -p $HOME/bin
+if [[ ! -d "$installfolder" ]]; then
+  sudo mkdir -p $installfolder
+
+  sudo setfacl -m u:$u:rwx $installfolder
+fi
+
+echo "#!/bin/sh" > $installscript
+echo "curl -sSL https://mdpettit.github.io/InstallScripts/installmirthconnect.txt | sh -s $@" >> $installscript
+chmod +x $installscript
+
+if [[ ! -e "$HOME/bin/$installscriptfile" ]]; then 
+  echo "creating a symbolic link for install file"
+  echo "ln -f -s $installscript $HOME/bin/$installscriptfile"
+  ln -f -s $installscript $HOME/bin/$installscriptfile
+fi
+
+echo "==== Update script ===="
+cat $installscript
+echo "==== End Update Script ===="
+
+echo "====  existing containers on this host ===="
+docker ps -a
+
+echo "==== existing images on this host ===="
+docker images
+
+echo "==== existing volumes on this host ===="
+docker volume ls
+
+# check to see if volume already exists.  if not, create it
+if [ -z $(docker volume ls -q --filter "name=archivedata") ]; then
+  echo "==== Creating persistent volume for Archive ===="
+  docker volume create --name archivedata
+fi
+
+echo "stopping existing docker container"
+docker stop mirth-connect || echo 'no container to stop'
+echo "removing docker container"
+docker rm mirth-connect || echo 'no container to remove'
+echo "removing docker image"
+docker rmi mdpettit/mirth-connect || echo 'no image to remove'
+echo "pulling latest docker image from repo"
+docker pull mdpettit/mirth-connect
+echo "starting docker container with new image"
+set -x
+docker run -d -p 8080:8080 -p 8443:8443 -v archivedata:/usr/share/mirth-connect/data -e ES_JAVA_OPTS="$javaOpts" --name mirth-connect mdpettit/mirth-connect
+set +x
+
+echo "sleeping until docker container is up"
+until [ "`/usr/bin/docker inspect -f {{.State.Running}} dockerelasticsearch`"=="true" ]; do
+    sleep 1s;
+done;
+
+nodekeyfile="node.key"
+nodekeypath="$installfolder$nodekeyfile"
+
+protocol="http"
+
+if [ ! -z "$ssl" ]; then
+  echo "Checking if [$nodekeypath] exists"
+  if [[ -f "$nodekeypath" ]]; then
+    echo "copying ssl keys from $installfolder"
+    docker cp $installfolder/node.key mirth-connect:/usr/share/mirth-connect/config
+    docker cp $installfolder/node.crt mirth-connect:/usr/share/mirth-connect/config
+    docker cp $installfolder/ca.crt mirth-connect:/usr/share/mirth-connect/config
+
+    protocol="https"
+  else
+    echo "ERROR: No key files found in [$nodekeypath] so cannot set up SSL"
+  fi
+
+  docker restart mirth-connect
+  echo "sleeping until docker container is up"
+  until [ "`/usr/bin/docker inspect -f {{.State.Running}} mirth-connect`"=="true" ]; do
+      sleep 1s;
+  done;
+
+fi
+
+echo "==== Listing running docker containers ===="
+docker ps
