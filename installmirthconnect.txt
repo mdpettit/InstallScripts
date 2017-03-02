@@ -18,7 +18,7 @@ echo "User name: $u"
 myip=$(ip -4 addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
 #myip=$(hostname -i)
 
-javaOpts="-Djava.security.auth.login.config=SQLJDBCDriver.conf -Djava.security.krb5.conf=/etc/krb5.conf"
+javaOpts="-Djava.security.auth.login.config=/usr/share/mirth-connect/config/SQLJDBCDriver.conf -Djava.security.krb5.conf=/etc/krb5.conf"
 
 echo "==== Creating update script ===="
 
