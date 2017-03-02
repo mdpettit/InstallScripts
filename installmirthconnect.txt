@@ -76,9 +76,21 @@ docker run -d -p 8080:8080 -p 8443:8443 -v mirthconnectarchive:/archive -e ES_JA
 set +x
 
 echo "sleeping until docker container is up"
-until [ "`/usr/bin/docker inspect -f {{.State.Running}} mirthcocnnect`"=="true" ]; do
+until [ "`/usr/bin/docker inspect -f {{.State.Running}} mirthconnect`"=="true" ]; do
     sleep 1s;
 done;
+
+kerberosfile="krb5.conf"
+kerberospath="$installfolder$kerberosfile"
+
+echo "Checking if [$kerberospath] exists"
+if [[ -f "$keberospath" ]]; then
+   echo "copying kerberos configuration file from $installfolder"
+   docker cp $installfolder/krb5.conf mirthconnect:/etc/krb5.conf
+   docker cp $installfolder/SQLJDBCDriver.conf mirthconnect:/opt/mirthconnect/conf/SQLJDBCDriver.conf   
+else
+   echo "ERROR: No keberos configuration files found in [$keberospath] so integrated security won't work"
+fi
 
 nodekeyfile="node.key"
 nodekeypath="$installfolder$nodekeyfile"
