@@ -81,16 +81,16 @@ until [ "`/usr/bin/docker inspect -f {{.State.Running}} mirthconnect`"=="true" ]
 done;
 
 kerberosfile="krb5.conf"
-kerberospath="$installfolder$kerberosfile"
+kerberospath=$installfolder$kerberosfile
 
 echo "Checking if [$kerberospath] exists"
-if [[ -f "$keberospath" ]]; then
+if [[ -f "$kerberospath" ]]; then
    echo "copying kerberos configuration file from $installfolder"
    docker cp $installfolder/krb5.conf mirthconnect:/etc/krb5.conf
    docker cp $installfolder/SQLJDBCDriver.conf mirthconnect:/opt/mirthconnect/conf/SQLJDBCDriver.conf
    docker cp $installfolder/mirth.keytab mirthconnect:/opt/mirthconnect/conf/mirth.keytab   
 else
-   echo "ERROR: No keberos configuration files found in [$keberospath] so integrated security won't work"
+   echo "ERROR: No keberos configuration files found in [$kerberospath] so integrated security won't work"
 fi
 
 nodekeyfile="node.key"
