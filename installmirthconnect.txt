@@ -3,9 +3,9 @@
 set -e
 #
 # Usage:
-#   'curl -sSL https://mdpettit.github.io/InstallScripts/installmirthconnect.txt | sh'
+#   'curl -sSL https://mdpettit.github.io/InstallScripts/installmirthconnect.txt | sh -s <mirthuser>'
 # or:
-#   'wget -qO- https://mdpettit.github.io/InstallScripts/installmirthconnect.txt | sh'
+#   'wget -qO- https://mdpettit.github.io/InstallScripts/installmirthconnect.txt | sh -s <mirthuser>' 
 #
 
 defaultpassword="R3mot357"
@@ -13,6 +13,8 @@ defaultpassword="R3mot357"
 echo "Starting setup..."
 u="$(whoami)"
 echo "User name: $u"
+
+mirthuser="$1"
 
 # http://stackoverflow.com/questions/8529181/which-terminal-command-to-get-just-ip-address-and-nothing-else
 myip=$(ip -4 addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
@@ -89,6 +91,7 @@ if [[ -f "$kerberospath" ]]; then
    docker cp $installfolder/krb5.conf mirthconnect:/etc/krb5.conf
    docker cp $installfolder/SQLJDBCDriver.conf mirthconnect:/opt/mirthconnect/conf/SQLJDBCDriver.conf
    docker cp $installfolder/mirth.keytab mirthconnect:/opt/mirthconnect/conf/mirth.keytab   
+   docker exec mirthconnect kinit $mirthuser -k -t /opt/mirthconnect/conf/mirth.keytab
 else
    echo "ERROR: No keberos configuration files found in [$kerberospath] so integrated security won't work"
 fi
