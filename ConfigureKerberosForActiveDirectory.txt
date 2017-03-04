@@ -1,0 +1,78 @@
+1) Obtain SPN of SQL Server database (Kerberos Configuration Manager for SQL Server)
+	
+	https://www.microsoft.com/en-us/download/details.aspx?id=39046
+
+2) Configure docker host's DNS
+
+	$ sudo vi /etc/resolv.conf
+	nameserver 0.0.0.0
+	nameserver 0.0.0.0
+
+3) Synchronize docker host's time with Active Directory
+
+	$ ntpdate {active directory machine}
+	$ systemctl start "" ntpd.service
+	$ systemctl enable ntpd.service
+
+4) Install Kerberos software
+
+	$ yum install -y krb5-libs krb5-workstation 
+
+5) Configure /etc/krb5.conf
+	# Configuration snippets may be placed in this directory as well
+	includedir /etc/krb5.conf.d/
+
+	[logging]
+	 default = FILE:/var/log/krb5libs.log
+	 kdc = FILE:/var/log/krb5kdc.log
+	 admin_server = FILE:/var/log/kadmind.log
+
+	[libdefaults]
+	 dns_lookup_realm = false
+	 ticket_lifetime = 24h
+	 renew_lifetime = 7d
+	 forwardable = true
+	 rdns = false
+	 default_realm = DOMAIN.COM
+	 # default_ccache_name = KEYRING:persistent:%{uid}
+
+	[realms]
+	 DOMAIN.COM = {
+	  kdc = kdc.domain.com
+	  admin_server = kdc.domain.com
+	 }
+
+	[domain_realm]
+	 .domain.com = DOMAIN.COM
+	 domain.com = DOMAIN.COM
+
+6) Create keytab file  
+	$ ktutil
+	ktutil: addent -password -p username@DOMAIN.COM -k 1 -e RC4-HMAC
+	Password for username@DOMAIN.COM: [enter your password]
+	ktutil: wkt /opt/mirthconnect/conf/mirth.keytab
+	ktutil: quit
+
+7) Create TGT
+	kinit username@DOMAIN.COM -k -t /opt/mirthconnect/conf/mirth.keytab
+	
+8) Create sqljdbcdriver.conf file
+	SQLJDBCDriver {  
+	  com.sun.security.auth.module.Krb5LoginModule required 
+	  useTicketCache=true 
+	  principal=username@DOMAIN.COM
+	  useKeyTab=true
+	  keyTab=/opt/mirthconnect/conf/mirth.keytab
+	  storeKey=true
+	  debug=true
+	  doNotPrompt=true;  
+	};
+	
+9) Configure Java Options
+  -Djava.security.auth.login.config=/opt/mirthconnect/conf/SQLJDBCDriver.conf -Djava.security.krb5.conf=/etc/krb5.conf
+
+10) Configure Connection String
+  jdbc:sqlserver://SQL01:1433;DatabaseName=MirthDestination;integratedSecurity=true;authenticationScheme=JavaKerberos;serverSpn=MSSQLSvc/SQL01:1433
+
+11) Test connection type
+  select auth_scheme from sys.dm_exec_connections where session_id=@@spid
