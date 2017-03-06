@@ -20,8 +20,6 @@ mirthuser="$1"
 myip=$(ip -4 addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
 #myip=$(hostname -i)
 
-javaOpts="-Djava.security.auth.login.config=/opt/mirthconnect/conf/SQLJDBCDriver.conf -Djava.security.krb5.conf=/etc/krb5.conf"
-
 echo "==== Creating update script ===="
 
 installfolder="/opt/install/"
@@ -74,7 +72,7 @@ echo "pulling latest docker image from repo"
 docker pull mdpettit/mirth-connect
 echo "starting docker container with new image"
 set -x
-docker run -d -p 8080:8080 -p 8443:8443 -v mirthconnectarchive:/archive -e ES_JAVA_OPTS="$javaOpts" --name mirthconnect mdpettit/mirth-connect
+docker run -d -p 8080:8080 -p 8443:8443 -v mirthconnectarchive:/archive --name mirthconnect mdpettit/mirth-connect
 set +x
 
 echo "sleeping until docker container is up"
@@ -92,6 +90,8 @@ if [[ -f "$kerberospath" ]]; then
    docker cp $installfolder/SQLJDBCDriver.conf mirthconnect:/opt/mirthconnect/conf/SQLJDBCDriver.conf
    docker cp $installfolder/mirth.keytab mirthconnect:/opt/mirthconnect/conf/mirth.keytab   
    docker exec mirthconnect kinit $mirthuser -k -t /opt/mirthconnect/conf/mirth.keytab
+   docker exec mirthconnect sed "\$a-Djava.security.auth.login.config=/opt/mirthconnect/conf/SQLJDBCDriver.conf" /opt/mirthconnect/mcservice.vmoptions
+   docker exec mirthconnect sed "\$a-Djava.security.krb5.conf=/etc/krb5.conf" /opt/mirthconnect/mcservice.vmoptions
 else
    echo "ERROR: No keberos configuration files found in [$kerberospath] so integrated security won't work"
 fi
