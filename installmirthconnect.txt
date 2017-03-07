@@ -57,9 +57,9 @@ echo "==== existing volumes on this host ===="
 docker volume ls
 
 # check to see if volume already exists.  if not, create it
-if [ -z $(docker volume ls -q --filter "name=mirthconnectarchive") ]; then
+if [ -z $(docker volume ls -q --filter "name=mirthconnectdata") ]; then
   echo "==== Creating persistent volume for Archive ===="
-  docker volume create --name mirthconnectarchive
+  docker volume create --name mirthconnectdata
 fi
 
 echo "stopping existing docker container"
@@ -72,13 +72,15 @@ echo "pulling latest docker image from repo"
 docker pull mdpettit/mirth-connect
 echo "starting docker container with new image"
 set -x
-docker run -d -p 8080:8080 -p 8443:8443 -v mirthconnectarchive:/archive --name mirthconnect mdpettit/mirth-connect
+docker run -d -p 8080:8080 -p 8443:8443 -v mirthconnectdata:/data --name mirthconnect mdpettit/mirth-connect
 set +x
 
 echo "sleeping until docker container is up"
 until [ "`/usr/bin/docker inspect -f {{.State.Running}} mirthconnect`"=="true" ]; do
     sleep 1s;
 done;
+
+docker exec mirthconnect mkdir /data/{archive, error}
 
 kerberosfile="krb5.conf"
 kerberospath=$installfolder$kerberosfile
