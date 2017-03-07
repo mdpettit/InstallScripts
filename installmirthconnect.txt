@@ -80,8 +80,8 @@ until [ "`/usr/bin/docker inspect -f {{.State.Running}} mirthconnect`"=="true" ]
     sleep 1s;
 done;
 
-docker exec mirthconnect mkdir /data/archive
-docker exec mirthconnect mkdir /data/error
+docker exec mirthconnect mkdir -p /data/archive
+docker exec mirthconnect mkdir -p /data/error
 
 kerberosfile="krb5.conf"
 kerberospath=$installfolder$kerberosfile
