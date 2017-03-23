@@ -1,0 +1,509 @@
+var dbConn;
+
+var loadDts = DateUtil.getCurrentDate('yyyy-MM-dd HH:mm:ss');
+
+try {	
+	dbConn = DatabaseConnectionFactory.createDatabaseConnection('com.microsoft.sqlserver.jdbc.SQLServerDriver','jdbc:sqlserver://192.168.137.4:1433;DatabaseName=MirthSource;integratedSecurity=true;authenticationScheme=JavaKerberos;serverSpn=MSSQLSvc/SQL01.Corp.MDPettit.com:1433');
+
+	var obj = JSON.parse($('x12Interchange'));
+
+	var interchangeId = insertInterchange(obj);
+
+	insertFunctionalGroups(interchangeId, obj);
+
+} finally {
+	if (dbConn) { 
+		dbConn.close();
+	}
+}
+
+function insertInterchange(X12Interchange) {
+	var interchangeId = null;
+	
+	var insertInterchangeStmt = "INSERT INTO [X12].[Interchange] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
+	var interchangeParameters = [];
+	interchangeParameters[0] = obj.ISA01;
+	interchangeParameters[1] = obj.ISA02;
+	interchangeParameters[2] = obj.ISA03;
+	interchangeParameters[3] = obj.ISA04;
+	interchangeParameters[4] = obj.ISA05;
+	interchangeParameters[5] = obj.ISA06;
+	interchangeParameters[6] = obj.ISA07;
+	interchangeParameters[7] = obj.ISA08;
+	interchangeParameters[8] = obj.ISA09;
+	interchangeParameters[9] = obj.ISA10;
+	interchangeParameters[10] = obj.ISA11;
+	interchangeParameters[11] = obj.ISA12;
+	interchangeParameters[12] = obj.ISA13;
+	interchangeParameters[13] = obj.ISA14;
+	interchangeParameters[14] = obj.ISA15;
+	interchangeParameters[15] = obj.ISA16;
+	interchangeParameters[16] = connectorMessage.getRawData();
+	interchangeParameters[17] = loadDts;
+
+	var crs = dbConn.executeUpdateAndGetGeneratedKeys(insertInterchangeStmt, java.util.Arrays.asList(interchangeParameters));
+
+	if (crs.next()) {
+		interchangeId = crs.getLong(1);
+	} else {
+		logger.error("Error insterting X12 835 interchange record.");
+	}
+
+	return interchangeId;
+}
+
+function insertFunctionalGroups(interchangeId, obj) {
+	for each (var functionalGroup in obj.functionalGroups) {
+		var functionalGroupId = null;
+	
+		var preparedStatement = "INSERT INTO [X12].[FunctionalGroup] VALUES (?,?,?,?,?,?,?,?,?, ?)";
+	
+		var parameters = [];
+		parameters[0] = interchangeId;
+		parameters[1] = functionalGroup.GS01;
+		parameters[2] = functionalGroup.GS02;
+		parameters[3] = functionalGroup.GS03;
+		parameters[4] = functionalGroup.GS04;
+		parameters[5] = functionalGroup.GS05;
+		parameters[6] = functionalGroup.GS06;
+		parameters[7] = functionalGroup.GS07;
+		parameters[8] = functionalGroup.GS08;
+		parameters[9] = loadDts;
+	
+		var crs = dbConn.executeUpdateAndGetGeneratedKeys(preparedStatement, java.util.Arrays.asList(parameters));
+	
+		if (crs.next()) {
+			functionalGroupId = crs.getLong(1);
+			insertTransactions(interchangeId, functionalGroupId, functionalGroup);
+		} else {
+			logger.error("Error insterting X12 835 functional group record.");
+		}
+	}
+}
+
+function insertTransactions(interchangeId, functionalGroupId, obj) {
+	for each (var transaction in obj.transactions) {
+		var transactionId = null;
+		
+		var preparedStatement = "INSERT INTO [X12835].[Transaction] VALUES (?,?,?,?,?)";
+
+		var parameters = [];
+		parameters[0] = interchangeId;
+		parameters[1] = functionalGroupId;
+		parameters[2] = transaction.ST01;
+		parameters[3] = transaction.ST02;
+		parameters[4] = loadDts;
+
+		var crs = dbConn.executeUpdateAndGetGeneratedKeys(preparedStatement, java.util.Arrays.asList(parameters));
+
+		if (crs.next()) {
+			transactionId = crs.getLong(1);
+			insertClaims(transactionId, transaction);
+			insertDates('Transaction', transactionId, transaction);
+			insertReferences('Transaction', transactionId, transaction);
+			insertFinancial(transactionId, transaction);
+			insertPersons(transactionId, transaction);
+			insertProviderAdjustment(transactionId, transaction);
+		} else {
+			logger.error("Error insterting X12 835 transaction record.");
+		}
+	}
+}
+
+function insertClaims(transactionId, transaction) {
+	for each (var header in transaction.headers) {
+		var lx01 = header.LX01;
+		for each (var claim in header.claims) {
+			var claimId = null;
+	
+			var preparedStatement = "INSERT INTO [X12835].[Claim] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	
+			var parameters = [];
+			parameters[0] = transactionId;
+			parameters[1] = lx01;
+			parameters[2] = claim.CLP01;
+			parameters[3] = claim.CLP02;
+			parameters[4] = claim.CLP03;
+			parameters[5] = claim.CLP04;
+			parameters[6] = claim.CLP05;
+			parameters[7] = claim.CLP06;
+			parameters[8] = claim.CLP07;
+			parameters[9] = claim.CLP08;
+			parameters[10] = claim.CLP09;
+			parameters[11] = claim.CLP10;
+			parameters[12] = claim.CLP11;
+			parameters[13] = claim.CLP12;
+			parameters[14] = claim.CLP13;
+			parameters[15] = loadDts;
+	
+			var crs = dbConn.executeUpdateAndGetGeneratedKeys(preparedStatement, java.util.Arrays.asList(parameters));
+	
+			if (crs.next()) {
+				claimId = crs.getLong(1);
+				insertPatients(claimId, claim);
+				insertServices(transactionId, claimId, claim);
+				insertClaimAdjustments(claimId, claim);
+				insertClaimAmount(claimId, claim);
+				insertDates('Claim', claimId, claim);
+				insertReferences('Claim', claimId, claim);
+			} else {
+				logger.error("Error insterting X12 835 claim record.");
+			}
+		}		
+	}
+}
+
+function insertPatients(claimId, claim) {
+	for each (var patient in claim.patients) {
+		var patientId = null;
+
+		var preparedStatement = "INSERT INTO [X12835].[ClaimPatient] VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+
+		var parameters = [];
+		parameters[0] = claimId;
+		parameters[1] = patient.NM101;
+		parameters[2] = patient.NM102;
+		parameters[3] = patient.NM103;
+		parameters[4] = patient.NM104;
+		parameters[5] = patient.NM105;
+		parameters[6] = patient.NM106;
+		parameters[7] = patient.NM107;
+		parameters[8] = patient.NM108;
+		parameters[9] = patient.NM109;
+		parameters[10] = loadDts;
+
+		var crs = dbConn.executeUpdateAndGetGeneratedKeys(preparedStatement, java.util.Arrays.asList(parameters));
+
+		if (crs.next()) {
+			patientId = crs.getLong(1);
+		} else {
+			logger.error("Error insterting X12 835 patient record.");
+		}
+	}		
+}
+
+function insertServices(transactionId, claimId, claim) {
+	for each (var service in claim.services) {
+		var serviceId = null;
+
+		var preparedStatement = "INSERT INTO [X12835].[Service] VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
+
+		var parameters = [];
+		parameters[0] = claimId;
+		parameters[1] = transactionId;
+		parameters[2] = service.SVC0101;
+		parameters[3] = service.SVC0102;
+		parameters[4] = service.SVC0103;
+		parameters[5] = service.SVC02;
+		parameters[6] = service.SVC03;
+		parameters[7] = service.SVC04;
+		parameters[8] = service.SVC05;
+		parameters[9] = service.SVC06;
+		parameters[10] = service.SVC07;
+		parameters[11] = loadDts;
+
+		var crs = dbConn.executeUpdateAndGetGeneratedKeys(preparedStatement, java.util.Arrays.asList(parameters));
+
+		if (crs.next()) {
+			serviceId = crs.getLong(1);
+			insertServiceAdjustments(serviceId, service);
+			insertServiceAmount(serviceId, service);
+			insertDates('Service', serviceId, service);
+			insertReferences('Service', serviceId, service);
+		} else {
+			logger.error("Error insterting X12 835 service record.");
+		}
+	}		
+}
+
+function insertClaimAdjustments(claimId, claim) {
+	for each (var adjustment in claim.adjustments) {
+		var adjustmentId = null;
+
+		var preparedStatement = "INSERT INTO [X12835].[ClaimAdjustment] VALUES (?,?,?,?,?,?,?)";
+
+		var parameters = [];
+		parameters[0] = claimId;
+		parameters[1] = adjustment.CAS01;
+		parameters[2] = adjustment.CAS02;
+		parameters[3] = adjustment.CAS03;
+		parameters[4] = adjustment.CAS04;
+		parameters[5] = adjustment.CAS05;
+		parameters[6] = loadDts;
+
+		var crs = dbConn.executeUpdateAndGetGeneratedKeys(preparedStatement, java.util.Arrays.asList(parameters));
+
+		if (crs.next()) {
+			adjustmentId = crs.getLong(1);
+		} else {
+			logger.error("Error insterting X12 835 adjustment record.");
+		}
+	}		
+}
+
+function insertServiceAdjustments(serviceId, service) {
+	for each (var adjustment in service.adjustments) {
+		var adjustmentId = null;
+
+		var preparedStatement = "INSERT INTO [X12835].[ServiceAdjustment] VALUES (?,?,?,?,?,?,?)";
+
+		var parameters = [];
+		parameters[0] = serviceId;
+		parameters[1] = adjustment.CAS01;
+		parameters[2] = adjustment.CAS02;
+		parameters[3] = adjustment.CAS03;
+		parameters[4] = adjustment.CAS04;
+		parameters[5] = adjustment.CAS05;
+		parameters[6] = loadDts;
+
+		var crs = dbConn.executeUpdateAndGetGeneratedKeys(preparedStatement, java.util.Arrays.asList(parameters));
+
+		if (crs.next()) {
+			adjustmentId = crs.getLong(1);
+		} else {
+			logger.error("Error insterting X12 835 adjustment record.");
+		}
+	}		
+}
+
+function insertClaimAmount(claimId, claim) {
+	if(claim.amount != null) {
+		var preparedStatement = "INSERT INTO [X12835].[ClaimAmount] VALUES (?,?,?,?)";
+	
+		var parameters = [];
+		parameters[0] = claimId;
+		parameters[1] = claim.amount.AMT01;
+		parameters[2] = claim.amount.AMT02;
+		parameters[3] = loadDts;
+	
+		var crs = dbConn.executeUpdateAndGetGeneratedKeys(preparedStatement, java.util.Arrays.asList(parameters));
+	
+		if (crs.next()) {
+			amountId = crs.getLong(1);
+		} else {
+			logger.error("Error insterting X12 835 claim amount record.");
+		}	
+	}
+}
+
+function insertServiceAmount(serviceId, service) {
+	if(service.amount != null) {
+		var preparedStatement = "INSERT INTO [X12835].[ServiceAmount] VALUES (?,?,?,?)";
+	
+		var parameters = [];
+		parameters[0] = serviceId;
+		parameters[1] = service.amount.AMT01;
+		parameters[2] = service.amount.AMT02;
+		parameters[3] = loadDts;
+	
+		var crs = dbConn.executeUpdateAndGetGeneratedKeys(preparedStatement, java.util.Arrays.asList(parameters));
+	
+		if (crs.next()) {
+			amountId = crs.getLong(1);
+		} else {
+			logger.error("Error insterting X12 835 service amount record.");
+		}	
+	}
+}
+
+function insertDates(type, objId, obj) {
+	for each (var date in obj.dates) {
+		var dateId = null;
+
+		if (type == "Claim") {
+			var preparedStatement = "INSERT INTO [X12835].[ClaimDate] VALUES (?,?,?,?)";	
+		} else if (type == "Service") {
+			var preparedStatement = "INSERT INTO [X12835].[ServiceDate] VALUES (?,?,?,?)";	
+		} else if (type == "Transaction") {
+			var preparedStatement = "INSERT INTO [X12835].[TransactionDate] VALUES (?,?,?,?)";	
+		}
+		
+
+		var parameters = [];
+		parameters[0] = objId;
+		parameters[1] = date.DTM01;
+		parameters[2] = date.DTM02;
+		parameters[3] = loadDts;
+
+		var crs = dbConn.executeUpdateAndGetGeneratedKeys(preparedStatement, java.util.Arrays.asList(parameters));
+
+		if (crs.next()) {
+			dateId = crs.getLong(1);
+		} else {
+			logger.error("Error insterting X12 835 claim date record.");
+		}
+	}
+}
+
+function insertReferences(type, objId, obj) {
+	for each (var reference in obj.references) {
+		var referenceId = null;
+
+		var pareparedStatement = null;
+
+		if(type == 'Transaction') {
+			preparedStatement = "INSERT INTO [X12835].[TransactionReference] VALUES (?,?,?,?)";
+		} else if(type == 'Claim') {
+			preparedStatement = "INSERT INTO [X12835].[ClaimReference] VALUES (?,?,?,?)";
+		} else if(type == 'Service') {
+			preparedStatement = "INSERT INTO [X12835].[ServiceReference] VALUES (?,?,?,?)";
+		} else if(type == 'TraceNumber') {
+			preparedStatement = "INSERT INTO [X12835].[TraceNumberReference] VALUES (?,?,?,?)";
+		} else if(type == 'Payer') {
+			preparedStatement = "INSERT INTO [X12835].[PayerReference] VALUES (?,?,?,?)";
+		} else if(type == 'Payee') {
+			preparedStatement = "INSERT INTO [X12835].[PayeeReference] VALUES (?,?,?,?)";
+		} else if(type == 'Financial') {
+			preparedStatement = "INSERT INTO [X12835].[FinancialReference] VALUES (?,?,?,?)";
+		}
+
+		var parameters = [];
+		parameters[0] = objId;
+		parameters[1] = reference.REF01;
+		parameters[2] = reference.REF02;
+		parameters[3] = loadDts;
+
+		var crs = dbConn.executeUpdateAndGetGeneratedKeys(preparedStatement, java.util.Arrays.asList(parameters));
+
+		if (crs.next()) {
+			referenceId = crs.getLong(1);
+		} else {
+			logger.error("Error insterting X12 835 " + type + " reference record.");
+		}
+	}
+}
+
+function insertFinancial(transactionId, transaction) {
+	if(transaction.financial != null) {
+		var preparedStatement = "INSERT INTO [X12835].[Financial] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	
+		var parameters = [];
+		parameters[0] = transactionId;
+		parameters[1] = transaction.financial.BPR01;
+		parameters[2] = transaction.financial.BPR02;
+		parameters[3] = transaction.financial.BPR03;
+		parameters[4] = transaction.financial.BPR04;
+		parameters[5] = transaction.financial.BPR05;
+		parameters[6] = transaction.financial.BPR06;
+		parameters[7] = transaction.financial.BPR07;
+		parameters[8] = transaction.financial.BPR08;
+		parameters[9] = transaction.financial.BPR09;
+		parameters[10] = transaction.financial.BPR10;
+		parameters[11] = transaction.financial.BPR11;
+		parameters[12] = transaction.financial.BPR12;
+		parameters[13] = transaction.financial.BPR13;
+		parameters[14] = transaction.financial.BPR14;
+		parameters[15] = transaction.financial.BPR15;
+		parameters[16] = transaction.financial.BPR16;
+		parameters[17] = loadDts;
+	
+		var crs = dbConn.executeUpdateAndGetGeneratedKeys(preparedStatement, java.util.Arrays.asList(parameters));
+	
+		if (crs.next()) {
+			financialId = crs.getLong(1);
+			insertReferences('Financial', financialId, transaction.financial);
+		} else {
+			logger.error("Error insterting X12 835 financial record.");
+		}	
+	}
+}
+
+function insertPersons(transactionId, transaction) {
+	for each (var person in transaction.persons) {
+		var personType = null;
+		var preparedStatement = null;
+
+		if (person.N101 == 'PR') {
+			personType = 'Payer';
+			preparedStatement = "INSERT INTO [X12835].[Payer] VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+		} else if (person.N101 == 'PE') {
+			personType = 'Payee';
+			preparedStatement = "INSERT INTO [X12835].[Payee] VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+		}
+
+		if (preparedStatement == null) {
+			logger.error("Error handling transaction person record.");
+		} else {
+			var parameters = [];
+			parameters[0] = transactionId;
+			parameters[1] = person.N101;
+			parameters[2] = person.N102;
+			parameters[3] = person.N103;
+			parameters[4] = person.N104;
+			parameters[5] = person.N301;
+			parameters[6] = person.N302;
+			parameters[7] = person.N401;
+			parameters[8] = person.N402;
+			parameters[9] = person.N403;
+			parameters[10] = loadDts;
+		
+			var crs = dbConn.executeUpdateAndGetGeneratedKeys(preparedStatement, java.util.Arrays.asList(parameters));
+		
+			if (crs.next()) {
+				personId = crs.getLong(1);
+				insertReferences(personType, personId, person);
+				insertContacts(personType, personId, person);
+			} else {
+				logger.error("Error insterting X12 835 financial record.");
+			}	
+		}
+	}
+}
+
+function insertContacts(type, personId, person) {
+	for each (var contact in person.contacts) {
+		var preparedStatement = null;
+
+		if (type == 'Payer') {
+			preparedStatement = "INSERT INTO [X12835].[PayerContact] VALUES (?,?,?,?,?,?,?,?)";
+		} else if (type == 'Payee') {
+			preparedStatement = null;
+		}
+
+		if (preparedStatement == null) {
+			logger.error("Error handling transaction person record.");
+		} else {
+			var parameters = [];
+			parameters[0] = personId;
+			parameters[1] = contact.PER01;
+			parameters[2] = contact.PER02;
+			parameters[3] = contact.PER03;
+			parameters[4] = contact.PER04;
+			parameters[5] = contact.PER05;
+			parameters[6] = contact.PER06;
+			parameters[7] = loadDts;
+
+			var crs = dbConn.executeUpdateAndGetGeneratedKeys(preparedStatement, java.util.Arrays.asList(parameters));
+		
+			if (crs.next()) {
+				contactId = crs.getLong(1);
+			} else {
+				logger.error("Error insterting X12 835 contact record.");
+			}	
+		}
+	}
+}
+
+function insertProviderAdjustment(transactionId, transaction) {
+	if(transaction.providerAdjustment != null) {
+		var preparedStatement = "INSERT INTO [X12835].[ProviderAdjustment] VALUES (?,?,?,?,?,?,?)";
+	
+		var parameters = [];
+		parameters[0] = transactionId;
+		parameters[1] = transaction.providerAdjustment.PLB01;
+		parameters[2] = transaction.providerAdjustment.PLB02;
+		parameters[3] = transaction.providerAdjustment.PLB0301;
+		parameters[4] = transaction.providerAdjustment.PLB0302
+		parameters[5] = transaction.providerAdjustment.PLB04;
+		parameters[6] = loadDts;
+	
+		var crs = dbConn.executeUpdateAndGetGeneratedKeys(preparedStatement, java.util.Arrays.asList(parameters));
+	
+		if (crs.next()) {
+			amountId = crs.getLong(1);
+		} else {
+			logger.error("Error insterting X12 835 transaction provider adjustment record.");
+		}	
+	}
+}

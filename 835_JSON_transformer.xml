@@ -1,0 +1,872 @@
+<transformer version="3.4.2">
+  <steps>
+    <step>
+      <sequenceNumber>0</sequenceNumber>
+      <name>JsonTransformer</name>
+      <script>var x12Interchange = {};
+x12Interchange.ISA01 = msg[&apos;ISA&apos;][&apos;ISA.01&apos;][&apos;ISA.01.1&apos;].toString().trim();
+x12Interchange.ISA02 = msg[&apos;ISA&apos;][&apos;ISA.02&apos;][&apos;ISA.02.1&apos;].toString().trim();
+x12Interchange.ISA03 = msg[&apos;ISA&apos;][&apos;ISA.03&apos;][&apos;ISA.03.1&apos;].toString().trim();
+x12Interchange.ISA04 = msg[&apos;ISA&apos;][&apos;ISA.04&apos;][&apos;ISA.04.1&apos;].toString().trim();
+x12Interchange.ISA05 = msg[&apos;ISA&apos;][&apos;ISA.05&apos;][&apos;ISA.05.1&apos;].toString().trim();
+x12Interchange.ISA06 = msg[&apos;ISA&apos;][&apos;ISA.06&apos;][&apos;ISA.06.1&apos;].toString().trim();
+x12Interchange.ISA07 = msg[&apos;ISA&apos;][&apos;ISA.07&apos;][&apos;ISA.07.1&apos;].toString().trim();
+x12Interchange.ISA08 = msg[&apos;ISA&apos;][&apos;ISA.08&apos;][&apos;ISA.08.1&apos;].toString().trim();
+x12Interchange.ISA09 = msg[&apos;ISA&apos;][&apos;ISA.09&apos;][&apos;ISA.09.1&apos;].toString().trim();
+x12Interchange.ISA10 = msg[&apos;ISA&apos;][&apos;ISA.10&apos;][&apos;ISA.10.1&apos;].toString().trim();
+x12Interchange.ISA11 = msg[&apos;ISA&apos;][&apos;ISA.11&apos;][&apos;ISA.11.1&apos;].toString().trim();
+x12Interchange.ISA12 = msg[&apos;ISA&apos;][&apos;ISA.12&apos;][&apos;ISA.12.1&apos;].toString().trim();
+x12Interchange.ISA13 = msg[&apos;ISA&apos;][&apos;ISA.13&apos;][&apos;ISA.13.1&apos;].toString().trim();
+x12Interchange.ISA14 = msg[&apos;ISA&apos;][&apos;ISA.14&apos;][&apos;ISA.14.1&apos;].toString().trim();
+x12Interchange.ISA15 = msg[&apos;ISA&apos;][&apos;ISA.15&apos;][&apos;ISA.15.1&apos;].toString().trim();
+x12Interchange.ISA16 = msg[&apos;ISA&apos;][&apos;ISA.16&apos;][&apos;ISA.16.1&apos;].toString().trim();
+
+var functionalGroups = new java.util.ArrayList();
+var functionalGroup = {};
+
+var transactions = new java.util.LinkedList();
+var transaction = null;
+
+var transactionPersons = new java.util.LinkedList();
+var transactionPerson = null;
+
+var transactionHeaders = new java.util.LinkedList();
+var transactionHeader = null;
+
+// Claims are only children of transaction headers
+var parentOfClaim = null;
+var claims = new java.util.LinkedList();
+
+// Services are children of claims
+var parentOfService = null;
+var services = new java.util.LinkedList();
+
+// Contacts can be children of different objects
+var parentOfContact = null;
+var contacts = new java.util.LinkedList();
+
+// References can be children of different objects
+var parentOfReference = null;
+var references = new java.util.LinkedList();
+
+// Dates can be children of different objects
+var parentOfDate = null;
+var dates = new java.util.LinkedList();
+
+// Patients can be children of different objects
+var parentOfPatient = null;
+var patients = new java.util.LinkedList();
+
+// Adjustments can be children of different objects
+var parentOfAdjustment = null;
+var adjustments = new java.util.LinkedList();
+
+// Amounts can be children of different objects
+var parentOfAmount = null;
+var amount =  null;
+
+// Outpatient adjudication
+var parentOfOutpatientAdjudication = null;
+var outpatientAdjudication = null;
+
+// Inpatient adjudication
+var parentOfInpatientAdjudication = null;
+var inpatientAdjudication = null;
+
+// Remark codes 
+var parentOfRemarkCodes = null;
+var remarkCodes = new java.util.LinkedList();
+
+// Provider adjustment belongs to the transaction
+var parentOfProviderAdjustment = null;
+var providerAdjustment = null;
+
+for each (seg in msg.children()) {
+	if (seg.name().toString() == &quot;GS&quot;) {
+		functionalGroup = {};
+		functionalGroup.GS01 = seg[&apos;GS.01&apos;][&apos;GS.01.1&apos;].toString();
+		functionalGroup.GS02 = seg[&apos;GS.02&apos;][&apos;GS.02.1&apos;].toString();
+		functionalGroup.GS03 = seg[&apos;GS.03&apos;][&apos;GS.03.1&apos;].toString();
+		functionalGroup.GS04 = seg[&apos;GS.04&apos;][&apos;GS.04.1&apos;].toString();
+		functionalGroup.GS05 = seg[&apos;GS.05&apos;][&apos;GS.05.1&apos;].toString();
+		functionalGroup.GS06 = seg[&apos;GS.06&apos;][&apos;GS.06.1&apos;].toString();
+		functionalGroup.GS07 = seg[&apos;GS.07&apos;][&apos;GS.07.1&apos;].toString();
+		functionalGroup.GS08 = seg[&apos;GS.08&apos;][&apos;GS.08.1&apos;].toString();
+		functionalGroups.add(functionalGroup);
+	}
+	else if (seg.name().toString() == &quot;ST&quot;) {
+		transaction = {};
+		transaction.ST01 = seg[&apos;ST.01&apos;][&apos;ST.01.1&apos;].toString();
+		transaction.ST02 = seg[&apos;ST.02&apos;][&apos;ST.02.1&apos;].toString();
+		newReferenceParent(transaction);
+		newDateParent(transaction);
+		newProviderAdjustmentParent(transaction);
+		transactions.add(transaction);
+	}
+	else if (seg.name().toString() == &quot;SE&quot;) {
+		transaction.persons = transactionPersons.toArray();
+		transactionPersons.clear();
+		transaction.headers = transactionHeaders.toArray();
+		transactionHeaders.clear();
+		transaction = null;
+		newReferenceParent(null);
+	}
+	else if (seg.name().toString() == &quot;GE&quot;) {
+		functionalGroup.transactions = transactions.toArray();
+		functionalGroup = null;
+		transactions.clear();
+		newReferenceParent(null);
+	}
+	else if (seg.name().toString() == &quot;BPR&quot;) {
+		var financial = {};
+		financial.BPR01 = seg[&apos;BPR.01&apos;][&apos;BPR.01.1&apos;].toString();
+		financial.BPR02 = seg[&apos;BPR.02&apos;][&apos;BPR.02.1&apos;].toString();
+		financial.BPR03 = seg[&apos;BPR.03&apos;][&apos;BPR.03.1&apos;].toString();
+		financial.BPR04 = seg[&apos;BPR.04&apos;][&apos;BPR.04.1&apos;].toString();
+		financial.BPR05 = seg[&apos;BPR.05&apos;][&apos;BPR.05.1&apos;].toString();
+		financial.BPR06 = seg[&apos;BPR.06&apos;][&apos;BPR.06.1&apos;].toString();
+		financial.BPR07 = seg[&apos;BPR.07&apos;][&apos;BPR.07.1&apos;].toString();
+		financial.BPR08 = seg[&apos;BPR.08&apos;][&apos;BPR.08.1&apos;].toString();
+		financial.BPR09 = seg[&apos;BPR.09&apos;][&apos;BPR.09.1&apos;].toString();
+		financial.BPR10 = seg[&apos;BPR.10&apos;][&apos;BPR.10.1&apos;].toString();
+		financial.BPR11 = seg[&apos;BPR.11&apos;][&apos;BPR.11.1&apos;].toString();
+		financial.BPR12 = seg[&apos;BPR.12&apos;][&apos;BPR.12.1&apos;].toString();
+		financial.BPR13 = seg[&apos;BPR.13&apos;][&apos;BPR.13.1&apos;].toString();
+		financial.BPR14 = seg[&apos;BPR.14&apos;][&apos;BPR.14.1&apos;].toString();
+		financial.BPR15 = seg[&apos;BPR.15&apos;][&apos;BPR.15.1&apos;].toString();
+		financial.BPR16 = seg[&apos;BPR.16&apos;][&apos;BPR.16.1&apos;].toString();
+		transaction.financial = financial;
+		newReferenceParent(financial);
+	}
+	else if (seg.name().toString() == &quot;TRN&quot;) {
+		var traceNumber = {};
+		traceNumber.TRN01 = seg[&apos;TRN.01&apos;][&apos;TRN.01.1&apos;].toString();
+		traceNumber.TRN02 = seg[&apos;TRN.02&apos;][&apos;TRN.02.1&apos;].toString();
+		traceNumber.TRN03 = seg[&apos;TRN.03&apos;][&apos;TRN.03.1&apos;].toString();
+		traceNumber.TRN04 = seg[&apos;TRN.04&apos;][&apos;TRN.04.1&apos;].toString();
+		transaction.traceNumber = traceNumber;
+		newReferenceParent(traceNumber);
+	}
+	else if (seg.name().toString() == &quot;REF&quot;) {
+		var reference = {};
+		reference.REF01 = seg[&apos;REF.01&apos;][&apos;REF.01.1&apos;].toString();
+		reference.REF02 = seg[&apos;REF.02&apos;][&apos;REF.02.1&apos;].toString();
+		references.add(reference);
+	}
+	else if (seg.name().toString() == &quot;DTM&quot;) {
+		var date = {};
+		date.DTM01 = seg[&apos;DTM.01&apos;][&apos;DTM.01.1&apos;].toString();
+		date.DTM02 = seg[&apos;DTM.02&apos;][&apos;DTM.02.1&apos;].toString();
+		dates.add(date);
+	}
+	else if (seg.name().toString() == &quot;N1&quot;) {
+		transactionPerson = {};
+		transactionPerson.N101 = seg[&apos;N1.01&apos;][&apos;N1.01.1&apos;].toString();
+		transactionPerson.N102 = seg[&apos;N1.02&apos;][&apos;N1.02.1&apos;].toString();
+		transactionPerson.N103 = seg[&apos;N1.03&apos;][&apos;N1.03.1&apos;].toString();
+		transactionPerson.N104 = seg[&apos;N1.04&apos;][&apos;N1.04.1&apos;].toString();
+		newReferenceParent(transactionPerson);
+		newContactParent(transactionPerson);
+		transactionPersons.add(transactionPerson);
+	}
+	else if (seg.name().toString() == &quot;N3&quot;) {
+		transactionPerson.N301 = seg[&apos;N3.01&apos;][&apos;N3.01.1&apos;].toString();
+		transactionPerson.N302 = seg[&apos;N3.02&apos;][&apos;N3.02.1&apos;].toString();
+	}
+	else if (seg.name().toString() == &quot;N4&quot;) {
+		transactionPerson.N401 = seg[&apos;N4.01&apos;][&apos;N4.01.1&apos;].toString();
+		transactionPerson.N402 = seg[&apos;N4.02&apos;][&apos;N4.02.1&apos;].toString();
+		transactionPerson.N403 = seg[&apos;N4.03&apos;][&apos;N4.03.1&apos;].toString();
+	}
+	else if (seg.name().toString() == &quot;PER&quot;) {
+		var contact = {};
+		contact.PER01 = seg[&apos;PER.01&apos;][&apos;PER.01.1&apos;].toString();
+		contact.PER02 = seg[&apos;PER.02&apos;][&apos;PER.02.1&apos;].toString();
+		contact.PER03 = seg[&apos;PER.03&apos;][&apos;PER.03.1&apos;].toString();
+		contact.PER04 = seg[&apos;PER.04&apos;][&apos;PER.04.1&apos;].toString();
+		contact.PER05 = seg[&apos;PER.05&apos;][&apos;PER.05.1&apos;].toString();
+		contact.PER06 = seg[&apos;PER.06&apos;][&apos;PER.06.1&apos;].toString();
+		contacts.add(contact);
+	}
+	else if (seg.name().toString() == &quot;LX&quot;) {
+		transactionHeader = {};
+		transactionHeader.LX01 = seg[&apos;LX.01&apos;][&apos;LX.01.1&apos;].toString();
+		newClaimParent(transactionHeader);
+		transactionHeaders.add(transactionHeader);
+	}
+	else if (seg.name().toString() == &quot;CLP&quot;) {
+		var claim = {};
+		claim.CLP01 = seg[&apos;CLP.01&apos;][&apos;CLP.01.1&apos;].toString();
+		claim.CLP02 = seg[&apos;CLP.02&apos;][&apos;CLP.02.1&apos;].toString();
+		claim.CLP03 = seg[&apos;CLP.03&apos;][&apos;CLP.03.1&apos;].toString();
+		claim.CLP04 = seg[&apos;CLP.04&apos;][&apos;CLP.04.1&apos;].toString();
+		claim.CLP05 = seg[&apos;CLP.05&apos;][&apos;CLP.05.1&apos;].toString();
+		claim.CLP06 = seg[&apos;CLP.06&apos;][&apos;CLP.06.1&apos;].toString();
+		claim.CLP07 = seg[&apos;CLP.07&apos;][&apos;CLP.07.1&apos;].toString();
+		claim.CLP08 = seg[&apos;CLP.08&apos;][&apos;CLP.08.1&apos;].toString();
+		claim.CLP09 = seg[&apos;CLP.09&apos;][&apos;CLP.09.1&apos;].toString();
+		newServiceParent(claim);
+		newReferenceParent(claim);
+		newDateParent(claim);
+		newPatientParent(claim);
+		newAdjustmentParent(claim);
+		newAmountParent(claim);
+		newInpatientAdjudicationParent(claim);
+		newOutpatientAdjudicationParent(claim);
+		newRemarkCodesParent(claim);
+		claims.add(claim);
+	}
+	else if (seg.name().toString() == &quot;SVC&quot;) {
+		var service = {};
+		service.SVC0101 = seg[&apos;SVC.01&apos;][&apos;SVC.01.1&apos;].toString();
+		service.SVC0102 = seg[&apos;SVC.01&apos;][&apos;SVC.01.2&apos;].toString();
+		service.SVC0103 = seg[&apos;SVC.01&apos;][&apos;SVC.01.3&apos;].toString();
+		service.SVC02 = seg[&apos;SVC.02&apos;][&apos;SVC.02.1&apos;].toString();
+		service.SVC03 = seg[&apos;SVC.03&apos;][&apos;SVC.03.1&apos;].toString();
+		service.SVC04 = seg[&apos;SVC.04&apos;][&apos;SVC.04.1&apos;].toString();
+		newReferenceParent(service);
+		newDateParent(service);
+		newPatientParent(service);
+		newAdjustmentParent(service);
+		newAmountParent(service);
+		newInpatientAdjudicationParent(service);
+		newOutpatientAdjudicationParent(service);
+		newRemarkCodesParent(service);
+		services.add(service);
+	}
+	else if (seg.name().toString() == &quot;CAS&quot;) {
+		var adjustment = {};
+		adjustment.CAS01 = seg[&apos;CAS.01&apos;][&apos;CAS.01.1&apos;].toString();
+		adjustment.CAS02 = seg[&apos;CAS.02&apos;][&apos;CAS.02.1&apos;].toString();
+		adjustment.CAS03 = seg[&apos;CAS.03&apos;][&apos;CAS.03.1&apos;].toString();
+		adjustments.add(adjustment);
+	}
+	else if (seg.name().toString() == &quot;AMT&quot;) {
+		amount = {};
+		amount.AMT01 = seg[&apos;AMT.01&apos;][&apos;AMT.01.1&apos;].toString();
+		amount.AMT02 = seg[&apos;AMT.02&apos;][&apos;AMT.02.1&apos;].toString();
+	}
+	else if (seg.name().toString() == &quot;NM1&quot;) {
+		var patient = {};
+		patient.NM101 = seg[&apos;NM1.01&apos;][&apos;NM1.01.1&apos;].toString();
+		patient.NM102 = seg[&apos;NM1.02&apos;][&apos;NM1.02.1&apos;].toString();
+		patient.NM103 = seg[&apos;NM1.03&apos;][&apos;NM1.03.1&apos;].toString();
+		patient.NM104 = seg[&apos;NM1.04&apos;][&apos;NM1.04.1&apos;].toString();
+		patient.NM105 = seg[&apos;NM1.05&apos;][&apos;NM1.05.1&apos;].toString();
+		patient.NM106 = seg[&apos;NM1.06&apos;][&apos;NM1.06.1&apos;].toString();
+		patient.NM107 = seg[&apos;NM1.07&apos;][&apos;NM1.07.1&apos;].toString();
+		patient.NM108 = seg[&apos;NM1.08&apos;][&apos;NM1.08.1&apos;].toString();
+		patient.NM109 = seg[&apos;NM1.09&apos;][&apos;NM1.09.1&apos;].toString();
+		patients.add(patient);
+	}
+	else if (seg.name().toString() == &quot;MOA&quot;) {
+		outpatientAdjudication = {};
+		outpatientAdjudication.MOA01 = seg[&apos;MOA.01&apos;][&apos;MOA.01.1&apos;].toString();
+		outpatientAdjudication.MOA02 = seg[&apos;MOA.02&apos;][&apos;MOA.02.1&apos;].toString();
+		outpatientAdjudication.MOA03 = seg[&apos;MOA.03&apos;][&apos;MOA.03.1&apos;].toString();
+		outpatientAdjudication.MOA04 = seg[&apos;MOA.04&apos;][&apos;MOA.04.1&apos;].toString();
+		outpatientAdjudication.MOA05 = seg[&apos;MOA.05&apos;][&apos;MOA.05.1&apos;].toString();
+	}
+	else if (seg.name().toString() == &quot;MIA&quot;) {
+		inpatientAdjudication = {};
+		inpatientAdjudication.MIA01 = seg[&apos;MIA.01&apos;][&apos;MIA.01.1&apos;].toString();
+		inpatientAdjudication.MIA02 = seg[&apos;MIA.02&apos;][&apos;MIA.02.1&apos;].toString();
+		inpatientAdjudication.MIA03 = seg[&apos;MIA.03&apos;][&apos;MIA.03.1&apos;].toString();
+		inpatientAdjudication.MIA04 = seg[&apos;MIA.04&apos;][&apos;MIA.04.1&apos;].toString();
+		inpatientAdjudication.MIA05 = seg[&apos;MIA.05&apos;][&apos;MIA.05.1&apos;].toString();
+	}
+	else if (seg.name().toString() == &quot;LQ&quot;) {
+		var remarkCode = {};
+		remarkCode.LQ01 = seg[&apos;LQ.01&apos;][&apos;LQ.01.1&apos;].toString();
+		remarkCode.LQ02 = seg[&apos;LQ.02&apos;][&apos;LQ.02.1&apos;].toString();
+		remarkCodes.add(remarkCode);
+	}
+	else if (seg.name().toString() == &quot;PLB&quot;) {
+		providerAdjustment = {};
+		providerAdjustment.PLB01 = seg[&apos;PLB.01&apos;][&apos;PLB.01.1&apos;].toString();
+		providerAdjustment.PLB02 = seg[&apos;PLB.02&apos;][&apos;PLB.02.1&apos;].toString();
+		providerAdjustment.PLB0301 = seg[&apos;PLB.03&apos;][&apos;PLB.03.1&apos;].toString();
+		providerAdjustment.PLB0302 = seg[&apos;PLB.03&apos;][&apos;PLB.03.2&apos;].toString();
+		providerAdjustment.PLB04 = seg[&apos;PLB.04&apos;][&apos;PLB.04.1&apos;].toString();
+		providerAdjustment.PLB05 = seg[&apos;PLB.05&apos;][&apos;PLB.05.1&apos;].toString();
+		providerAdjustment.PLB06 = seg[&apos;PLB.06&apos;][&apos;PLB.06.1&apos;].toString();
+		providerAdjustment.PLB07 = seg[&apos;PLB.07&apos;][&apos;PLB.07.1&apos;].toString();
+		providerAdjustment.PLB08 = seg[&apos;PLB.08&apos;][&apos;PLB.08.1&apos;].toString();
+		providerAdjustment.PLB09 = seg[&apos;PLB.09&apos;][&apos;PLB.09.1&apos;].toString();
+		providerAdjustment.PLB10 = seg[&apos;PLB.10&apos;][&apos;PLB.10.1&apos;].toString();
+		providerAdjustment.PLB11 = seg[&apos;PLB.11&apos;][&apos;PLB.11.1&apos;].toString();
+		providerAdjustment.PLB12 = seg[&apos;PLB.12&apos;][&apos;PLB.12.1&apos;].toString();
+		providerAdjustment.PLB13 = seg[&apos;PLB.13&apos;][&apos;PLB.13.1&apos;].toString();
+		providerAdjustment.PLB14 =  seg[&apos;PLB.14&apos;][&apos;PLB.14.1&apos;].toString();
+	}
+}
+
+newClaimParent(null);
+newServiceParent(null);
+newContactParent(null);
+newReferenceParent(null);
+newDateParent(null);
+newPatientParent(null);
+newAdjustmentParent(null);
+newAmountParent(null);
+newOutpatientAdjudicationParent(null);
+newInpatientAdjudicationParent(null);
+newRemarkCodesParent(null);
+newProviderAdjustmentParent(null);
+
+x12Interchange.functionalGroups = functionalGroups.toArray();
+
+channelMap.put(&apos;x12Interchange&apos;, JSON.stringify(x12Interchange));
+
+function newReferenceParent(newParent) {
+	if (parentOfReference != null &amp;&amp; !references.isEmpty()) {
+		parentOfReference.references = references.toArray();
+	}
+	references.clear();
+	parentOfReference = newParent;
+}
+
+function newDateParent(newParent) {
+	if (parentOfDate != null &amp;&amp; !dates.isEmpty()) {
+		parentOfDate.dates = dates.toArray();
+	}
+	dates.clear();
+	parentOfDate = newParent;
+}
+
+function newPatientParent(newParent) {
+	if (parentOfPatient != null &amp;&amp; !patients.isEmpty()) {
+		parentOfPatient.patients = patients.toArray();
+	}
+	patients.clear();
+	parentOfPatient = newParent;
+}
+
+function newAdjustmentParent(newParent) {
+	if (parentOfAdjustment != null &amp;&amp; !adjustments.isEmpty()) {
+		parentOfAdjustment.adjustments = adjustments.toArray();
+	}
+	adjustments.clear();
+	parentOfAdjustment = newParent;
+}
+
+function newContactParent(newParent) {
+	if (parentOfContact != null &amp;&amp; !contacts.isEmpty()) {
+		parentOfContact.contacts = contacts.toArray();
+	}
+	contacts.clear();
+	parentOfContact = newParent;
+}
+
+function newAmountParent(newParent) {
+	if (parentOfAmount != null &amp;&amp; amount != null) {
+		parentOfAmount.amount = amount;
+	}
+	amount = null;
+	parentOfAmount = newParent;
+}
+
+function newOutpatientAdjudicationParent(newParent) {
+	if (parentOfOutpatientAdjudication != null &amp;&amp; outpatientAdjudication != null) {
+		parentOfOutpatientAdjudication.outpatientAdjudication = outpatientAdjudication;
+	}
+	outpatientAdjudication = null;
+	parentOfOutpatientAdjudication = newParent;
+}
+
+function newInpatientAdjudicationParent(newParent) {
+	if (parentOfInpatientAdjudication != null &amp;&amp; inpatientAdjudication != null) {
+		parentOfInpatientAdjudication.inpatientAdjudication = inpatientAdjudication;
+	}
+	inpatientAdjudication = null;
+	parentOfInpatientAdjudication = newParent;
+}
+
+function newRemarkCodesParent(newParent) {
+	if (parentOfRemarkCodes != null &amp;&amp; !remarkCodes.isEmpty()) {
+		parentOfRemarkCodes.remarkCodes = remarkCodes.toArray();
+	}
+	remarkCodes.clear();
+	parentOfRemarkCodes = newParent;
+}
+
+function newClaimParent(newParent) {
+	if (parentOfClaim != null &amp;&amp; !claims.isEmpty()) {
+		parentOfClaim.claims = claims.toArray();
+	}
+	claims.clear();
+	parentOfClaim = newParent;
+}
+
+function newServiceParent(newParent) {
+	if (parentOfService != null &amp;&amp; !services.isEmpty()) {
+		parentOfService.services = services.toArray();
+	}
+	services.clear();
+	parentOfService = newParent;
+}
+
+function newProviderAdjustmentParent(newParent) {
+	if (parentOfProviderAdjustment != null &amp;&amp; providerAdjustment != null) {
+		parentOfProviderAdjustment.providerAdjustment = providerAdjustment;
+	}
+	providerAdjustment = null;
+	parentOfProviderAdjustment = newParent;
+}</script>
+      <type>JavaScript</type>
+      <data>
+        <entry>
+          <string>Script</string>
+          <string>var x12Interchange = {};
+x12Interchange.ISA01 = msg[&apos;ISA&apos;][&apos;ISA.01&apos;][&apos;ISA.01.1&apos;].toString().trim();
+x12Interchange.ISA02 = msg[&apos;ISA&apos;][&apos;ISA.02&apos;][&apos;ISA.02.1&apos;].toString().trim();
+x12Interchange.ISA03 = msg[&apos;ISA&apos;][&apos;ISA.03&apos;][&apos;ISA.03.1&apos;].toString().trim();
+x12Interchange.ISA04 = msg[&apos;ISA&apos;][&apos;ISA.04&apos;][&apos;ISA.04.1&apos;].toString().trim();
+x12Interchange.ISA05 = msg[&apos;ISA&apos;][&apos;ISA.05&apos;][&apos;ISA.05.1&apos;].toString().trim();
+x12Interchange.ISA06 = msg[&apos;ISA&apos;][&apos;ISA.06&apos;][&apos;ISA.06.1&apos;].toString().trim();
+x12Interchange.ISA07 = msg[&apos;ISA&apos;][&apos;ISA.07&apos;][&apos;ISA.07.1&apos;].toString().trim();
+x12Interchange.ISA08 = msg[&apos;ISA&apos;][&apos;ISA.08&apos;][&apos;ISA.08.1&apos;].toString().trim();
+x12Interchange.ISA09 = msg[&apos;ISA&apos;][&apos;ISA.09&apos;][&apos;ISA.09.1&apos;].toString().trim();
+x12Interchange.ISA10 = msg[&apos;ISA&apos;][&apos;ISA.10&apos;][&apos;ISA.10.1&apos;].toString().trim();
+x12Interchange.ISA11 = msg[&apos;ISA&apos;][&apos;ISA.11&apos;][&apos;ISA.11.1&apos;].toString().trim();
+x12Interchange.ISA12 = msg[&apos;ISA&apos;][&apos;ISA.12&apos;][&apos;ISA.12.1&apos;].toString().trim();
+x12Interchange.ISA13 = msg[&apos;ISA&apos;][&apos;ISA.13&apos;][&apos;ISA.13.1&apos;].toString().trim();
+x12Interchange.ISA14 = msg[&apos;ISA&apos;][&apos;ISA.14&apos;][&apos;ISA.14.1&apos;].toString().trim();
+x12Interchange.ISA15 = msg[&apos;ISA&apos;][&apos;ISA.15&apos;][&apos;ISA.15.1&apos;].toString().trim();
+x12Interchange.ISA16 = msg[&apos;ISA&apos;][&apos;ISA.16&apos;][&apos;ISA.16.1&apos;].toString().trim();
+
+var functionalGroups = new java.util.ArrayList();
+var functionalGroup = {};
+
+var transactions = new java.util.LinkedList();
+var transaction = null;
+
+var transactionPersons = new java.util.LinkedList();
+var transactionPerson = null;
+
+var transactionHeaders = new java.util.LinkedList();
+var transactionHeader = null;
+
+// Claims are only children of transaction headers
+var parentOfClaim = null;
+var claims = new java.util.LinkedList();
+
+// Services are children of claims
+var parentOfService = null;
+var services = new java.util.LinkedList();
+
+// Contacts can be children of different objects
+var parentOfContact = null;
+var contacts = new java.util.LinkedList();
+
+// References can be children of different objects
+var parentOfReference = null;
+var references = new java.util.LinkedList();
+
+// Dates can be children of different objects
+var parentOfDate = null;
+var dates = new java.util.LinkedList();
+
+// Patients can be children of different objects
+var parentOfPatient = null;
+var patients = new java.util.LinkedList();
+
+// Adjustments can be children of different objects
+var parentOfAdjustment = null;
+var adjustments = new java.util.LinkedList();
+
+// Amounts can be children of different objects
+var parentOfAmount = null;
+var amount =  null;
+
+// Outpatient adjudication
+var parentOfOutpatientAdjudication = null;
+var outpatientAdjudication = null;
+
+// Inpatient adjudication
+var parentOfInpatientAdjudication = null;
+var inpatientAdjudication = null;
+
+// Remark codes 
+var parentOfRemarkCodes = null;
+var remarkCodes = new java.util.LinkedList();
+
+// Provider adjustment belongs to the transaction
+var parentOfProviderAdjustment = null;
+var providerAdjustment = null;
+
+for each (seg in msg.children()) {
+	if (seg.name().toString() == &quot;GS&quot;) {
+		functionalGroup = {};
+		functionalGroup.GS01 = seg[&apos;GS.01&apos;][&apos;GS.01.1&apos;].toString();
+		functionalGroup.GS02 = seg[&apos;GS.02&apos;][&apos;GS.02.1&apos;].toString();
+		functionalGroup.GS03 = seg[&apos;GS.03&apos;][&apos;GS.03.1&apos;].toString();
+		functionalGroup.GS04 = seg[&apos;GS.04&apos;][&apos;GS.04.1&apos;].toString();
+		functionalGroup.GS05 = seg[&apos;GS.05&apos;][&apos;GS.05.1&apos;].toString();
+		functionalGroup.GS06 = seg[&apos;GS.06&apos;][&apos;GS.06.1&apos;].toString();
+		functionalGroup.GS07 = seg[&apos;GS.07&apos;][&apos;GS.07.1&apos;].toString();
+		functionalGroup.GS08 = seg[&apos;GS.08&apos;][&apos;GS.08.1&apos;].toString();
+		functionalGroups.add(functionalGroup);
+	}
+	else if (seg.name().toString() == &quot;ST&quot;) {
+		transaction = {};
+		transaction.ST01 = seg[&apos;ST.01&apos;][&apos;ST.01.1&apos;].toString();
+		transaction.ST02 = seg[&apos;ST.02&apos;][&apos;ST.02.1&apos;].toString();
+		newReferenceParent(transaction);
+		newDateParent(transaction);
+		newProviderAdjustmentParent(transaction);
+		transactions.add(transaction);
+	}
+	else if (seg.name().toString() == &quot;SE&quot;) {
+		transaction.persons = transactionPersons.toArray();
+		transactionPersons.clear();
+		transaction.headers = transactionHeaders.toArray();
+		transactionHeaders.clear();
+		transaction = null;
+		newReferenceParent(null);
+	}
+	else if (seg.name().toString() == &quot;GE&quot;) {
+		functionalGroup.transactions = transactions.toArray();
+		functionalGroup = null;
+		transactions.clear();
+		newReferenceParent(null);
+	}
+	else if (seg.name().toString() == &quot;BPR&quot;) {
+		var financial = {};
+		financial.BPR01 = seg[&apos;BPR.01&apos;][&apos;BPR.01.1&apos;].toString();
+		financial.BPR02 = seg[&apos;BPR.02&apos;][&apos;BPR.02.1&apos;].toString();
+		financial.BPR03 = seg[&apos;BPR.03&apos;][&apos;BPR.03.1&apos;].toString();
+		financial.BPR04 = seg[&apos;BPR.04&apos;][&apos;BPR.04.1&apos;].toString();
+		financial.BPR05 = seg[&apos;BPR.05&apos;][&apos;BPR.05.1&apos;].toString();
+		financial.BPR06 = seg[&apos;BPR.06&apos;][&apos;BPR.06.1&apos;].toString();
+		financial.BPR07 = seg[&apos;BPR.07&apos;][&apos;BPR.07.1&apos;].toString();
+		financial.BPR08 = seg[&apos;BPR.08&apos;][&apos;BPR.08.1&apos;].toString();
+		financial.BPR09 = seg[&apos;BPR.09&apos;][&apos;BPR.09.1&apos;].toString();
+		financial.BPR10 = seg[&apos;BPR.10&apos;][&apos;BPR.10.1&apos;].toString();
+		financial.BPR11 = seg[&apos;BPR.11&apos;][&apos;BPR.11.1&apos;].toString();
+		financial.BPR12 = seg[&apos;BPR.12&apos;][&apos;BPR.12.1&apos;].toString();
+		financial.BPR13 = seg[&apos;BPR.13&apos;][&apos;BPR.13.1&apos;].toString();
+		financial.BPR14 = seg[&apos;BPR.14&apos;][&apos;BPR.14.1&apos;].toString();
+		financial.BPR15 = seg[&apos;BPR.15&apos;][&apos;BPR.15.1&apos;].toString();
+		financial.BPR16 = seg[&apos;BPR.16&apos;][&apos;BPR.16.1&apos;].toString();
+		transaction.financial = financial;
+		newReferenceParent(financial);
+	}
+	else if (seg.name().toString() == &quot;TRN&quot;) {
+		var traceNumber = {};
+		traceNumber.TRN01 = seg[&apos;TRN.01&apos;][&apos;TRN.01.1&apos;].toString();
+		traceNumber.TRN02 = seg[&apos;TRN.02&apos;][&apos;TRN.02.1&apos;].toString();
+		traceNumber.TRN03 = seg[&apos;TRN.03&apos;][&apos;TRN.03.1&apos;].toString();
+		traceNumber.TRN04 = seg[&apos;TRN.04&apos;][&apos;TRN.04.1&apos;].toString();
+		transaction.traceNumber = traceNumber;
+		newReferenceParent(traceNumber);
+	}
+	else if (seg.name().toString() == &quot;REF&quot;) {
+		var reference = {};
+		reference.REF01 = seg[&apos;REF.01&apos;][&apos;REF.01.1&apos;].toString();
+		reference.REF02 = seg[&apos;REF.02&apos;][&apos;REF.02.1&apos;].toString();
+		references.add(reference);
+	}
+	else if (seg.name().toString() == &quot;DTM&quot;) {
+		var date = {};
+		date.DTM01 = seg[&apos;DTM.01&apos;][&apos;DTM.01.1&apos;].toString();
+		date.DTM02 = seg[&apos;DTM.02&apos;][&apos;DTM.02.1&apos;].toString();
+		dates.add(date);
+	}
+	else if (seg.name().toString() == &quot;N1&quot;) {
+		transactionPerson = {};
+		transactionPerson.N101 = seg[&apos;N1.01&apos;][&apos;N1.01.1&apos;].toString();
+		transactionPerson.N102 = seg[&apos;N1.02&apos;][&apos;N1.02.1&apos;].toString();
+		transactionPerson.N103 = seg[&apos;N1.03&apos;][&apos;N1.03.1&apos;].toString();
+		transactionPerson.N104 = seg[&apos;N1.04&apos;][&apos;N1.04.1&apos;].toString();
+		newReferenceParent(transactionPerson);
+		newContactParent(transactionPerson);
+		transactionPersons.add(transactionPerson);
+	}
+	else if (seg.name().toString() == &quot;N3&quot;) {
+		transactionPerson.N301 = seg[&apos;N3.01&apos;][&apos;N3.01.1&apos;].toString();
+		transactionPerson.N302 = seg[&apos;N3.02&apos;][&apos;N3.02.1&apos;].toString();
+	}
+	else if (seg.name().toString() == &quot;N4&quot;) {
+		transactionPerson.N401 = seg[&apos;N4.01&apos;][&apos;N4.01.1&apos;].toString();
+		transactionPerson.N402 = seg[&apos;N4.02&apos;][&apos;N4.02.1&apos;].toString();
+		transactionPerson.N403 = seg[&apos;N4.03&apos;][&apos;N4.03.1&apos;].toString();
+	}
+	else if (seg.name().toString() == &quot;PER&quot;) {
+		var contact = {};
+		contact.PER01 = seg[&apos;PER.01&apos;][&apos;PER.01.1&apos;].toString();
+		contact.PER02 = seg[&apos;PER.02&apos;][&apos;PER.02.1&apos;].toString();
+		contact.PER03 = seg[&apos;PER.03&apos;][&apos;PER.03.1&apos;].toString();
+		contact.PER04 = seg[&apos;PER.04&apos;][&apos;PER.04.1&apos;].toString();
+		contact.PER05 = seg[&apos;PER.05&apos;][&apos;PER.05.1&apos;].toString();
+		contact.PER06 = seg[&apos;PER.06&apos;][&apos;PER.06.1&apos;].toString();
+		contacts.add(contact);
+	}
+	else if (seg.name().toString() == &quot;LX&quot;) {
+		transactionHeader = {};
+		transactionHeader.LX01 = seg[&apos;LX.01&apos;][&apos;LX.01.1&apos;].toString();
+		newClaimParent(transactionHeader);
+		transactionHeaders.add(transactionHeader);
+	}
+	else if (seg.name().toString() == &quot;CLP&quot;) {
+		var claim = {};
+		claim.CLP01 = seg[&apos;CLP.01&apos;][&apos;CLP.01.1&apos;].toString();
+		claim.CLP02 = seg[&apos;CLP.02&apos;][&apos;CLP.02.1&apos;].toString();
+		claim.CLP03 = seg[&apos;CLP.03&apos;][&apos;CLP.03.1&apos;].toString();
+		claim.CLP04 = seg[&apos;CLP.04&apos;][&apos;CLP.04.1&apos;].toString();
+		claim.CLP05 = seg[&apos;CLP.05&apos;][&apos;CLP.05.1&apos;].toString();
+		claim.CLP06 = seg[&apos;CLP.06&apos;][&apos;CLP.06.1&apos;].toString();
+		claim.CLP07 = seg[&apos;CLP.07&apos;][&apos;CLP.07.1&apos;].toString();
+		claim.CLP08 = seg[&apos;CLP.08&apos;][&apos;CLP.08.1&apos;].toString();
+		claim.CLP09 = seg[&apos;CLP.09&apos;][&apos;CLP.09.1&apos;].toString();
+		newServiceParent(claim);
+		newReferenceParent(claim);
+		newDateParent(claim);
+		newPatientParent(claim);
+		newAdjustmentParent(claim);
+		newAmountParent(claim);
+		newInpatientAdjudicationParent(claim);
+		newOutpatientAdjudicationParent(claim);
+		newRemarkCodesParent(claim);
+		claims.add(claim);
+	}
+	else if (seg.name().toString() == &quot;SVC&quot;) {
+		var service = {};
+		service.SVC0101 = seg[&apos;SVC.01&apos;][&apos;SVC.01.1&apos;].toString();
+		service.SVC0102 = seg[&apos;SVC.01&apos;][&apos;SVC.01.2&apos;].toString();
+		service.SVC0103 = seg[&apos;SVC.01&apos;][&apos;SVC.01.3&apos;].toString();
+		service.SVC02 = seg[&apos;SVC.02&apos;][&apos;SVC.02.1&apos;].toString();
+		service.SVC03 = seg[&apos;SVC.03&apos;][&apos;SVC.03.1&apos;].toString();
+		service.SVC04 = seg[&apos;SVC.04&apos;][&apos;SVC.04.1&apos;].toString();
+		newReferenceParent(service);
+		newDateParent(service);
+		newPatientParent(service);
+		newAdjustmentParent(service);
+		newAmountParent(service);
+		newInpatientAdjudicationParent(service);
+		newOutpatientAdjudicationParent(service);
+		newRemarkCodesParent(service);
+		services.add(service);
+	}
+	else if (seg.name().toString() == &quot;CAS&quot;) {
+		var adjustment = {};
+		adjustment.CAS01 = seg[&apos;CAS.01&apos;][&apos;CAS.01.1&apos;].toString();
+		adjustment.CAS02 = seg[&apos;CAS.02&apos;][&apos;CAS.02.1&apos;].toString();
+		adjustment.CAS03 = seg[&apos;CAS.03&apos;][&apos;CAS.03.1&apos;].toString();
+		adjustments.add(adjustment);
+	}
+	else if (seg.name().toString() == &quot;AMT&quot;) {
+		amount = {};
+		amount.AMT01 = seg[&apos;AMT.01&apos;][&apos;AMT.01.1&apos;].toString();
+		amount.AMT02 = seg[&apos;AMT.02&apos;][&apos;AMT.02.1&apos;].toString();
+	}
+	else if (seg.name().toString() == &quot;NM1&quot;) {
+		var patient = {};
+		patient.NM101 = seg[&apos;NM1.01&apos;][&apos;NM1.01.1&apos;].toString();
+		patient.NM102 = seg[&apos;NM1.02&apos;][&apos;NM1.02.1&apos;].toString();
+		patient.NM103 = seg[&apos;NM1.03&apos;][&apos;NM1.03.1&apos;].toString();
+		patient.NM104 = seg[&apos;NM1.04&apos;][&apos;NM1.04.1&apos;].toString();
+		patient.NM105 = seg[&apos;NM1.05&apos;][&apos;NM1.05.1&apos;].toString();
+		patient.NM106 = seg[&apos;NM1.06&apos;][&apos;NM1.06.1&apos;].toString();
+		patient.NM107 = seg[&apos;NM1.07&apos;][&apos;NM1.07.1&apos;].toString();
+		patient.NM108 = seg[&apos;NM1.08&apos;][&apos;NM1.08.1&apos;].toString();
+		patient.NM109 = seg[&apos;NM1.09&apos;][&apos;NM1.09.1&apos;].toString();
+		patients.add(patient);
+	}
+	else if (seg.name().toString() == &quot;MOA&quot;) {
+		outpatientAdjudication = {};
+		outpatientAdjudication.MOA01 = seg[&apos;MOA.01&apos;][&apos;MOA.01.1&apos;].toString();
+		outpatientAdjudication.MOA02 = seg[&apos;MOA.02&apos;][&apos;MOA.02.1&apos;].toString();
+		outpatientAdjudication.MOA03 = seg[&apos;MOA.03&apos;][&apos;MOA.03.1&apos;].toString();
+		outpatientAdjudication.MOA04 = seg[&apos;MOA.04&apos;][&apos;MOA.04.1&apos;].toString();
+		outpatientAdjudication.MOA05 = seg[&apos;MOA.05&apos;][&apos;MOA.05.1&apos;].toString();
+	}
+	else if (seg.name().toString() == &quot;MIA&quot;) {
+		inpatientAdjudication = {};
+		inpatientAdjudication.MIA01 = seg[&apos;MIA.01&apos;][&apos;MIA.01.1&apos;].toString();
+		inpatientAdjudication.MIA02 = seg[&apos;MIA.02&apos;][&apos;MIA.02.1&apos;].toString();
+		inpatientAdjudication.MIA03 = seg[&apos;MIA.03&apos;][&apos;MIA.03.1&apos;].toString();
+		inpatientAdjudication.MIA04 = seg[&apos;MIA.04&apos;][&apos;MIA.04.1&apos;].toString();
+		inpatientAdjudication.MIA05 = seg[&apos;MIA.05&apos;][&apos;MIA.05.1&apos;].toString();
+	}
+	else if (seg.name().toString() == &quot;LQ&quot;) {
+		var remarkCode = {};
+		remarkCode.LQ01 = seg[&apos;LQ.01&apos;][&apos;LQ.01.1&apos;].toString();
+		remarkCode.LQ02 = seg[&apos;LQ.02&apos;][&apos;LQ.02.1&apos;].toString();
+		remarkCodes.add(remarkCode);
+	}
+	else if (seg.name().toString() == &quot;PLB&quot;) {
+		providerAdjustment = {};
+		providerAdjustment.PLB01 = seg[&apos;PLB.01&apos;][&apos;PLB.01.1&apos;].toString();
+		providerAdjustment.PLB02 = seg[&apos;PLB.02&apos;][&apos;PLB.02.1&apos;].toString();
+		providerAdjustment.PLB0301 = seg[&apos;PLB.03&apos;][&apos;PLB.03.1&apos;].toString();
+		providerAdjustment.PLB0302 = seg[&apos;PLB.03&apos;][&apos;PLB.03.2&apos;].toString();
+		providerAdjustment.PLB04 = seg[&apos;PLB.04&apos;][&apos;PLB.04.1&apos;].toString();
+		providerAdjustment.PLB05 = seg[&apos;PLB.05&apos;][&apos;PLB.05.1&apos;].toString();
+		providerAdjustment.PLB06 = seg[&apos;PLB.06&apos;][&apos;PLB.06.1&apos;].toString();
+		providerAdjustment.PLB07 = seg[&apos;PLB.07&apos;][&apos;PLB.07.1&apos;].toString();
+		providerAdjustment.PLB08 = seg[&apos;PLB.08&apos;][&apos;PLB.08.1&apos;].toString();
+		providerAdjustment.PLB09 = seg[&apos;PLB.09&apos;][&apos;PLB.09.1&apos;].toString();
+		providerAdjustment.PLB10 = seg[&apos;PLB.10&apos;][&apos;PLB.10.1&apos;].toString();
+		providerAdjustment.PLB11 = seg[&apos;PLB.11&apos;][&apos;PLB.11.1&apos;].toString();
+		providerAdjustment.PLB12 = seg[&apos;PLB.12&apos;][&apos;PLB.12.1&apos;].toString();
+		providerAdjustment.PLB13 = seg[&apos;PLB.13&apos;][&apos;PLB.13.1&apos;].toString();
+		providerAdjustment.PLB14 =  seg[&apos;PLB.14&apos;][&apos;PLB.14.1&apos;].toString();
+	}
+}
+
+newClaimParent(null);
+newServiceParent(null);
+newContactParent(null);
+newReferenceParent(null);
+newDateParent(null);
+newPatientParent(null);
+newAdjustmentParent(null);
+newAmountParent(null);
+newOutpatientAdjudicationParent(null);
+newInpatientAdjudicationParent(null);
+newRemarkCodesParent(null);
+newProviderAdjustmentParent(null);
+
+x12Interchange.functionalGroups = functionalGroups.toArray();
+
+channelMap.put(&apos;x12Interchange&apos;, JSON.stringify(x12Interchange));
+
+function newReferenceParent(newParent) {
+	if (parentOfReference != null &amp;&amp; !references.isEmpty()) {
+		parentOfReference.references = references.toArray();
+	}
+	references.clear();
+	parentOfReference = newParent;
+}
+
+function newDateParent(newParent) {
+	if (parentOfDate != null &amp;&amp; !dates.isEmpty()) {
+		parentOfDate.dates = dates.toArray();
+	}
+	dates.clear();
+	parentOfDate = newParent;
+}
+
+function newPatientParent(newParent) {
+	if (parentOfPatient != null &amp;&amp; !patients.isEmpty()) {
+		parentOfPatient.patients = patients.toArray();
+	}
+	patients.clear();
+	parentOfPatient = newParent;
+}
+
+function newAdjustmentParent(newParent) {
+	if (parentOfAdjustment != null &amp;&amp; !adjustments.isEmpty()) {
+		parentOfAdjustment.adjustments = adjustments.toArray();
+	}
+	adjustments.clear();
+	parentOfAdjustment = newParent;
+}
+
+function newContactParent(newParent) {
+	if (parentOfContact != null &amp;&amp; !contacts.isEmpty()) {
+		parentOfContact.contacts = contacts.toArray();
+	}
+	contacts.clear();
+	parentOfContact = newParent;
+}
+
+function newAmountParent(newParent) {
+	if (parentOfAmount != null &amp;&amp; amount != null) {
+		parentOfAmount.amount = amount;
+	}
+	amount = null;
+	parentOfAmount = newParent;
+}
+
+function newOutpatientAdjudicationParent(newParent) {
+	if (parentOfOutpatientAdjudication != null &amp;&amp; outpatientAdjudication != null) {
+		parentOfOutpatientAdjudication.outpatientAdjudication = outpatientAdjudication;
+	}
+	outpatientAdjudication = null;
+	parentOfOutpatientAdjudication = newParent;
+}
+
+function newInpatientAdjudicationParent(newParent) {
+	if (parentOfInpatientAdjudication != null &amp;&amp; inpatientAdjudication != null) {
+		parentOfInpatientAdjudication.inpatientAdjudication = inpatientAdjudication;
+	}
+	inpatientAdjudication = null;
+	parentOfInpatientAdjudication = newParent;
+}
+
+function newRemarkCodesParent(newParent) {
+	if (parentOfRemarkCodes != null &amp;&amp; !remarkCodes.isEmpty()) {
+		parentOfRemarkCodes.remarkCodes = remarkCodes.toArray();
+	}
+	remarkCodes.clear();
+	parentOfRemarkCodes = newParent;
+}
+
+function newClaimParent(newParent) {
+	if (parentOfClaim != null &amp;&amp; !claims.isEmpty()) {
+		parentOfClaim.claims = claims.toArray();
+	}
+	claims.clear();
+	parentOfClaim = newParent;
+}
+
+function newServiceParent(newParent) {
+	if (parentOfService != null &amp;&amp; !services.isEmpty()) {
+		parentOfService.services = services.toArray();
+	}
+	services.clear();
+	parentOfService = newParent;
+}
+
+function newProviderAdjustmentParent(newParent) {
+	if (parentOfProviderAdjustment != null &amp;&amp; providerAdjustment != null) {
+		parentOfProviderAdjustment.providerAdjustment = providerAdjustment;
+	}
+	providerAdjustment = null;
+	parentOfProviderAdjustment = newParent;
+}</string>
+        </entry>
+      </data>
+    </step>
+  </steps>
+  <inboundTemplate encoding="base64">U1QqODM1KjAwMDF+DQpCUFIqSSoxMjIyKkMqQ0hLKioqKioqKioqKioqMjAwNTA0MTJ+DQpUUk4q
+MSowMDEyNTI0OTY1KjE1NTkxMjM0NTZ+DQpSRUYqRVYqMDMwMjQwOTI4fg0KRFRNKjQwNSoyMDA1
+MDQxMn4NCk4xKlBSKllPVVIgVEFYIERPTExBUlMgQVQgV09SS34NCk4zKjQ4MUEwMCBERUVSIFJV
+TiBST0FEfg0KTjQqV0VTVCBQQUxNIEJDSCpGTCoxMTExNH4NClBFUipCTCpKT0hOIFdBWU5FKlRF
+KjgwMDU1NTEyMTIqRVgqMTIzfn4NCk4xKlBFKkFDTUUgTUVESUNBTCBDRU5URVIqRkkqNTk5OTQ0
+NTIxfg0KTjMqUE8gQk9YIDg2MzM4Mn4NCk40Kk9STEFORE8qRkwqNTUxMTV+DQpSRUYqUFEqMTA0
+ODh+DQpMWCoxfg0KQ0xQKkwwMDA0ODI4MzExKjIqMTAzMjMuNjQqOTEyKioxMiowNTA5MDI1NjM5
+MCoxMSoxfg0KQ0FTKk9BKjIzKjk0MTEuNjR+DQpOTTEqUUMqMSpUT1dOU0VORCpXSUxMSUFNKlAq
+KipNSSpYWFgxMjM0NTY3ODl+DQpOTTEqODIqMipBQ01FIE1FRElDQUwgQ0VOVEVSKioqKipCRCo5
+ODd+DQpEVE0qMjMyKjIwMDUwMzAzfg0KRFRNKjIzMyoyMDA1MDMwNH4NCkFNVCpBVSo5MTJ+DQpM
+WCoyfg0KQ0xQKjAwMDEwMDAwNTMqMio3NTEuNTAqMzEwKjIyMCoxMio1MDYzMDYyNjQzMH4NCk5N
+MSpRQyoxKkJBS0kqQU5HSSoqKipNSSo0NTY3ODkxMjN+DQpOTTEqODIqMipTTUlUSCBKT05FUyBQ
+QSoqKioqQlMqMzQ0MjZ+DQpEVE0qMjMyKjIwMDUwMTA2fg0KRFRNKjIzMyoyMDA1MDEwNn4NClNW
+QypIQzoxMjM0NToyNioxNjYuNSozMCoxfg0KRFRNKjQ3MioyMDA1MDEwNn4NCkNBUypPQSoyMyox
+MzYuNTB+DQpSRUYqMUIqNDMyODV+DQpBTVQqQjYqMTUwfg0KU1ZDKkhDOjY2NTQzOjI2KjU4NSoy
+ODAqMjIwKjF+DQpEVE0qNDcyKjIwMDUwMTA2fg0KQ0FTKlBSKjEqMTUwKioyKjcwfg0KQ0FTKkNP
+KjQyKjg1fg0KUkVGKjFCKjQzMjg1fg0KQU1UKkI2KjUwMH4NClNFKjM5KjAwMDF+DQo=</inboundTemplate>
+  <outboundTemplate encoding="base64"></outboundTemplate>
+  <inboundDataType>EDI/X12</inboundDataType>
+  <outboundDataType>JSON</outboundDataType>
+  <inboundProperties class="com.mirth.connect.plugins.datatypes.edi.EDIDataTypeProperties" version="3.4.2">
+    <serializationProperties class="com.mirth.connect.plugins.datatypes.edi.EDISerializationProperties" version="3.4.2">
+      <segmentDelimiter>~</segmentDelimiter>
+      <elementDelimiter>*</elementDelimiter>
+      <subelementDelimiter>:</subelementDelimiter>
+      <inferX12Delimiters>true</inferX12Delimiters>
+    </serializationProperties>
+    <batchProperties class="com.mirth.connect.plugins.datatypes.edi.EDIBatchProperties" version="3.4.2">
+      <splitType>JavaScript</splitType>
+      <batchScript></batchScript>
+    </batchProperties>
+  </inboundProperties>
+  <outboundProperties class="com.mirth.connect.plugins.datatypes.json.JSONDataTypeProperties" version="3.4.2">
+    <batchProperties class="com.mirth.connect.plugins.datatypes.json.JSONBatchProperties" version="3.4.2">
+      <splitType>JavaScript</splitType>
+      <batchScript></batchScript>
+    </batchProperties>
+  </outboundProperties>
+</transformer>
