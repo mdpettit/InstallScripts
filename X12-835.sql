@@ -804,7 +804,7 @@ GO
 
 ALTER TABLE [X12].[FunctionalGroup] 
  ADD CONSTRAINT [PK_X12FunctionalGroup]
-	PRIMARY KEY CLUSTERED ([FuncitonalGroupID] ASC)
+	PRIMARY KEY CLUSTERED ([FunctionalGroupID] ASC)
 GO
 
 CREATE NONCLUSTERED INDEX [IXFK_X12FunctionalGroup_X12Interchange] 
