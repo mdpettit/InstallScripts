@@ -23,8 +23,8 @@ IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X128
 ALTER TABLE [X12835].[ClaimDate] DROP CONSTRAINT [FK_X12835ClaimDate_X12835Claim]
 GO
 
-IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X12835ClaimPatient_X12835Claim]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
-ALTER TABLE [X12835].[ClaimPatient] DROP CONSTRAINT [FK_X12835ClaimPatient_X12835Claim]
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X12835ClaimPerson_X12835Claim]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
+ALTER TABLE [X12835].[ClaimPerson] DROP CONSTRAINT [FK_X12835ClaimPerson_X12835Claim]
 GO
 
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_BPR_X12Transaction]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
@@ -125,8 +125,8 @@ IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[ClaimDa
 DROP TABLE [X12835].[ClaimDate]
 GO
 
-IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[ClaimPatient]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
-DROP TABLE [X12835].[ClaimPatient]
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[ClaimPerson]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
+DROP TABLE [X12835].[ClaimPerson]
 GO
 
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[Financial]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
@@ -273,7 +273,7 @@ CREATE TABLE [X12835].[ClaimDate]
 )
 GO
 
-CREATE TABLE [X12835].[ClaimPatient]
+CREATE TABLE [X12835].[ClaimPerson]
 (
 	[NameID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[ClaimID] numeric(38) NOT NULL,
@@ -617,13 +617,13 @@ CREATE NONCLUSTERED INDEX [IXFK_X12835ClaimDate_X12835Claim]
  ON [X12835].[ClaimDate] ([ClaimID] ASC)
 GO
 
-ALTER TABLE [X12835].[ClaimPatient] 
- ADD CONSTRAINT [PK_X12835ClaimPatient]
+ALTER TABLE [X12835].[ClaimPerson] 
+ ADD CONSTRAINT [PK_X12835ClaimPerson]
 	PRIMARY KEY CLUSTERED ([NameID] ASC)
 GO
 
-CREATE NONCLUSTERED INDEX [IXFK_X12835ClaimPatient_X12835Claim] 
- ON [X12835].[ClaimPatient] ([ClaimID] ASC)
+CREATE NONCLUSTERED INDEX [IXFK_X12835ClaimPerson_X12835Claim] 
+ ON [X12835].[ClaimPerson] ([ClaimID] ASC)
 GO
 
 ALTER TABLE [X12835].[Financial] 
@@ -834,7 +834,7 @@ ALTER TABLE [X12835].[ClaimDate] ADD CONSTRAINT [FK_X12835ClaimDate_X12835Claim]
 	FOREIGN KEY ([ClaimID]) REFERENCES [X12835].[Claim] ([ClaimID]) ON DELETE Cascade ON UPDATE No Action
 GO
 
-ALTER TABLE [X12835].[ClaimPatient] ADD CONSTRAINT [FK_X12835ClaimPatient_X12835Claim]
+ALTER TABLE [X12835].[ClaimPerson] ADD CONSTRAINT [FK_X12835ClaimPerson_X12835Claim]
 	FOREIGN KEY ([ClaimID]) REFERENCES [X12835].[Claim] ([ClaimID]) ON DELETE Cascade ON UPDATE No Action
 GO
 
