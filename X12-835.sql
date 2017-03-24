@@ -541,7 +541,7 @@ GO
 
 CREATE TABLE [X12].[FunctionalGroup]
 (
-	[FuncitonalGroupID] numeric(38) NOT NULL IDENTITY (1, 1),
+	[FunctionalGroupID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[InterchangeID] numeric(38) NOT NULL,
 	[GS01] varchar(255) NULL,
 	[GS02] varchar(255) NULL,
