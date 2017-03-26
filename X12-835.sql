@@ -249,6 +249,20 @@ CREATE TABLE [X12835].[ClaimAdjustment]
 	[CAS03] varchar(255) NULL,
 	[CAS04] varchar(255) NULL,
 	[CAS05] varchar(255) NULL,
+	[CAS06] varchar(255) NULL,
+	[CAS07] varchar(255) NULL,
+	[CAS08] varchar(255) NULL,
+	[CAS09] varchar(255) NULL,
+	[CAS10] varchar(255) NULL,
+	[CAS11] varchar(255) NULL,
+	[CAS12] varchar(255) NULL,
+	[CAS13] varchar(255) NULL,
+	[CAS14] varchar(255) NULL,
+	[CAS15] varchar(255) NULL,
+	[CAS16] varchar(255) NULL,
+	[CAS17] varchar(255) NULL,
+	[CAS18] varchar(255) NULL,
+	[CAS19] varchar(255) NULL,
 	[LoadDTS] datetime2
 )
 GO
@@ -381,6 +395,16 @@ CREATE TABLE [X12835].[ProviderAdjustment]
 	[PLB0301] varchar(255) NULL,
 	[PLB0302] varchar(255) NULL,
 	[PLB04] varchar(255) NULL,    -- Provider Adjustment Amount
+	[PLB05] varchar(255) NULL,
+	[PLB06] varchar(255) NULL,
+	[PLB07] varchar(255) NULL,
+	[PLB08] varchar(255) NULL,
+	[PLB09] varchar(255) NULL,
+	[PLB10] varchar(255) NULL,
+	[PLB11] varchar(255) NULL,
+	[PLB12] varchar(255) NULL,
+	[PLB13] varchar(255) NULL,
+	[PLB14] varchar(255) NULL,
 	[LoadDTS] datetime2
 )
 GO
@@ -412,6 +436,20 @@ CREATE TABLE [X12835].[ServiceAdjustment]
 	[CAS03] varchar(255) NULL,
 	[CAS04] varchar(255) NULL,
 	[CAS05] varchar(255) NULL,
+	[CAS06] varchar(255) NULL,
+	[CAS07] varchar(255) NULL,
+	[CAS08] varchar(255) NULL,
+	[CAS09] varchar(255) NULL,
+	[CAS10] varchar(255) NULL,
+	[CAS11] varchar(255) NULL,
+	[CAS12] varchar(255) NULL,
+	[CAS13] varchar(255) NULL,
+	[CAS14] varchar(255) NULL,
+	[CAS15] varchar(255) NULL,
+	[CAS16] varchar(255) NULL,
+	[CAS17] varchar(255) NULL,
+	[CAS18] varchar(255) NULL,
+	[CAS19] varchar(255) NULL,
 	[LoadDTS] datetime2
 )
 GO
@@ -983,7 +1021,7 @@ GO
 EXEC sp_addextendedproperty 'MS_Description', 'Receiver Identification Qualifier', 'Schema', [X12835], 'table', [ClaimReference], 'column', [REF02]
 GO
 
-
+　
 EXEC sp_addextendedproperty 'MS_Description', 'Receiver Identification Qualifier', 'Schema', [X12835], 'table', [PayerReference], 'column', [REF01]
 GO
 
