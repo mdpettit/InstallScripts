@@ -8,217 +8,217 @@
 USE [MirthSource]
 
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_Claim_X12835Transaction]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
-ALTER TABLE [X12835].[Claim] DROP CONSTRAINT [FK_Claim_X12835Transaction]
+ALTER TABLE [X12835].[ClaimBASE] DROP CONSTRAINT [FK_Claim_X12835Transaction]
 GO
 
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X12835ClaimAdjustment_X12835Claim]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
-ALTER TABLE [X12835].[ClaimAdjustment] DROP CONSTRAINT [FK_X12835ClaimAdjustment_X12835Claim]
+ALTER TABLE [X12835].[ClaimAdjustmentBASE] DROP CONSTRAINT [FK_X12835ClaimAdjustment_X12835Claim]
 GO
 
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X12835ClaimAmount_X12835Claim]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
-ALTER TABLE [X12835].[ClaimAmount] DROP CONSTRAINT [FK_X12835ClaimAmount_X12835Claim]
+ALTER TABLE [X12835].[ClaimAmountBASE] DROP CONSTRAINT [FK_X12835ClaimAmount_X12835Claim]
 GO
 
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X12835ClaimDate_X12835Claim]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
-ALTER TABLE [X12835].[ClaimDate] DROP CONSTRAINT [FK_X12835ClaimDate_X12835Claim]
+ALTER TABLE [X12835].[ClaimDateBASE] DROP CONSTRAINT [FK_X12835ClaimDate_X12835Claim]
 GO
 
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X12835ClaimPerson_X12835Claim]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
-ALTER TABLE [X12835].[ClaimPerson] DROP CONSTRAINT [FK_X12835ClaimPerson_X12835Claim]
+ALTER TABLE [X12835].[ClaimPersonBASE] DROP CONSTRAINT [FK_X12835ClaimPerson_X12835Claim]
 GO
 
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_BPR_X12Transaction]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
-ALTER TABLE [X12835].[Financial] DROP CONSTRAINT [FK_BPR_X12Transaction]
+ALTER TABLE [X12835].[FinancialBASE] DROP CONSTRAINT [FK_BPR_X12Transaction]
 GO
 
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X12835Payee_X12835Transaction]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
-ALTER TABLE [X12835].[Payee] DROP CONSTRAINT [FK_X12835Payee_X12835Transaction]
+ALTER TABLE [X12835].[PayeeBASE] DROP CONSTRAINT [FK_X12835Payee_X12835Transaction]
 GO
 
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X12835PayeeReference_X12835Payee]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
-ALTER TABLE [X12835].[PayeeReference] DROP CONSTRAINT [FK_X12835PayeeReference_X12835Payee]
+ALTER TABLE [X12835].[PayeeReferenceBASE] DROP CONSTRAINT [FK_X12835PayeeReference_X12835Payee]
 GO
 
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X12835Payer_X12835Transaction]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
-ALTER TABLE [X12835].[Payer] DROP CONSTRAINT [FK_X12835Payer_X12835Transaction]
+ALTER TABLE [X12835].[PayerBASE] DROP CONSTRAINT [FK_X12835Payer_X12835Transaction]
 GO
 
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X12835PayerContact_X12835Payer]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
-ALTER TABLE [X12835].[PayerContact] DROP CONSTRAINT [FK_X12835PayerContact_X12835Payer]
+ALTER TABLE [X12835].[PayerContactBASE] DROP CONSTRAINT [FK_X12835PayerContact_X12835Payer]
 GO
 
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X12835ProviderAdjustment_X12835Transaction]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
-ALTER TABLE [X12835].[ProviderAdjustment] DROP CONSTRAINT [FK_X12835ProviderAdjustment_X12835Transaction]
+ALTER TABLE [X12835].[ProviderAdjustmentBASE] DROP CONSTRAINT [FK_X12835ProviderAdjustment_X12835Transaction]
 GO
 
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X12835Service_X12835Claim]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
-ALTER TABLE [X12835].[Service] DROP CONSTRAINT [FK_X12835Service_X12835Claim]
+ALTER TABLE [X12835].[ServiceBASE] DROP CONSTRAINT [FK_X12835Service_X12835Claim]
 GO
 
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X12835ServiceAdjustment_X12835Service]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
-ALTER TABLE [X12835].[ServiceAdjustment] DROP CONSTRAINT [FK_X12835ServiceAdjustment_X12835Service]
+ALTER TABLE [X12835].[ServiceAdjustmentBASE] DROP CONSTRAINT [FK_X12835ServiceAdjustment_X12835Service]
 GO
 
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X12835ServiceAmount_X12835Service]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
-ALTER TABLE [X12835].[ServiceAmount] DROP CONSTRAINT [FK_X12835ServiceAmount_X12835Service]
+ALTER TABLE [X12835].[ServiceAmountBASE] DROP CONSTRAINT [FK_X12835ServiceAmount_X12835Service]
 GO
 
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X12835ServiceDate_X12835Service]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
-ALTER TABLE [X12835].[ServiceDate] DROP CONSTRAINT [FK_X12835ServiceDate_X12835Service]
+ALTER TABLE [X12835].[ServiceDateBASE] DROP CONSTRAINT [FK_X12835ServiceDate_X12835Service]
 GO
 
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X12835TransactionDate_X12835Transaction]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
-ALTER TABLE [X12835].[TransactionDate] DROP CONSTRAINT [FK_X12835TransactionDate_X12835Transaction]
+ALTER TABLE [X12835].[TransactionDateBASE] DROP CONSTRAINT [FK_X12835TransactionDate_X12835Transaction]
 GO
 
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X12835ServiceReference_X12835Service]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
-ALTER TABLE [X12835].[ServiceReference] DROP CONSTRAINT [FK_X12835ServiceReference_X12835Service]
+ALTER TABLE [X12835].[ServiceReferenceBASE] DROP CONSTRAINT [FK_X12835ServiceReference_X12835Service]
 GO
 
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X12835ServiceRemark_X12835Service]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
-ALTER TABLE [X12835].[ServiceRemark] DROP CONSTRAINT [FK_X12835ServiceRemark_X12835Service]
+ALTER TABLE [X12835].[ServiceRemarkBASE] DROP CONSTRAINT [FK_X12835ServiceRemark_X12835Service]
 GO
 
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X12835TraceNumber_X12835Transaction]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
-ALTER TABLE [X12835].[TraceNumber] DROP CONSTRAINT [FK_X12835TraceNumber_X12835Transaction]
+ALTER TABLE [X12835].[TraceNumberBASE] DROP CONSTRAINT [FK_X12835TraceNumber_X12835Transaction]
 GO
 
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X12835TransactionReference_X12835Transaction]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
-ALTER TABLE [X12835].[TransactionReference] DROP CONSTRAINT [FK_X12835TransactionReference_X12835Transaction]
+ALTER TABLE [X12835].[TransactionReferenceBASE] DROP CONSTRAINT [FK_X12835TransactionReference_X12835Transaction]
 GO
 
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X12835ClaimReference_X12835Claim]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
-ALTER TABLE [X12835].[ClaimReference] DROP CONSTRAINT [FK_X12835ClaimReference_X12835Claim]
+ALTER TABLE [X12835].[ClaimReferenceBASE] DROP CONSTRAINT [FK_X12835ClaimReference_X12835Claim]
 GO
 
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X12835PayerReference_X12835Payer]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
-ALTER TABLE [X12835].[PayerReference] DROP CONSTRAINT [FK_X12835PayerReference_X12835Payer]
+ALTER TABLE [X12835].[PayerReferenceBASE] DROP CONSTRAINT [FK_X12835PayerReference_X12835Payer]
 GO
 
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X12835FinancialReference_X12835Financial]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
-ALTER TABLE [X12835].[FinancialReference] DROP CONSTRAINT [FK_X12835FinancialReference_X12835Financial]
+ALTER TABLE [X12835].[FinancialReferenceBASE] DROP CONSTRAINT [FK_X12835FinancialReference_X12835Financial]
 GO
 
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X12835TraceNumberReference_X12835TraceNumber]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
-ALTER TABLE [X12835].[TraceNumberReference] DROP CONSTRAINT [FK_X12835TraceNumberReference_X12835TraceNumber]
+ALTER TABLE [X12835].[TraceNumberReferenceBASE] DROP CONSTRAINT [FK_X12835TraceNumberReference_X12835TraceNumber]
 GO
 
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X12FunctionalGroup_X12Interchange]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
-ALTER TABLE [X12].[FunctionalGroup] DROP CONSTRAINT [FK_X12FunctionalGroup_X12Interchange]
+ALTER TABLE [X12].[FunctionalGroupBASE] DROP CONSTRAINT [FK_X12FunctionalGroup_X12Interchange]
 GO
 
 /* Drop Tables */
 
-IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[Claim]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
-DROP TABLE [X12835].[Claim]
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[ClaimBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
+DROP TABLE [X12835].[ClaimBASE]
 GO
 
-IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[ClaimAdjustment]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
-DROP TABLE [X12835].[ClaimAdjustment]
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[ClaimAdjustmentBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
+DROP TABLE [X12835].[ClaimAdjustmentBASE]
 GO
 
-IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[ClaimAmount]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
-DROP TABLE [X12835].[ClaimAmount]
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[ClaimAmountBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
+DROP TABLE [X12835].[ClaimAmountBASE]
 GO
 
-IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[ClaimDate]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
-DROP TABLE [X12835].[ClaimDate]
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[ClaimDateBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
+DROP TABLE [X12835].[ClaimDateBASE]
 GO
 
-IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[ClaimPerson]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
-DROP TABLE [X12835].[ClaimPerson]
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[ClaimPersonBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
+DROP TABLE [X12835].[ClaimPersonBASE]
 GO
 
-IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[Financial]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
-DROP TABLE [X12835].[Financial]
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FinancialBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
+DROP TABLE [X12835].[FinancialBASE]
 GO
 
-IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[Payee]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
-DROP TABLE [X12835].[Payee]
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[PayeeBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
+DROP TABLE [X12835].[PayeeBASE]
 GO
 
-IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[PayeeReference]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
-DROP TABLE [X12835].[PayeeReference]
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[PayeeReferenceBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
+DROP TABLE [X12835].[PayeeReferenceBASE]
 GO
 
-IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[Payer]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
-DROP TABLE [X12835].[Payer]
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[PayerBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
+DROP TABLE [X12835].[PayerBASE]
 GO
 
-IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[PayerContact]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
-DROP TABLE [X12835].[PayerContact]
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[PayerContactBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
+DROP TABLE [X12835].[PayerContactBASE]
 GO
 
-IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[ProviderAdjustment]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
-DROP TABLE [X12835].[ProviderAdjustment]
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[ProviderAdjustmentBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
+DROP TABLE [X12835].[ProviderAdjustmentBASE]
 GO
 
-IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[Service]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
-DROP TABLE [X12835].[Service]
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[ServiceBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
+DROP TABLE [X12835].[ServiceBASE]
 GO
 
-IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[ServiceAdjustment]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
-DROP TABLE [X12835].[ServiceAdjustment]
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[ServiceAdjustmentBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
+DROP TABLE [X12835].[ServiceAdjustmentBASE]
 GO
 
-IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[ServiceAmount]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
-DROP TABLE [X12835].[ServiceAmount]
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[ServiceAmountBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
+DROP TABLE [X12835].[ServiceAmountBASE]
 GO
 
-IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[ServiceDate]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
-DROP TABLE [X12835].[ServiceDate]
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[ServiceDateBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
+DROP TABLE [X12835].[ServiceDateBASE]
 GO
 
-IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[TransactionDate]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
-DROP TABLE [X12835].[TransactionDate]
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[TransactionDateBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
+DROP TABLE [X12835].[TransactionDateBASE]
 GO
 
-IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[ServiceReference]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
-DROP TABLE [X12835].[ServiceReference]
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[ServiceReferenceBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
+DROP TABLE [X12835].[ServiceReferenceBASE]
 GO
 
-IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[ServiceRemark]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
-DROP TABLE [X12835].[ServiceRemark]
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[ServiceRemarkBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
+DROP TABLE [X12835].[ServiceRemarkBASE]
 GO
 
-IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[TraceNumber]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
-DROP TABLE [X12835].[TraceNumber]
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[TraceNumberBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
+DROP TABLE [X12835].[TraceNumberBASE]
 GO
 
-IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[Transaction]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
-DROP TABLE [X12835].[Transaction]
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[TransactionBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
+DROP TABLE [X12835].[TransactionBASE]
 GO
 
-IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[TraceNumberReference]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
-DROP TABLE [X12835].[TraceNumberReference]
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[TraceNumberReferenceBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
+DROP TABLE [X12835].[TraceNumberReferenceBASE]
 GO
 
-IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[ClaimReference]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
-DROP TABLE [X12835].[ClaimReference]
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[ClaimReferenceBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
+DROP TABLE [X12835].[ClaimReferenceBASE]
 GO
 
-IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[PayerReference]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
-DROP TABLE [X12835].[PayerReference]
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[PayerReferenceBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
+DROP TABLE [X12835].[PayerReferenceBASE]
 GO
 
-IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FinancialReference]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
-DROP TABLE [X12835].[FinancialReference]
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FinancialReferenceBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
+DROP TABLE [X12835].[FinancialReferenceBASE]
 GO
 
-IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[TransactionReference]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
-DROP TABLE [X12835].[TransactionReference]
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[TransactionReferenceBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
+DROP TABLE [X12835].[TransactionReferenceBASE]
 GO
 
-IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12].[FunctionalGroup]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
-DROP TABLE [X12].[FunctionalGroup]
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12].[FunctionalGroupBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
+DROP TABLE [X12].[FunctionalGroupBASE]
 GO
 
-IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12].[Interchange]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
-DROP TABLE [X12].[Interchange]
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12].[InterchangeBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
+DROP TABLE [X12].[InterchangeBASE]
 GO
 
 /* Create Tables */
-CREATE TABLE [X12835].[Claim]
+CREATE TABLE [X12835].[ClaimBASE]
 (
 	[ClaimID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[TransactionID] numeric(38) NOT NULL,
@@ -240,7 +240,7 @@ CREATE TABLE [X12835].[Claim]
 )
 GO
 
-CREATE TABLE [X12835].[ClaimAdjustment]
+CREATE TABLE [X12835].[ClaimAdjustmentBASE]
 (
 	[ClaimAdjustmentID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[ClaimID] numeric(38) NOT NULL,
@@ -267,7 +267,7 @@ CREATE TABLE [X12835].[ClaimAdjustment]
 )
 GO
 
-CREATE TABLE [X12835].[ClaimAmount]
+CREATE TABLE [X12835].[ClaimAmountBASE]
 (
 	[ClaimAmountID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[ClaimID] numeric(38) NOT NULL,
@@ -277,7 +277,7 @@ CREATE TABLE [X12835].[ClaimAmount]
 )
 GO
 
-CREATE TABLE [X12835].[ClaimDate]
+CREATE TABLE [X12835].[ClaimDateBASE]
 (
 	[ClaimDateID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[ClaimID] numeric(38) NOT NULL,
@@ -287,24 +287,24 @@ CREATE TABLE [X12835].[ClaimDate]
 )
 GO
 
-CREATE TABLE [X12835].[ClaimPerson]
+CREATE TABLE [X12835].[ClaimPersonBASE]
 (
-	[NameID] numeric(38) NOT NULL IDENTITY (1, 1),
+	[ClaimPersonID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[ClaimID] numeric(38) NOT NULL,
-	[NM01] varchar(255) NOT NULL,
-	[NM02] varchar(255) NULL,
-	[NM03] varchar(255) NULL,
-	[NM04] varchar(255) NULL,
-	[NM05] varchar(255) NULL,
-	[NM06] varchar(255) NULL,
-	[NM07] varchar(255) NULL,
-	[NM08] varchar(255) NULL,
-	[NM09] varchar(255) NULL,
+	[NM101] varchar(255) NOT NULL,
+	[NM102] varchar(255) NULL,
+	[NM103] varchar(255) NULL,
+	[NM104] varchar(255) NULL,
+	[NM105] varchar(255) NULL,
+	[NM106] varchar(255) NULL,
+	[NM107] varchar(255) NULL,
+	[NM108] varchar(255) NULL,
+	[NM109] varchar(255) NULL,
 	[LoadDTS] datetime2
 )
 GO
 
-CREATE TABLE [X12835].[Financial]
+CREATE TABLE [X12835].[FinancialBASE]
 (
 	[FinancialID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[TransactionID] numeric(38) NOT NULL,
@@ -328,7 +328,7 @@ CREATE TABLE [X12835].[Financial]
 )
 GO
 
-CREATE TABLE [X12835].[Payee]
+CREATE TABLE [X12835].[PayeeBASE]
 (
 	[PayeeID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[TransactionID] numeric(38) NOT NULL,
@@ -345,7 +345,7 @@ CREATE TABLE [X12835].[Payee]
 )
 GO
 
-CREATE TABLE [X12835].[PayeeReference]
+CREATE TABLE [X12835].[PayeeReferenceBASE]
 (
 	[PayeeReferenceID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[PayeeID] numeric(38) NOT NULL,
@@ -355,7 +355,7 @@ CREATE TABLE [X12835].[PayeeReference]
 )
 GO
 
-CREATE TABLE [X12835].[Payer]
+CREATE TABLE [X12835].[PayerBASE]
 (
 	[PayerID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[TransactionID] numeric(38) NOT NULL,
@@ -372,7 +372,7 @@ CREATE TABLE [X12835].[Payer]
 )
 GO
 
-CREATE TABLE [X12835].[PayerContact]
+CREATE TABLE [X12835].[PayerContactBASE]
 (
 	[PayerContactID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[PayerID] numeric(38) NOT NULL,
@@ -386,7 +386,7 @@ CREATE TABLE [X12835].[PayerContact]
 )
 GO
 
-CREATE TABLE [X12835].[ProviderAdjustment]
+CREATE TABLE [X12835].[ProviderAdjustmentBASE]
 (
 	[ProviderAdjustmentID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[TransactionID] numeric(38) NOT NULL,
@@ -409,7 +409,7 @@ CREATE TABLE [X12835].[ProviderAdjustment]
 )
 GO
 
-CREATE TABLE [X12835].[Service]
+CREATE TABLE [X12835].[ServiceBASE]
 (
 	[ServiceID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[ClaimID] numeric(38) NOT NULL,
@@ -427,7 +427,7 @@ CREATE TABLE [X12835].[Service]
 )
 GO
 
-CREATE TABLE [X12835].[ServiceAdjustment]
+CREATE TABLE [X12835].[ServiceAdjustmentBASE]
 (
 	[ServiceAdjustmentID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[ServiceID] numeric(38) NOT NULL,
@@ -454,9 +454,9 @@ CREATE TABLE [X12835].[ServiceAdjustment]
 )
 GO
 
-CREATE TABLE [X12835].[ServiceAmount]
+CREATE TABLE [X12835].[ServiceAmountBASE]
 (
-	[ServcieAmountID] numeric(38) NOT NULL IDENTITY (1, 1),
+	[ServiceAmountID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[ServiceID] numeric(38) NOT NULL,
 	[AMT01] varchar(255) NOT NULL,    -- Amount Qualifier
 	[AMT02] varchar(255) NULL,    -- Amount
@@ -464,7 +464,7 @@ CREATE TABLE [X12835].[ServiceAmount]
 )
 GO
 
-CREATE TABLE [X12835].[ServiceDate]
+CREATE TABLE [X12835].[ServiceDateBASE]
 (
 	[ServiceDateID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[ServiceID] numeric(38) NOT NULL,
@@ -474,7 +474,7 @@ CREATE TABLE [X12835].[ServiceDate]
 )
 GO
 
-CREATE TABLE [X12835].[TransactionDate]
+CREATE TABLE [X12835].[TransactionDateBASE]
 (
 	[TransactionDateID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[TransactionID] numeric(38) NOT NULL,
@@ -484,7 +484,7 @@ CREATE TABLE [X12835].[TransactionDate]
 )
 GO
 
-CREATE TABLE [X12835].[ServiceReference]
+CREATE TABLE [X12835].[ServiceReferenceBASE]
 (
 	[ServiceReferenceID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[ServiceID] numeric(38) NOT NULL,
@@ -494,9 +494,9 @@ CREATE TABLE [X12835].[ServiceReference]
 )
 GO
 
-CREATE TABLE [X12835].[ServiceRemark]
+CREATE TABLE [X12835].[ServiceRemarkBASE]
 (
-	[ServviceRemarkID] numeric(38) NOT NULL,
+	[ServiceRemarkID] numeric(38) NOT NULL,
 	[ServiceID] numeric(38) NOT NULL,
 	[LQ01] varchar(255) NULL,
 	[LQ02] varchar(255) NULL,
@@ -504,7 +504,7 @@ CREATE TABLE [X12835].[ServiceRemark]
 )
 GO
 
-CREATE TABLE [X12835].[TraceNumber]
+CREATE TABLE [X12835].[TraceNumberBASE]
 (
 	[TraceNumberID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[TransactionID] numeric(38) NOT NULL,
@@ -516,7 +516,7 @@ CREATE TABLE [X12835].[TraceNumber]
 )
 GO
 
-CREATE TABLE [X12835].[Transaction]
+CREATE TABLE [X12835].[TransactionBASE]
 (
 	[TransactionID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[FunctionalGroupID] numeric(38) NOT NULL,
@@ -527,7 +527,7 @@ CREATE TABLE [X12835].[Transaction]
 )
 GO
 
-CREATE TABLE [X12835].[TransactionReference]
+CREATE TABLE [X12835].[TransactionReferenceBASE]
 (
 	[ReferenceID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[TransactionID] numeric(38) NOT NULL,
@@ -537,7 +537,7 @@ CREATE TABLE [X12835].[TransactionReference]
 )
 GO
 
-CREATE TABLE [X12835].[PayerReference]
+CREATE TABLE [X12835].[PayerReferenceBASE]
 (
 	[ReferenceID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[PayerID] numeric(38) NOT NULL,
@@ -547,7 +547,7 @@ CREATE TABLE [X12835].[PayerReference]
 )
 GO
 
-CREATE TABLE [X12835].[ClaimReference]
+CREATE TABLE [X12835].[ClaimReferenceBASE]
 (
 	[ReferenceID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[ClaimID] numeric(38) NOT NULL,
@@ -557,7 +557,7 @@ CREATE TABLE [X12835].[ClaimReference]
 )
 GO
 
-CREATE TABLE [X12835].[TraceNumberReference]
+CREATE TABLE [X12835].[TraceNumberReferenceBASE]
 (
 	[ReferenceID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[TraceNumberID] numeric(38) NOT NULL,
@@ -567,7 +567,7 @@ CREATE TABLE [X12835].[TraceNumberReference]
 )
 GO
 
-CREATE TABLE [X12835].[FinancialReference]
+CREATE TABLE [X12835].[FinancialReferenceBASE]
 (
 	[ReferenceID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[FinancialID] numeric(38) NOT NULL,
@@ -577,7 +577,7 @@ CREATE TABLE [X12835].[FinancialReference]
 )
 GO
 
-CREATE TABLE [X12].[FunctionalGroup]
+CREATE TABLE [X12].[FunctionalGroupBASE]
 (
 	[FunctionalGroupID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[InterchangeID] numeric(38) NOT NULL,
@@ -593,7 +593,7 @@ CREATE TABLE [X12].[FunctionalGroup]
 )
 GO
 
-CREATE TABLE [X12].[Interchange]
+CREATE TABLE [X12].[InterchangeBASE]
 (
 	[InterchangeID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[ISA01] varchar(255) NULL,
@@ -619,417 +619,417 @@ GO
 
 /* Create Primary Keys, Indexes, Uniques, Checks */
 
-ALTER TABLE [X12835].[Claim] 
+ALTER TABLE [X12835].[ClaimBASE] 
  ADD CONSTRAINT [PK_X12835Claim]
 	PRIMARY KEY CLUSTERED ([ClaimID] ASC)
 GO
 
 CREATE NONCLUSTERED INDEX [IXFK_Claim_X12835Transaction] 
- ON [X12835].[Claim] ([TransactionID] ASC)
+ ON [X12835].[ClaimBASE] ([TransactionID] ASC)
 GO
 
-ALTER TABLE [X12835].[ClaimAdjustment] 
+ALTER TABLE [X12835].[ClaimAdjustmentBASE] 
  ADD CONSTRAINT [PK_X12835ClaimAdjustment]
 	PRIMARY KEY CLUSTERED ([ClaimAdjustmentID] ASC)
 GO
 
 CREATE NONCLUSTERED INDEX [IXFK_X12835ClaimAdjustment_X12835Claim] 
- ON [X12835].[ClaimAdjustment] ([ClaimID] ASC)
+ ON [X12835].[ClaimAdjustmentBASE] ([ClaimID] ASC)
 GO
 
-ALTER TABLE [X12835].[ClaimAmount] 
+ALTER TABLE [X12835].[ClaimAmountBASE] 
  ADD CONSTRAINT [PK_X12835ClaimAmount]
 	PRIMARY KEY CLUSTERED ([ClaimAmountID] ASC)
 GO
 
 CREATE NONCLUSTERED INDEX [IXFK_X12835ClaimAmount_X12835Claim] 
- ON [X12835].[ClaimAmount] ([ClaimID] ASC)
+ ON [X12835].[ClaimAmountBASE] ([ClaimID] ASC)
 GO
 
-ALTER TABLE [X12835].[ClaimDate] 
+ALTER TABLE [X12835].[ClaimDateBASE] 
  ADD CONSTRAINT [PK_X12835ClaimDate]
 	PRIMARY KEY CLUSTERED ([ClaimDateID] ASC)
 GO
 
 CREATE NONCLUSTERED INDEX [IXFK_X12835ClaimDate_X12835Claim] 
- ON [X12835].[ClaimDate] ([ClaimID] ASC)
+ ON [X12835].[ClaimDateBASE] ([ClaimID] ASC)
 GO
 
-ALTER TABLE [X12835].[ClaimPerson] 
+ALTER TABLE [X12835].[ClaimPersonBASE] 
  ADD CONSTRAINT [PK_X12835ClaimPerson]
-	PRIMARY KEY CLUSTERED ([NameID] ASC)
+	PRIMARY KEY CLUSTERED ([ClaimPersonID] ASC)
 GO
 
 CREATE NONCLUSTERED INDEX [IXFK_X12835ClaimPerson_X12835Claim] 
- ON [X12835].[ClaimPerson] ([ClaimID] ASC)
+ ON [X12835].[ClaimPersonBASE] ([ClaimID] ASC)
 GO
 
-ALTER TABLE [X12835].[Financial] 
+ALTER TABLE [X12835].[FinancialBASE] 
  ADD CONSTRAINT [PK_X12835Financial]
 	PRIMARY KEY CLUSTERED ([FinancialID] ASC)
 GO
 
 CREATE NONCLUSTERED INDEX [IXFK_BPR_X12Transaction] 
- ON [X12835].[Financial] ([TransactionID] ASC)
+ ON [X12835].[FinancialBASE] ([TransactionID] ASC)
 GO
 
-ALTER TABLE [X12835].[Payee] 
+ALTER TABLE [X12835].[PayeeBASE] 
  ADD CONSTRAINT [PK_X12835Payee]
 	PRIMARY KEY CLUSTERED ([PayeeID] ASC)
 GO
 
 CREATE NONCLUSTERED INDEX [IXFK_X12835Payee_X12835Transaction] 
- ON [X12835].[Payee] ([TransactionID] ASC)
+ ON [X12835].[PayeeBASE] ([TransactionID] ASC)
 GO
 
-ALTER TABLE [X12835].[PayeeReference] 
+ALTER TABLE [X12835].[PayeeReferenceBASE] 
  ADD CONSTRAINT [PK_X12835PayeeReference]
 	PRIMARY KEY CLUSTERED ([PayeeReferenceID] ASC)
 GO
 
 CREATE NONCLUSTERED INDEX [IXFK_X12835PayeeReference_X12835Payee] 
- ON [X12835].[PayeeReference] ([PayeeID] ASC)
+ ON [X12835].[PayeeReferenceBASE] ([PayeeID] ASC)
 GO
 
-ALTER TABLE [X12835].[Payer] 
+ALTER TABLE [X12835].[PayerBASE] 
  ADD CONSTRAINT [PK_X12835Payer]
 	PRIMARY KEY CLUSTERED ([PayerID] ASC)
 GO
 
 CREATE NONCLUSTERED INDEX [IXFK_X12835Payer_X12835Transaction] 
- ON [X12835].[Payer] ([TransactionID] ASC)
+ ON [X12835].[PayerBASE] ([TransactionID] ASC)
 GO
 
-ALTER TABLE [X12835].[PayerContact] 
+ALTER TABLE [X12835].[PayerContactBASE] 
  ADD CONSTRAINT [PK_X12835PayerContact]
 	PRIMARY KEY CLUSTERED ([PayerContactID] ASC)
 GO
 
 CREATE NONCLUSTERED INDEX [IXFK_X12835PayerContact_X12835Payer] 
- ON [X12835].[PayerContact] ([PayerID] ASC)
+ ON [X12835].[PayerContactBASE] ([PayerID] ASC)
 GO
 
-ALTER TABLE [X12835].[ProviderAdjustment] 
+ALTER TABLE [X12835].[ProviderAdjustmentBASE] 
  ADD CONSTRAINT [PK_X12835ProviderAdjustment]
 	PRIMARY KEY CLUSTERED ([ProviderAdjustmentID] ASC)
 GO
 
 CREATE NONCLUSTERED INDEX [IXFK_X12835ProviderAdjustment_X12835Transaction] 
- ON [X12835].[ProviderAdjustment] ([TransactionID] ASC)
+ ON [X12835].[ProviderAdjustmentBASE] ([TransactionID] ASC)
 GO
 
-ALTER TABLE [X12835].[Service] 
+ALTER TABLE [X12835].[ServiceBASE] 
  ADD CONSTRAINT [PK_X12835Service]
 	PRIMARY KEY CLUSTERED ([ServiceID] ASC)
 GO
 
 CREATE NONCLUSTERED INDEX [IXFK_X12835Service_X12835Claim] 
- ON [X12835].[Service] ([ClaimID] ASC)
+ ON [X12835].[ServiceBASE] ([ClaimID] ASC)
 GO
 
-ALTER TABLE [X12835].[ServiceAdjustment] 
+ALTER TABLE [X12835].[ServiceAdjustmentBASE] 
  ADD CONSTRAINT [PK_X12835ServiceAdjustment]
 	PRIMARY KEY CLUSTERED ([ServiceAdjustmentID] ASC)
 GO
 
 CREATE NONCLUSTERED INDEX [IXFK_X12835ServiceAdjustment_X12835Service] 
- ON [X12835].[ServiceAdjustment] ([ServiceID] ASC)
+ ON [X12835].[ServiceAdjustmentBASE] ([ServiceID] ASC)
 GO
 
-ALTER TABLE [X12835].[ServiceAmount] 
+ALTER TABLE [X12835].[ServiceAmountBASE] 
  ADD CONSTRAINT [PK_X12835ServiceAmount]
-	PRIMARY KEY CLUSTERED ([ServcieAmountID] ASC)
+	PRIMARY KEY CLUSTERED ([ServiceAmountID] ASC)
 GO
 
 CREATE NONCLUSTERED INDEX [IXFK_X12835ServiceAmount_X12835Service] 
- ON [X12835].[ServiceAmount] ([ServiceID] ASC)
+ ON [X12835].[ServiceAmountBASE] ([ServiceID] ASC)
 GO
 
-ALTER TABLE [X12835].[ServiceDate] 
+ALTER TABLE [X12835].[ServiceDateBASE] 
  ADD CONSTRAINT [PK_X12835ServiceDate]
 	PRIMARY KEY CLUSTERED ([ServiceDateID] ASC)
 GO
 
-ALTER TABLE [X12835].[TransactionDate] 
+ALTER TABLE [X12835].[TransactionDateBASE] 
  ADD CONSTRAINT [PK_X12835TransactionDate]
 	PRIMARY KEY CLUSTERED ([TransactionDateID] ASC)
 GO
 
 CREATE NONCLUSTERED INDEX [IXFK_X12835ServiceDate_X12835Service] 
- ON [X12835].[ServiceDate] ([ServiceID] ASC)
+ ON [X12835].[ServiceDateBASE] ([ServiceID] ASC)
 GO
 
 CREATE NONCLUSTERED INDEX [IXFK_X12835TransactionDate_X12835Transaction] 
- ON [X12835].[TransactionDate] ([TransactionID] ASC)
+ ON [X12835].[TransactionDateBASE] ([TransactionID] ASC)
 GO
 
-ALTER TABLE [X12835].[ServiceReference] 
+ALTER TABLE [X12835].[ServiceReferenceBASE] 
  ADD CONSTRAINT [PK_X12835ServiceReference]
 	PRIMARY KEY CLUSTERED ([ServiceReferenceID] ASC)
 GO
 
 CREATE NONCLUSTERED INDEX [IXFK_X12835ServiceReference_X12835Service] 
- ON [X12835].[ServiceReference] ([ServiceID] ASC)
+ ON [X12835].[ServiceReferenceBASE] ([ServiceID] ASC)
 GO
 
-ALTER TABLE [X12835].[ServiceRemark] 
+ALTER TABLE [X12835].[ServiceRemarkBASE] 
  ADD CONSTRAINT [PK_X12835ServiceRemark]
-	PRIMARY KEY CLUSTERED ([ServviceRemarkID] ASC)
+	PRIMARY KEY CLUSTERED ([ServiceRemarkID] ASC)
 GO
 
 CREATE NONCLUSTERED INDEX [IXFK_X12835ServiceRemark_X12835Service] 
- ON [X12835].[ServiceRemark] ([ServiceID] ASC)
+ ON [X12835].[ServiceRemarkBASE] ([ServiceID] ASC)
 GO
 
-ALTER TABLE [X12835].[TraceNumber] 
+ALTER TABLE [X12835].[TraceNumberBASE] 
  ADD CONSTRAINT [PK_X12835TraceNumber]
 	PRIMARY KEY CLUSTERED ([TraceNumberID] ASC)
 GO
 
 CREATE NONCLUSTERED INDEX [IXFK_X12835TraceNumber_X12835Transaction] 
- ON [X12835].[TraceNumber] ([TransactionID] ASC)
+ ON [X12835].[TraceNumberBASE] ([TransactionID] ASC)
 GO
 
-ALTER TABLE [X12835].[Transaction] 
+ALTER TABLE [X12835].[TransactionBASE] 
  ADD CONSTRAINT [PK_Transaction]
 	PRIMARY KEY CLUSTERED ([TransactionID] ASC)
 GO
 
-ALTER TABLE [X12835].[TransactionReference] 
+ALTER TABLE [X12835].[TransactionReferenceBASE] 
  ADD CONSTRAINT [PK_X12835TransactionReference]
 	PRIMARY KEY CLUSTERED ([ReferenceID] ASC)
 GO
 
-ALTER TABLE [X12835].[TraceNumberReference] 
+ALTER TABLE [X12835].[TraceNumberReferenceBASE] 
  ADD CONSTRAINT [PK_X12835TraceNumberReference]
 	PRIMARY KEY CLUSTERED ([ReferenceID] ASC)
 GO
 
-ALTER TABLE [X12835].[ClaimReference] 
+ALTER TABLE [X12835].[ClaimReferenceBASE] 
  ADD CONSTRAINT [PK_X12835ClaimReference]
 	PRIMARY KEY CLUSTERED ([ReferenceID] ASC)
 GO
 
-ALTER TABLE [X12835].[PayerReference] 
+ALTER TABLE [X12835].[PayerReferenceBASE] 
  ADD CONSTRAINT [PK_X12835PayerReference]
 	PRIMARY KEY CLUSTERED ([ReferenceID] ASC)
 GO
 
-ALTER TABLE [X12835].[FinancialReference] 
+ALTER TABLE [X12835].[FinancialReferenceBASE] 
  ADD CONSTRAINT [PK_X12835FinancialReference]
 	PRIMARY KEY CLUSTERED ([ReferenceID] ASC)
 GO
 
 CREATE NONCLUSTERED INDEX [IXFK_X12835TransactionReference_X12835Transaction] 
- ON [X12835].[TransactionReference] ([TransactionID] ASC)
+ ON [X12835].[TransactionReferenceBASE] ([TransactionID] ASC)
 GO
 
 CREATE NONCLUSTERED INDEX [IXFK_X12835TraceNumberReference_X12835TraceNumber] 
- ON [X12835].[TraceNumberReference] ([TraceNumberID] ASC)
+ ON [X12835].[TraceNumberReferenceBASE] ([TraceNumberID] ASC)
 GO
 
 CREATE NONCLUSTERED INDEX [IXFK_X12835ClaimReference_X12835Claim] 
- ON [X12835].[ClaimReference] ([ClaimID] ASC)
+ ON [X12835].[ClaimReferenceBASE] ([ClaimID] ASC)
 GO
 
 CREATE NONCLUSTERED INDEX [IXFK_X12835PayerReference_X12835Payer] 
- ON [X12835].[PayerReference] ([PayerID] ASC)
+ ON [X12835].[PayerReferenceBASE] ([PayerID] ASC)
 GO
 
 CREATE NONCLUSTERED INDEX [IXFK_X12835FinancialReference_X12835Financial] 
- ON [X12835].[FinancialReference] ([FinancialID] ASC)
+ ON [X12835].[FinancialReferenceBASE] ([FinancialID] ASC)
 GO
 
-ALTER TABLE [X12].[FunctionalGroup] 
+ALTER TABLE [X12].[FunctionalGroupBASE] 
  ADD CONSTRAINT [PK_X12FunctionalGroup]
 	PRIMARY KEY CLUSTERED ([FunctionalGroupID] ASC)
 GO
 
 CREATE NONCLUSTERED INDEX [IXFK_X12FunctionalGroup_X12Interchange] 
- ON [X12].[FunctionalGroup] ([InterchangeID] ASC)
+ ON [X12].[FunctionalGroupBASE] ([InterchangeID] ASC)
 GO
 
-ALTER TABLE [X12].[Interchange] 
+ALTER TABLE [X12].[InterchangeBASE] 
  ADD CONSTRAINT [PK_X12Interchange]
 	PRIMARY KEY CLUSTERED ([InterchangeID] ASC)
 GO
 
 /* Create Foreign Key Constraints */
 
-ALTER TABLE [X12835].[Claim] ADD CONSTRAINT [FK_Claim_X12835Transaction]
-	FOREIGN KEY ([TransactionID]) REFERENCES [X12835].[Transaction] ([TransactionID]) ON DELETE Cascade ON UPDATE No Action
+ALTER TABLE [X12835].[ClaimBASE] ADD CONSTRAINT [FK_Claim_X12835Transaction]
+	FOREIGN KEY ([TransactionID]) REFERENCES [X12835].[TransactionBASE] ([TransactionID]) ON DELETE Cascade ON UPDATE No Action
 GO
 
-ALTER TABLE [X12835].[ClaimAdjustment] ADD CONSTRAINT [FK_X12835ClaimAdjustment_X12835Claim]
-	FOREIGN KEY ([ClaimID]) REFERENCES [X12835].[Claim] ([ClaimID]) ON DELETE Cascade ON UPDATE No Action
+ALTER TABLE [X12835].[ClaimAdjustmentBASE] ADD CONSTRAINT [FK_X12835ClaimAdjustment_X12835Claim]
+	FOREIGN KEY ([ClaimID]) REFERENCES [X12835].[ClaimBASE] ([ClaimID]) ON DELETE Cascade ON UPDATE No Action
 GO
 
-ALTER TABLE [X12835].[ClaimAmount] ADD CONSTRAINT [FK_X12835ClaimAmount_X12835Claim]
-	FOREIGN KEY ([ClaimID]) REFERENCES [X12835].[Claim] ([ClaimID]) ON DELETE Cascade ON UPDATE No Action
+ALTER TABLE [X12835].[ClaimAmountBASE] ADD CONSTRAINT [FK_X12835ClaimAmount_X12835Claim]
+	FOREIGN KEY ([ClaimID]) REFERENCES [X12835].[ClaimBASE] ([ClaimID]) ON DELETE Cascade ON UPDATE No Action
 GO
 
-ALTER TABLE [X12835].[ClaimDate] ADD CONSTRAINT [FK_X12835ClaimDate_X12835Claim]
-	FOREIGN KEY ([ClaimID]) REFERENCES [X12835].[Claim] ([ClaimID]) ON DELETE Cascade ON UPDATE No Action
+ALTER TABLE [X12835].[ClaimDateBASE] ADD CONSTRAINT [FK_X12835ClaimDate_X12835Claim]
+	FOREIGN KEY ([ClaimID]) REFERENCES [X12835].[ClaimBASE] ([ClaimID]) ON DELETE Cascade ON UPDATE No Action
 GO
 
-ALTER TABLE [X12835].[ClaimPerson] ADD CONSTRAINT [FK_X12835ClaimPerson_X12835Claim]
-	FOREIGN KEY ([ClaimID]) REFERENCES [X12835].[Claim] ([ClaimID]) ON DELETE Cascade ON UPDATE No Action
+ALTER TABLE [X12835].[ClaimPersonBASE] ADD CONSTRAINT [FK_X12835ClaimPerson_X12835Claim]
+	FOREIGN KEY ([ClaimID]) REFERENCES [X12835].[ClaimBASE] ([ClaimID]) ON DELETE Cascade ON UPDATE No Action
 GO
 
-ALTER TABLE [X12835].[Financial] ADD CONSTRAINT [FK_BPR_X12Transaction]
-	FOREIGN KEY ([TransactionID]) REFERENCES [X12835].[Transaction] ([TransactionID]) ON DELETE Cascade ON UPDATE No Action
+ALTER TABLE [X12835].[FinancialBASE] ADD CONSTRAINT [FK_BPR_X12Transaction]
+	FOREIGN KEY ([TransactionID]) REFERENCES [X12835].[TransactionBASE] ([TransactionID]) ON DELETE Cascade ON UPDATE No Action
 GO
 
-ALTER TABLE [X12835].[Payee] ADD CONSTRAINT [FK_X12835Payee_X12835Transaction]
-	FOREIGN KEY ([TransactionID]) REFERENCES [X12835].[Transaction] ([TransactionID]) ON DELETE Cascade ON UPDATE No Action
+ALTER TABLE [X12835].[PayeeBASE] ADD CONSTRAINT [FK_X12835Payee_X12835Transaction]
+	FOREIGN KEY ([TransactionID]) REFERENCES [X12835].[TransactionBASE] ([TransactionID]) ON DELETE Cascade ON UPDATE No Action
 GO
 
-ALTER TABLE [X12835].[PayeeReference] ADD CONSTRAINT [FK_X12835PayeeReference_X12835Payee]
-	FOREIGN KEY ([PayeeID]) REFERENCES [X12835].[Payee] ([PayeeID]) ON DELETE Cascade ON UPDATE No Action
+ALTER TABLE [X12835].[PayeeReferenceBASE] ADD CONSTRAINT [FK_X12835PayeeReference_X12835Payee]
+	FOREIGN KEY ([PayeeID]) REFERENCES [X12835].[PayeeBASE] ([PayeeID]) ON DELETE Cascade ON UPDATE No Action
 GO
 
-ALTER TABLE [X12835].[Payer] ADD CONSTRAINT [FK_X12835Payer_X12835Transaction]
-	FOREIGN KEY ([TransactionID]) REFERENCES [X12835].[Transaction] ([TransactionID]) ON DELETE Cascade ON UPDATE No Action
+ALTER TABLE [X12835].[PayerBASE] ADD CONSTRAINT [FK_X12835Payer_X12835Transaction]
+	FOREIGN KEY ([TransactionID]) REFERENCES [X12835].[TransactionBASE] ([TransactionID]) ON DELETE Cascade ON UPDATE No Action
 GO
 
-ALTER TABLE [X12835].[PayerContact] ADD CONSTRAINT [FK_X12835PayerContact_X12835Payer]
-	FOREIGN KEY ([PayerID]) REFERENCES [X12835].[Payer] ([PayerID]) ON DELETE Cascade ON UPDATE No Action
+ALTER TABLE [X12835].[PayerContactBASE] ADD CONSTRAINT [FK_X12835PayerContact_X12835Payer]
+	FOREIGN KEY ([PayerID]) REFERENCES [X12835].[PayerBASE] ([PayerID]) ON DELETE Cascade ON UPDATE No Action
 GO
 
-ALTER TABLE [X12835].[ProviderAdjustment] ADD CONSTRAINT [FK_X12835ProviderAdjustment_X12835Transaction]
-	FOREIGN KEY ([TransactionID]) REFERENCES [X12835].[Transaction] ([TransactionID]) ON DELETE Cascade ON UPDATE No Action
+ALTER TABLE [X12835].[ProviderAdjustmentBASE] ADD CONSTRAINT [FK_X12835ProviderAdjustment_X12835Transaction]
+	FOREIGN KEY ([TransactionID]) REFERENCES [X12835].[TransactionBASE] ([TransactionID]) ON DELETE Cascade ON UPDATE No Action
 GO
 
-ALTER TABLE [X12835].[Service] ADD CONSTRAINT [FK_X12835Service_X12835Claim]
-	FOREIGN KEY ([ClaimID]) REFERENCES [X12835].[Claim] ([ClaimID]) ON DELETE Cascade ON UPDATE No Action
+ALTER TABLE [X12835].[ServiceBASE] ADD CONSTRAINT [FK_X12835Service_X12835Claim]
+	FOREIGN KEY ([ClaimID]) REFERENCES [X12835].[ClaimBASE] ([ClaimID]) ON DELETE Cascade ON UPDATE No Action
 GO
 
-ALTER TABLE [X12835].[ServiceAdjustment] ADD CONSTRAINT [FK_X12835ServiceAdjustment_X12835Service]
-	FOREIGN KEY ([ServiceID]) REFERENCES [X12835].[Service] ([ServiceID]) ON DELETE Cascade ON UPDATE No Action
+ALTER TABLE [X12835].[ServiceAdjustmentBASE] ADD CONSTRAINT [FK_X12835ServiceAdjustment_X12835Service]
+	FOREIGN KEY ([ServiceID]) REFERENCES [X12835].[ServiceBASE] ([ServiceID]) ON DELETE Cascade ON UPDATE No Action
 GO
 
-ALTER TABLE [X12835].[ServiceAmount] ADD CONSTRAINT [FK_X12835ServiceAmount_X12835Service]
-	FOREIGN KEY ([ServiceID]) REFERENCES [X12835].[Service] ([ServiceID]) ON DELETE Cascade ON UPDATE No Action
+ALTER TABLE [X12835].[ServiceAmountBASE] ADD CONSTRAINT [FK_X12835ServiceAmount_X12835Service]
+	FOREIGN KEY ([ServiceID]) REFERENCES [X12835].[ServiceBASE] ([ServiceID]) ON DELETE Cascade ON UPDATE No Action
 GO
 
-ALTER TABLE [X12835].[ServiceDate] ADD CONSTRAINT [FK_X12835ServiceDate_X12835Service]
-	FOREIGN KEY ([ServiceID]) REFERENCES [X12835].[Service] ([ServiceID]) ON DELETE Cascade ON UPDATE No Action
+ALTER TABLE [X12835].[ServiceDateBASE] ADD CONSTRAINT [FK_X12835ServiceDate_X12835Service]
+	FOREIGN KEY ([ServiceID]) REFERENCES [X12835].[ServiceBASE] ([ServiceID]) ON DELETE Cascade ON UPDATE No Action
 GO
 
-ALTER TABLE [X12835].[TransactionDate] ADD CONSTRAINT [FK_X12835TransactionDate_X12835Transaction]
-	FOREIGN KEY ([TransactionID]) REFERENCES [X12835].[Transaction] ([TransactionID]) ON DELETE Cascade ON UPDATE No Action
+ALTER TABLE [X12835].[TransactionDateBASE] ADD CONSTRAINT [FK_X12835TransactionDate_X12835Transaction]
+	FOREIGN KEY ([TransactionID]) REFERENCES [X12835].[TransactionBASE] ([TransactionID]) ON DELETE Cascade ON UPDATE No Action
 GO
 
-ALTER TABLE [X12835].[ServiceReference] ADD CONSTRAINT [FK_X12835ServiceReference_X12835Service]
-	FOREIGN KEY ([ServiceID]) REFERENCES [X12835].[Service] ([ServiceID]) ON DELETE Cascade ON UPDATE No Action
+ALTER TABLE [X12835].[ServiceReferenceBASE] ADD CONSTRAINT [FK_X12835ServiceReference_X12835Service]
+	FOREIGN KEY ([ServiceID]) REFERENCES [X12835].[ServiceBASE] ([ServiceID]) ON DELETE Cascade ON UPDATE No Action
 GO
 
-ALTER TABLE [X12835].[ServiceRemark] ADD CONSTRAINT [FK_X12835ServiceRemark_X12835Service]
-	FOREIGN KEY ([ServiceID]) REFERENCES [X12835].[Service] ([ServiceID]) ON DELETE Cascade ON UPDATE No Action
+ALTER TABLE [X12835].[ServiceRemarkBASE] ADD CONSTRAINT [FK_X12835ServiceRemark_X12835Service]
+	FOREIGN KEY ([ServiceID]) REFERENCES [X12835].[ServiceBASE] ([ServiceID]) ON DELETE Cascade ON UPDATE No Action
 GO
 
-ALTER TABLE [X12835].[TraceNumber] ADD CONSTRAINT [FK_X12835TraceNumber_X12835Transaction]
-	FOREIGN KEY ([TransactionID]) REFERENCES [X12835].[Transaction] ([TransactionID]) ON DELETE Cascade ON UPDATE No Action
+ALTER TABLE [X12835].[TraceNumberBASE] ADD CONSTRAINT [FK_X12835TraceNumber_X12835Transaction]
+	FOREIGN KEY ([TransactionID]) REFERENCES [X12835].[TransactionBASE] ([TransactionID]) ON DELETE Cascade ON UPDATE No Action
 GO
 
-ALTER TABLE [X12835].[TransactionReference] ADD CONSTRAINT [FK_X12835TransactionReference_X12835Transaction]
-	FOREIGN KEY ([TransactionID]) REFERENCES [X12835].[Transaction] ([TransactionID]) ON DELETE Cascade ON UPDATE No Action
+ALTER TABLE [X12835].[TransactionReferenceBASE] ADD CONSTRAINT [FK_X12835TransactionReference_X12835Transaction]
+	FOREIGN KEY ([TransactionID]) REFERENCES [X12835].[TransactionBASE] ([TransactionID]) ON DELETE Cascade ON UPDATE No Action
 GO
 
-ALTER TABLE [X12835].[TraceNumberReference] ADD CONSTRAINT [FK_X12835TraceNumberReference_X12835TraceNumber]
-	FOREIGN KEY ([TraceNumberID]) REFERENCES [X12835].[TraceNumber] ([TraceNumberID]) ON DELETE Cascade ON UPDATE No Action
+ALTER TABLE [X12835].[TraceNumberReferenceBASE] ADD CONSTRAINT [FK_X12835TraceNumberReference_X12835TraceNumber]
+	FOREIGN KEY ([TraceNumberID]) REFERENCES [X12835].[TraceNumberBASE] ([TraceNumberID]) ON DELETE Cascade ON UPDATE No Action
 GO
 
-ALTER TABLE [X12835].[ClaimReference] ADD CONSTRAINT [FK_X12835ClaimReference_X12835Claim]
-	FOREIGN KEY ([ClaimID]) REFERENCES [X12835].[Claim] ([ClaimID]) ON DELETE Cascade ON UPDATE No Action
+ALTER TABLE [X12835].[ClaimReferenceBASE] ADD CONSTRAINT [FK_X12835ClaimReference_X12835Claim]
+	FOREIGN KEY ([ClaimID]) REFERENCES [X12835].[ClaimBASE] ([ClaimID]) ON DELETE Cascade ON UPDATE No Action
 GO
 
-ALTER TABLE [X12835].[PayerReference] ADD CONSTRAINT [FK_X12835PayerReference_X12835Payer]
-	FOREIGN KEY ([PayerID]) REFERENCES [X12835].[Payer] ([PayerID]) ON DELETE Cascade ON UPDATE No Action
+ALTER TABLE [X12835].[PayerReferenceBASE] ADD CONSTRAINT [FK_X12835PayerReference_X12835Payer]
+	FOREIGN KEY ([PayerID]) REFERENCES [X12835].[PayerBASE] ([PayerID]) ON DELETE Cascade ON UPDATE No Action
 GO
 
-ALTER TABLE [X12835].[FinancialReference] ADD CONSTRAINT [FK_X12835FinancialReference_X12835Financial]
-	FOREIGN KEY ([FinancialID]) REFERENCES [X12835].[Financial] ([FinancialID]) ON DELETE Cascade ON UPDATE No Action
+ALTER TABLE [X12835].[FinancialReferenceBASE] ADD CONSTRAINT [FK_X12835FinancialReference_X12835Financial]
+	FOREIGN KEY ([FinancialID]) REFERENCES [X12835].[FinancialBASE] ([FinancialID]) ON DELETE Cascade ON UPDATE No Action
 GO
 
-ALTER TABLE [X12].[FunctionalGroup] ADD CONSTRAINT [FK_X12FunctionalGroup_X12Interchange]
-	FOREIGN KEY ([InterchangeID]) REFERENCES [X12].[Interchange] ([InterchangeID]) ON DELETE Cascade ON UPDATE No Action
+ALTER TABLE [X12].[FunctionalGroupBASE] ADD CONSTRAINT [FK_X12FunctionalGroup_X12Interchange]
+	FOREIGN KEY ([InterchangeID]) REFERENCES [X12].[InterchangeBASE] ([InterchangeID]) ON DELETE Cascade ON UPDATE No Action
 GO
 
 /* Create Table Comments */
 
-EXEC sp_addextendedproperty 'MS_Description', 'Monetary Amount', 'Schema', [X12835], 'table', [Financial], 'column', [BPR02]
+EXEC sp_addextendedproperty 'MS_Description', 'Monetary Amount', 'Schema', [X12835], 'table', [FinancialBASE], 'column', [BPR02]
 GO
 
-EXEC sp_addextendedproperty 'MS_Description', 'Credit/Debit Flag', 'Schema', [X12835], 'table', [Financial], 'column', [BPR03]
+EXEC sp_addextendedproperty 'MS_Description', 'Credit/Debit Flag', 'Schema', [X12835], 'table', [FinancialBASE], 'column', [BPR03]
 GO
 
-EXEC sp_addextendedproperty 'MS_Description', 'PAYMENT METHOD CODE', 'Schema', [X12835], 'table', [Financial], 'column', [BPR04]
+EXEC sp_addextendedproperty 'MS_Description', 'PAYMENT METHOD CODE', 'Schema', [X12835], 'table', [FinancialBASE], 'column', [BPR04]
 GO
 
-EXEC sp_addextendedproperty 'MS_Description', 'PAYMENT FORMAT CODE', 'Schema', [X12835], 'table', [Financial], 'column', [BPR05]
+EXEC sp_addextendedproperty 'MS_Description', 'PAYMENT FORMAT CODE', 'Schema', [X12835], 'table', [FinancialBASE], 'column', [BPR05]
 GO
 
-EXEC sp_addextendedproperty 'MS_Description', 'Check Issue or EFT Effective Date', 'Schema', [X12835], 'table', [Financial], 'column', [BPR16]
+EXEC sp_addextendedproperty 'MS_Description', 'Check Issue or EFT Effective Date', 'Schema', [X12835], 'table', [FinancialBASE], 'column', [BPR16]
 GO
 
-EXEC sp_addextendedproperty 'MS_Description', 'Fiscal Period Date', 'Schema', [X12835], 'table', [ProviderAdjustment], 'column', [PLB02]
+EXEC sp_addextendedproperty 'MS_Description', 'Fiscal Period Date', 'Schema', [X12835], 'table', [ProviderAdjustmentBASE], 'column', [PLB02]
 GO
 
-EXEC sp_addextendedproperty 'MS_Description', 'Provider Adjustment Amount', 'Schema', [X12835], 'table', [ProviderAdjustment], 'column', [PLB04]
+EXEC sp_addextendedproperty 'MS_Description', 'Provider Adjustment Amount', 'Schema', [X12835], 'table', [ProviderAdjustmentBASE], 'column', [PLB04]
 GO
 
-EXEC sp_addextendedproperty 'MS_Description', 'Amount Qualifier', 'Schema', [X12835], 'table', [ServiceAmount], 'column', [AMT01]
+EXEC sp_addextendedproperty 'MS_Description', 'Amount Qualifier', 'Schema', [X12835], 'table', [ServiceAmountBASE], 'column', [AMT01]
 GO
 
-EXEC sp_addextendedproperty 'MS_Description', 'Amount', 'Schema', [X12835], 'table', [ServiceAmount], 'column', [AMT02]
+EXEC sp_addextendedproperty 'MS_Description', 'Amount', 'Schema', [X12835], 'table', [ServiceAmountBASE], 'column', [AMT02]
 GO
 
-EXEC sp_addextendedproperty 'MS_Description', 'Service Date', 'Schema', [X12835], 'table', [ServiceDate], 'column', [DTM02]
+EXEC sp_addextendedproperty 'MS_Description', 'Service Date', 'Schema', [X12835], 'table', [ServiceDateBASE], 'column', [DTM02]
 GO
 
-EXEC sp_addextendedproperty 'MS_Description', 'Service Date', 'Schema', [X12835], 'table', [TransactionDate], 'column', [DTM02]
+EXEC sp_addextendedproperty 'MS_Description', 'Service Date', 'Schema', [X12835], 'table', [TransactionDateBASE], 'column', [DTM02]
 GO
 
-EXEC sp_addextendedproperty 'MS_Description', 'Trace Type Code', 'Schema', [X12835], 'table', [TraceNumber], 'column', [TRN01]
+EXEC sp_addextendedproperty 'MS_Description', 'Trace Type Code', 'Schema', [X12835], 'table', [TraceNumberBASE], 'column', [TRN01]
 GO
 
-EXEC sp_addextendedproperty 'MS_Description', 'REFERENCE IDENTIFICATION', 'Schema', [X12835], 'table', [TraceNumber], 'column', [TRN02]
+EXEC sp_addextendedproperty 'MS_Description', 'REFERENCE IDENTIFICATION', 'Schema', [X12835], 'table', [TraceNumberBASE], 'column', [TRN02]
 GO
 
-EXEC sp_addextendedproperty 'MS_Description', 'ORIGINATING COMPANY IDENTIFIER', 'Schema', [X12835], 'table', [TraceNumber], 'column', [TRN03]
+EXEC sp_addextendedproperty 'MS_Description', 'ORIGINATING COMPANY IDENTIFIER', 'Schema', [X12835], 'table', [TraceNumberBASE], 'column', [TRN03]
 GO
 
-EXEC sp_addextendedproperty 'MS_Description', 'Originating Company Supplemental Code', 'Schema', [X12835], 'table', [TraceNumber], 'column', [TRN04]
+EXEC sp_addextendedproperty 'MS_Description', 'Originating Company Supplemental Code', 'Schema', [X12835], 'table', [TraceNumberBASE], 'column', [TRN04]
 GO
 
-EXEC sp_addextendedproperty 'MS_Description', 'Receiver Identification Qualifier', 'Schema', [X12835], 'table', [TransactionReference], 'column', [REF01]
+EXEC sp_addextendedproperty 'MS_Description', 'Receiver Identification Qualifier', 'Schema', [X12835], 'table', [TransactionReferenceBASE], 'column', [REF01]
 GO
 
-EXEC sp_addextendedproperty 'MS_Description', 'Receiver Identification Number', 'Schema', [X12835], 'table', [TransactionReference], 'column', [REF02]
+EXEC sp_addextendedproperty 'MS_Description', 'Receiver Identification Number', 'Schema', [X12835], 'table', [TransactionReferenceBASE], 'column', [REF02]
 GO
 
-EXEC sp_addextendedproperty 'MS_Description', 'Receiver Identification Qualifier', 'Schema', [X12835], 'table', [TraceNumberReference], 'column', [REF01]
+EXEC sp_addextendedproperty 'MS_Description', 'Receiver Identification Qualifier', 'Schema', [X12835], 'table', [TraceNumberReferenceBASE], 'column', [REF01]
 GO
 
-EXEC sp_addextendedproperty 'MS_Description', 'Receiver Identification Qualifier', 'Schema', [X12835], 'table', [TraceNumberReference], 'column', [REF02]
+EXEC sp_addextendedproperty 'MS_Description', 'Receiver Identification Qualifier', 'Schema', [X12835], 'table', [TraceNumberReferenceBASE], 'column', [REF02]
 GO
 
-EXEC sp_addextendedproperty 'MS_Description', 'Receiver Identification Qualifier', 'Schema', [X12835], 'table', [ClaimReference], 'column', [REF01]
+EXEC sp_addextendedproperty 'MS_Description', 'Receiver Identification Qualifier', 'Schema', [X12835], 'table', [ClaimReferenceBASE], 'column', [REF01]
 GO
 
-EXEC sp_addextendedproperty 'MS_Description', 'Receiver Identification Qualifier', 'Schema', [X12835], 'table', [ClaimReference], 'column', [REF02]
+EXEC sp_addextendedproperty 'MS_Description', 'Receiver Identification Qualifier', 'Schema', [X12835], 'table', [ClaimReferenceBASE], 'column', [REF02]
 GO
 
 　
-EXEC sp_addextendedproperty 'MS_Description', 'Receiver Identification Qualifier', 'Schema', [X12835], 'table', [PayerReference], 'column', [REF01]
+EXEC sp_addextendedproperty 'MS_Description', 'Receiver Identification Qualifier', 'Schema', [X12835], 'table', [PayerReferenceBASE], 'column', [REF01]
 GO
 
-EXEC sp_addextendedproperty 'MS_Description', 'Receiver Identification Qualifier', 'Schema', [X12835], 'table', [PayerReference], 'column', [REF02]
+EXEC sp_addextendedproperty 'MS_Description', 'Receiver Identification Qualifier', 'Schema', [X12835], 'table', [PayerReferenceBASE], 'column', [REF02]
 GO
 
-EXEC sp_addextendedproperty 'MS_Description', 'Receiver Identification Qualifier', 'Schema', [X12835], 'table', [FinancialReference], 'column', [REF01]
+EXEC sp_addextendedproperty 'MS_Description', 'Receiver Identification Qualifier', 'Schema', [X12835], 'table', [FinancialReferenceBASE], 'column', [REF01]
 GO
 
-EXEC sp_addextendedproperty 'MS_Description', 'Receiver Identification Qualifier', 'Schema', [X12835], 'table', [FinancialReference], 'column', [REF02]
+EXEC sp_addextendedproperty 'MS_Description', 'Receiver Identification Qualifier', 'Schema', [X12835], 'table', [FinancialReferenceBASE], 'column', [REF02]
 GO
