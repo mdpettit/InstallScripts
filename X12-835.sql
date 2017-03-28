@@ -613,7 +613,7 @@ CREATE TABLE [X12].[InterchangeBASE]
 	[ISA15] varchar(255) NULL,
 	[ISA16] varchar(255) NULL,
 	[SourceMessage] varchar(max) NOT NULL,
-	[LoadedDTS] datetime2(7) NOT NULL
+	[LoadDTS] datetime2(7) NOT NULL
 )
 GO
 
