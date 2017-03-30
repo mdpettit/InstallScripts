@@ -3,22 +3,14 @@
 set -e
 #
 # Usage:
-#   'curl -sSL https://mdpettit.github.io/InstallScripts/installmirthconnect.txt | sh -s <mirthuser>'
-# or:
-#   'wget -qO- https://mdpettit.github.io/InstallScripts/installmirthconnect.txt | sh -s <mirthuser>' 
+#   'curl -SSL https://raw.githubusercontent.com/mdpettit/InstallScripts/master/MirthConnect/Environment/installmirthconnect.txt | sh -s <mirthuser>'
 #
-
-defaultpassword="R3mot357"
 
 echo "Starting setup..."
 u="$(whoami)"
 echo "User name: $u"
 
 mirthuser="$1"
-
-# http://stackoverflow.com/questions/8529181/which-terminal-command-to-get-just-ip-address-and-nothing-else
-myip=$(ip -4 addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
-#myip=$(hostname -i)
 
 echo "==== Creating update script ===="
 
@@ -34,7 +26,7 @@ if [[ ! -d "$installfolder" ]]; then
 fi
 
 echo "#!/bin/sh" > $installscript
-echo "curl -sSL https://mdpettit.github.io/InstallScripts/installmirthconnect.txt | sh -s $@" >> $installscript
+echo "curl -sSL https://raw.githubusercontent.com/mdpettit/InstallScripts/master/MirthConnect/Environment/installmirthconnect.txt | sh -s $@" >> $installscript
 chmod +x $installscript
 
 if [[ ! -e "$HOME/bin/$installscriptfile" ]]; then 
@@ -97,32 +89,6 @@ if [[ -f "$kerberospath" ]]; then
    docker exec mirthconnect sed "\$a-Djava.security.krb5.conf=/etc/krb5.conf" /opt/mirthconnect/mcservice.vmoptions
 else
    echo "ERROR: No keberos configuration files found in [$kerberospath] so integrated security won't work"
-fi
-
-nodekeyfile="node.key"
-nodekeypath="$installfolder$nodekeyfile"
-
-protocol="http"
-
-if [ ! -z "$ssl" ]; then
-  echo "Checking if [$nodekeypath] exists"
-  if [[ -f "$nodekeypath" ]]; then
-    echo "copying ssl keys from $installfolder"
-    docker cp $installfolder/node.key mirthconnect:/opt/mirthconnect/conf
-    docker cp $installfolder/node.crt mirthconnect:/opt/mirthconnect/conf
-    docker cp $installfolder/ca.crt mirthconnect:/opt/mirthconnect/conf
-
-    protocol="https"
-  else
-    echo "ERROR: No key files found in [$nodekeypath] so cannot set up SSL"
-  fi
-
-  docker restart mirthconnect
-  echo "sleeping until docker container is up"
-  until [ "`/usr/bin/docker inspect -f {{.State.Running}} mirthconnect`"=="true" ]; do
-      sleep 1s;
-  done;
-
 fi
 
 echo "==== Listing running docker containers ===="
