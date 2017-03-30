@@ -13,7 +13,7 @@ http://download.oracle.com/otn-pub/java/jdk/8u111-b14/jdk-8u111-linux-x64.rpm \
 RUN wget -O mirthconnect.rpm http://downloads.mirthcorp.com/connect/3.4.2.8129.b167/mirthconnect-3.4.2.8129.b167-linux.rpm \
 && yum install -y mirthconnect.rpm \
 && rm -f mirthconnect.rpm \
-&& wget -SSL -O /opt/mirthconnect/startmirthandtaillog.sh https://mdpettit.github.io/InstallScripts/startmirthandtaillog.sh \
+&& wget -SSL -O /opt/mirthconnect/startmirthandtaillog.sh \ https://raw.githubusercontent.com/mdpettit/InstallScripts/master/MirthConnect/Environment/startmirthandtaillog.sh \
 && chmod +x /opt/mirthconnect/startmirthandtaillog.sh
 
 # Install Microsoft JDBC Driver
