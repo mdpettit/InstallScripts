@@ -31,6 +31,10 @@ IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_BPR_
 ALTER TABLE [X12835].[FinancialBASE] DROP CONSTRAINT [FK_BPR_X12Transaction]
 GO
 
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_CUR_X12Transaction]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
+ALTER TABLE [X12835].[CurrencyBASE] DROP CONSTRAINT [FK_CUR_X12Transaction]
+GO
+
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X12835Payee_X12835Transaction]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
 ALTER TABLE [X12835].[PayeeBASE] DROP CONSTRAINT [FK_X12835Payee_X12835Transaction]
 GO
@@ -131,6 +135,10 @@ GO
 
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FinancialBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
 DROP TABLE [X12835].[FinancialBASE]
+GO
+
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[CurrencyBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
+DROP TABLE [X12835].[CurrencyBASE]
 GO
 
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[PayeeBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
@@ -324,6 +332,35 @@ CREATE TABLE [X12835].[FinancialBASE]
 	[BPR14] varchar(255) NULL,
 	[BPR15] varchar(255) NULL,
 	[BPR16] varchar(255) NULL,-- Check Issue or EFT Effective Date
+	[LoadDTS] datetime2    
+)
+GO
+
+CREATE TABLE [X12835].[CurrencyBASE]
+(
+	[CurrencyID] numeric(38) NOT NULL IDENTITY (1, 1),
+	[TransactionID] numeric(38) NOT NULL,
+	[CUR01] varchar(255) NOT NULL,
+	[CUR02] varchar(255) NULL,    
+	[CUR03] varchar(255) NULL,    
+	[CUR04] varchar(255) NULL,    
+	[CUR05] varchar(255) NULL,    
+	[CUR06] varchar(255) NULL,
+	[CUR07] varchar(255) NULL,
+	[CUR08] varchar(255) NULL,
+	[CUR09] varchar(255) NULL,
+	[CUR10] varchar(255) NULL,
+	[CUR11] varchar(255) NULL,
+	[CUR12] varchar(255) NULL,
+	[CUR13] varchar(255) NULL,
+	[CUR14] varchar(255) NULL,
+	[CUR15] varchar(255) NULL,
+	[CUR16] varchar(255) NULL,
+	[CUR17] varchar(255) NULL,
+	[CUR18] varchar(255) NULL,
+	[CUR19] varchar(255) NULL,
+	[CUR20] varchar(255) NULL,
+	[CUR21] varchar(255) NULL,
 	[LoadDTS] datetime2    
 )
 GO
@@ -681,8 +718,17 @@ ALTER TABLE [X12835].[FinancialBASE]
 	PRIMARY KEY CLUSTERED ([FinancialID] ASC)
 GO
 
+ALTER TABLE [X12835].[CurrencyBASE] 
+ ADD CONSTRAINT [PK_X12835Currency]
+	PRIMARY KEY CLUSTERED ([CurrencyID] ASC)
+GO
+
 CREATE NONCLUSTERED INDEX [IXFK_BPR_X12Transaction] 
  ON [X12835].[FinancialBASE] ([TransactionID] ASC)
+GO
+
+CREATE NONCLUSTERED INDEX [IXFK_CUR_X12Transaction] 
+ ON [X12835].[CurrencyBASE] ([TransactionID] ASC)
 GO
 
 ALTER TABLE [X12835].[PayeeBASE] 
