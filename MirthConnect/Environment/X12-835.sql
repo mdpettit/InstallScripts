@@ -452,7 +452,6 @@ CREATE TABLE [X12835].[ServiceBASE]
 (
 	[ServiceID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[ClaimID] numeric(38) NOT NULL,
-	[TransactionID] numeric(38) NULL,
 	[SVC0101] varchar(255) NOT NULL,
 	[SVC0102] varchar(255) NOT NULL,
 	[SVC0103] varchar(255) NOT NULL,
