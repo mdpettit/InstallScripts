@@ -7,8 +7,12 @@
 /* Drop Foreign Key Constraints */
 USE [MirthSource]
 
-IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_Claim_X12835Transaction]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
-ALTER TABLE [X12835].[ClaimBASE] DROP CONSTRAINT [FK_Claim_X12835Transaction]
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_Claim_X12835Header]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
+ALTER TABLE [X12835].[ClaimBASE] DROP CONSTRAINT [FK_X12835Claim_X12835Header]
+GO
+
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_Header_X12835Transaction]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
+ALTER TABLE [X12835].[HeaderBASE] DROP CONSTRAINT [FK_X12835Header_X12835Transaction]
 GO
 
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X12835ClaimAdjustment_X12835Claim]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
@@ -107,6 +111,10 @@ GO
 
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[ClaimBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
 DROP TABLE [X12835].[ClaimBASE]
+GO
+
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[HeaderBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
+DROP TABLE [X12835].[HeaderBASE]
 GO
 
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[ClaimAdjustmentBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
@@ -213,7 +221,7 @@ GO
 CREATE TABLE [X12835].[ClaimBASE]
 (
 	[ClaimID] numeric(38) NOT NULL IDENTITY (1, 1),
-	[TransactionID] numeric(38) NOT NULL,
+	[HeaderID] numeric(38) NOT NULL,
 	[LX01] varchar(255) NOT NULL,
 	[CLP01] varchar(255) NULL,
 	[CLP02] varchar(255) NULL,
@@ -231,6 +239,14 @@ CREATE TABLE [X12835].[ClaimBASE]
 	[LoadDTS] datetime2
 )
 GO
+
+CREATE TABLE [X12835].[HeaderBASE]
+(
+	[HeaderID] numeric(38) NOT NULL IDENTITY (1, 1),
+	[TransactionID] numeric(38) NOT NULL,
+	[LX01] varchar(255) NOT NULL,
+	[LoadDTS] datetime2
+)
 
 CREATE TABLE [X12835].[ClaimAdjustmentBASE]
 (
@@ -640,8 +656,17 @@ ALTER TABLE [X12835].[ClaimBASE]
 	PRIMARY KEY CLUSTERED ([ClaimID] ASC)
 GO
 
-CREATE NONCLUSTERED INDEX [IXFK_Claim_X12835Transaction] 
- ON [X12835].[ClaimBASE] ([TransactionID] ASC)
+ALTER TABLE [X12835].[HeaderBASE]
+ ADD CONSTRAINT [PK_X12835Header]
+    PRIMARY KEY CLUSTERED ([HeaderID] ASC)
+GO
+
+CREATE NONCLUSTERED INDEX [IXFK_Claim_X12835Header] 
+ ON [X12835].[ClaimASE] ([HeaderID] ASC)
+GO
+
+CREATE NONCLUSTERED INDEX [IXFK_Header_X12835Transaction]
+ ON [X12835].[HeaderBASE] ([TransactionID] ASC)
 GO
 
 ALTER TABLE [X12835].[ClaimAdjustmentBASE] 
@@ -863,10 +888,6 @@ GO
 
 /* Create Foreign Key Constraints */
 
-ALTER TABLE [X12835].[ClaimBASE] ADD CONSTRAINT [FK_Claim_X12835Transaction]
-	FOREIGN KEY ([TransactionID]) REFERENCES [X12835].[TransactionBASE] ([TransactionID]) ON DELETE Cascade ON UPDATE No Action
-GO
-
 ALTER TABLE [X12835].[ClaimAdjustmentBASE] ADD CONSTRAINT [FK_X12835ClaimAdjustment_X12835Claim]
 	FOREIGN KEY ([ClaimID]) REFERENCES [X12835].[ClaimBASE] ([ClaimID]) ON DELETE Cascade ON UPDATE No Action
 GO
@@ -945,6 +966,14 @@ GO
 
 ALTER TABLE [X12835].[ClaimReferenceBASE] ADD CONSTRAINT [FK_X12835ClaimReference_X12835Claim]
 	FOREIGN KEY ([ClaimID]) REFERENCES [X12835].[ClaimBASE] ([ClaimID]) ON DELETE Cascade ON UPDATE No Action
+GO
+
+ALTER TABLE [X12835].[ClaimBASE] ADD CONSTRAINT [FK_X12835Claim_X12835Header]
+	FOREIGN KEY ([HeaderID]) REFERENCES [X12835].[HeaderBASE] ([HeaderID]) ON DELETE Cascade ON UPDATE No Action
+GO
+
+ALTER TABLE [X12835].[HeaderBASE] ADD CONSTRAINT [FK_X12835Header_X12835Transaction]
+	FOREIGN KEY ([TransactionID]) REFERENCES [X12835].[TransactionBASE] ([TransactionID]) ON DELETE Cascade ON UPDATE No Action
 GO
 
 ALTER TABLE [X12835].[PayerReferenceBASE] ADD CONSTRAINT [FK_X12835PayerReference_X12835Payer]
