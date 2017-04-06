@@ -5,10 +5,10 @@
   <description></description>
   <enabled>true</enabled>
   <lastModified>
-    <time>1491512209190</time>
+    <time>1491520790336</time>
     <timezone>America/Denver</timezone>
   </lastModified>
-  <revision>62</revision>
+  <revision>71</revision>
   <sourceConnector version="3.4.2">
     <metaDataId>0</metaDataId>
     <name>sourceConnector</name>
@@ -176,6 +176,10 @@ var remarkCodes = new java.util.LinkedList();
 var parentOfProviderAdjustment = null;
 var providerAdjustment = null;
 
+// Quantities are children of both claim and service
+var parentOfQuantity = null;
+var quantities = new java.util.LinkedList();
+
 for each (seg in msg.children()) {
 	if (seg.name().toString() == &quot;GS&quot;) {
 		functionalGroup = {};
@@ -270,6 +274,14 @@ for each (seg in msg.children()) {
 		reference.REF01 = seg[&apos;REF.01&apos;][&apos;REF.01.1&apos;].toString();
 		reference.REF02 = seg[&apos;REF.02&apos;][&apos;REF.02.1&apos;].toString();
 		references.add(reference);
+	}
+	else if (seg.name().toString() == &quot;QTY&quot;) {
+		var quantity = {};
+		quantity.QTY01 = seg[&apos;QTY.01&apos;][&apos;QTY.01.1&apos;].toString();
+		quantity.QTY02 = seg[&apos;QTY.02&apos;][&apos;QTY.02.1&apos;].toString();
+		quantity.QTY03 = seg[&apos;QTY.03&apos;][&apos;QTY.03.1&apos;].toString();
+		quantity.QTY04 = seg[&apos;QTY.04&apos;][&apos;QTY.04.1&apos;].toString();
+		quantities.add(quantity);
 	}
 	else if (seg.name().toString() == &quot;DTM&quot;) {
 		var date = {};
@@ -377,8 +389,14 @@ for each (seg in msg.children()) {
 		claim.CLP07 = seg[&apos;CLP.07&apos;][&apos;CLP.07.1&apos;].toString();
 		claim.CLP08 = seg[&apos;CLP.08&apos;][&apos;CLP.08.1&apos;].toString();
 		claim.CLP09 = seg[&apos;CLP.09&apos;][&apos;CLP.09.1&apos;].toString();
+		claim.CLP10 = seg[&apos;CLP.10&apos;][&apos;CLP.10.1&apos;].toString();
+		claim.CLP11 = seg[&apos;CLP.11&apos;][&apos;CLP.11.1&apos;].toString();
+		claim.CLP12 = seg[&apos;CLP.12&apos;][&apos;CLP.12.1&apos;].toString();
+		claim.CLP13 = seg[&apos;CLP.13&apos;][&apos;CLP.13.1&apos;].toString();
+		claim.CLP14 = seg[&apos;CLP.14&apos;][&apos;CLP.14.1&apos;].toString();
 		newServiceParent(claim);
 		newReferenceParent(claim);
+		newQuantityParent(claim);
 		newDateParent(claim);
 		newClaimPersonParent(claim);
 		newAdjustmentParent(claim);
@@ -412,6 +430,7 @@ for each (seg in msg.children()) {
 		service.SVC0608 = seg[&apos;SVC.06&apos;][&apos;SVC.06.8&apos;].toString();
 		service.SVC07 = seg[&apos;SVC.07&apos;][&apos;SVC.07.1&apos;].toString();
 		newReferenceParent(service);
+		newQuantityParent(service);
 		newDateParent(service);
 		newClaimPersonParent(service);
 		newAdjustmentParent(service);
@@ -470,6 +489,10 @@ for each (seg in msg.children()) {
 		outpatientAdjudication.MOA03 = seg[&apos;MOA.03&apos;][&apos;MOA.03.1&apos;].toString();
 		outpatientAdjudication.MOA04 = seg[&apos;MOA.04&apos;][&apos;MOA.04.1&apos;].toString();
 		outpatientAdjudication.MOA05 = seg[&apos;MOA.05&apos;][&apos;MOA.05.1&apos;].toString();
+		outpatientAdjudication.MOA06 = seg[&apos;MOA.06&apos;][&apos;MOA.06.1&apos;].toString();
+		outpatientAdjudication.MOA07 = seg[&apos;MOA.07&apos;][&apos;MOA.07.1&apos;].toString();
+		outpatientAdjudication.MOA08 = seg[&apos;MOA.08&apos;][&apos;MOA.08.1&apos;].toString();
+		outpatientAdjudication.MOA09 = seg[&apos;MOA.09&apos;][&apos;MOA.09.1&apos;].toString();
 	}
 	else if (seg.name().toString() == &quot;MIA&quot;) {
 		inpatientAdjudication = {};
@@ -478,6 +501,25 @@ for each (seg in msg.children()) {
 		inpatientAdjudication.MIA03 = seg[&apos;MIA.03&apos;][&apos;MIA.03.1&apos;].toString();
 		inpatientAdjudication.MIA04 = seg[&apos;MIA.04&apos;][&apos;MIA.04.1&apos;].toString();
 		inpatientAdjudication.MIA05 = seg[&apos;MIA.05&apos;][&apos;MIA.05.1&apos;].toString();
+		inpatientAdjudication.MIA06 = seg[&apos;MIA.06&apos;][&apos;MIA.06.1&apos;].toString();
+		inpatientAdjudication.MIA07 = seg[&apos;MIA.07&apos;][&apos;MIA.07.1&apos;].toString();
+		inpatientAdjudication.MIA08 = seg[&apos;MIA.08&apos;][&apos;MIA.08.1&apos;].toString();
+		inpatientAdjudication.MIA09 = seg[&apos;MIA.09&apos;][&apos;MIA.09.1&apos;].toString();
+		inpatientAdjudication.MIA10 = seg[&apos;MIA.10&apos;][&apos;MIA.10.1&apos;].toString();
+		inpatientAdjudication.MIA11 = seg[&apos;MIA.11&apos;][&apos;MIA.11.1&apos;].toString();
+		inpatientAdjudication.MIA12 = seg[&apos;MIA.12&apos;][&apos;MIA.12.1&apos;].toString();
+		inpatientAdjudication.MIA13 = seg[&apos;MIA.13&apos;][&apos;MIA.13.1&apos;].toString();
+		inpatientAdjudication.MIA14 = seg[&apos;MIA.14&apos;][&apos;MIA.14.1&apos;].toString();
+		inpatientAdjudication.MIA15 = seg[&apos;MIA.15&apos;][&apos;MIA.15.1&apos;].toString();
+		inpatientAdjudication.MIA16 = seg[&apos;MIA.16&apos;][&apos;MIA.16.1&apos;].toString();
+		inpatientAdjudication.MIA17 = seg[&apos;MIA.17&apos;][&apos;MIA.17.1&apos;].toString();
+		inpatientAdjudication.MIA18 = seg[&apos;MIA.18&apos;][&apos;MIA.18.1&apos;].toString();
+		inpatientAdjudication.MIA19 = seg[&apos;MIA.19&apos;][&apos;MIA.19.1&apos;].toString();
+		inpatientAdjudication.MIA20 = seg[&apos;MIA.20&apos;][&apos;MIA.20.1&apos;].toString();
+		inpatientAdjudication.MIA21 = seg[&apos;MIA.21&apos;][&apos;MIA.21.1&apos;].toString();
+		inpatientAdjudication.MIA22 = seg[&apos;MIA.22&apos;][&apos;MIA.22.1&apos;].toString();
+		inpatientAdjudication.MIA23 = seg[&apos;MIA.23&apos;][&apos;MIA.23.1&apos;].toString();
+		inpatientAdjudication.MIA24 = seg[&apos;MIA.24&apos;][&apos;MIA.24.1&apos;].toString();
 	}
 	else if (seg.name().toString() == &quot;LQ&quot;) {
 		var remarkCode = {};
@@ -511,6 +553,7 @@ newProviderSupplementalInformationParent(null);
 newServiceParent(null);
 newContactParent(null);
 newReferenceParent(null);
+newQuantityParent(null);
 newDateParent(null);
 newClaimPersonParent(null);
 newAdjustmentParent(null);
@@ -530,6 +573,14 @@ function newReferenceParent(newParent) {
 	}
 	references.clear();
 	parentOfReference = newParent;
+}
+
+function newQuantityParent(newParent) {
+	if (parentOfQuantity != null &amp;&amp; !quantities.isEmpty()) {
+		parentOfQuantity.quantities = quantities.toArray();
+	}
+	quantities.clear();
+	parentOfQuantity = newParent;
 }
 
 function newDateParent(newParent) {
@@ -726,6 +777,10 @@ var remarkCodes = new java.util.LinkedList();
 var parentOfProviderAdjustment = null;
 var providerAdjustment = null;
 
+// Quantities are children of both claim and service
+var parentOfQuantity = null;
+var quantities = new java.util.LinkedList();
+
 for each (seg in msg.children()) {
 	if (seg.name().toString() == &quot;GS&quot;) {
 		functionalGroup = {};
@@ -820,6 +875,14 @@ for each (seg in msg.children()) {
 		reference.REF01 = seg[&apos;REF.01&apos;][&apos;REF.01.1&apos;].toString();
 		reference.REF02 = seg[&apos;REF.02&apos;][&apos;REF.02.1&apos;].toString();
 		references.add(reference);
+	}
+	else if (seg.name().toString() == &quot;QTY&quot;) {
+		var quantity = {};
+		quantity.QTY01 = seg[&apos;QTY.01&apos;][&apos;QTY.01.1&apos;].toString();
+		quantity.QTY02 = seg[&apos;QTY.02&apos;][&apos;QTY.02.1&apos;].toString();
+		quantity.QTY03 = seg[&apos;QTY.03&apos;][&apos;QTY.03.1&apos;].toString();
+		quantity.QTY04 = seg[&apos;QTY.04&apos;][&apos;QTY.04.1&apos;].toString();
+		quantities.add(quantity);
 	}
 	else if (seg.name().toString() == &quot;DTM&quot;) {
 		var date = {};
@@ -927,8 +990,14 @@ for each (seg in msg.children()) {
 		claim.CLP07 = seg[&apos;CLP.07&apos;][&apos;CLP.07.1&apos;].toString();
 		claim.CLP08 = seg[&apos;CLP.08&apos;][&apos;CLP.08.1&apos;].toString();
 		claim.CLP09 = seg[&apos;CLP.09&apos;][&apos;CLP.09.1&apos;].toString();
+		claim.CLP10 = seg[&apos;CLP.10&apos;][&apos;CLP.10.1&apos;].toString();
+		claim.CLP11 = seg[&apos;CLP.11&apos;][&apos;CLP.11.1&apos;].toString();
+		claim.CLP12 = seg[&apos;CLP.12&apos;][&apos;CLP.12.1&apos;].toString();
+		claim.CLP13 = seg[&apos;CLP.13&apos;][&apos;CLP.13.1&apos;].toString();
+		claim.CLP14 = seg[&apos;CLP.14&apos;][&apos;CLP.14.1&apos;].toString();
 		newServiceParent(claim);
 		newReferenceParent(claim);
+		newQuantityParent(claim);
 		newDateParent(claim);
 		newClaimPersonParent(claim);
 		newAdjustmentParent(claim);
@@ -962,6 +1031,7 @@ for each (seg in msg.children()) {
 		service.SVC0608 = seg[&apos;SVC.06&apos;][&apos;SVC.06.8&apos;].toString();
 		service.SVC07 = seg[&apos;SVC.07&apos;][&apos;SVC.07.1&apos;].toString();
 		newReferenceParent(service);
+		newQuantityParent(service);
 		newDateParent(service);
 		newClaimPersonParent(service);
 		newAdjustmentParent(service);
@@ -1020,6 +1090,10 @@ for each (seg in msg.children()) {
 		outpatientAdjudication.MOA03 = seg[&apos;MOA.03&apos;][&apos;MOA.03.1&apos;].toString();
 		outpatientAdjudication.MOA04 = seg[&apos;MOA.04&apos;][&apos;MOA.04.1&apos;].toString();
 		outpatientAdjudication.MOA05 = seg[&apos;MOA.05&apos;][&apos;MOA.05.1&apos;].toString();
+		outpatientAdjudication.MOA06 = seg[&apos;MOA.06&apos;][&apos;MOA.06.1&apos;].toString();
+		outpatientAdjudication.MOA07 = seg[&apos;MOA.07&apos;][&apos;MOA.07.1&apos;].toString();
+		outpatientAdjudication.MOA08 = seg[&apos;MOA.08&apos;][&apos;MOA.08.1&apos;].toString();
+		outpatientAdjudication.MOA09 = seg[&apos;MOA.09&apos;][&apos;MOA.09.1&apos;].toString();
 	}
 	else if (seg.name().toString() == &quot;MIA&quot;) {
 		inpatientAdjudication = {};
@@ -1028,6 +1102,25 @@ for each (seg in msg.children()) {
 		inpatientAdjudication.MIA03 = seg[&apos;MIA.03&apos;][&apos;MIA.03.1&apos;].toString();
 		inpatientAdjudication.MIA04 = seg[&apos;MIA.04&apos;][&apos;MIA.04.1&apos;].toString();
 		inpatientAdjudication.MIA05 = seg[&apos;MIA.05&apos;][&apos;MIA.05.1&apos;].toString();
+		inpatientAdjudication.MIA06 = seg[&apos;MIA.06&apos;][&apos;MIA.06.1&apos;].toString();
+		inpatientAdjudication.MIA07 = seg[&apos;MIA.07&apos;][&apos;MIA.07.1&apos;].toString();
+		inpatientAdjudication.MIA08 = seg[&apos;MIA.08&apos;][&apos;MIA.08.1&apos;].toString();
+		inpatientAdjudication.MIA09 = seg[&apos;MIA.09&apos;][&apos;MIA.09.1&apos;].toString();
+		inpatientAdjudication.MIA10 = seg[&apos;MIA.10&apos;][&apos;MIA.10.1&apos;].toString();
+		inpatientAdjudication.MIA11 = seg[&apos;MIA.11&apos;][&apos;MIA.11.1&apos;].toString();
+		inpatientAdjudication.MIA12 = seg[&apos;MIA.12&apos;][&apos;MIA.12.1&apos;].toString();
+		inpatientAdjudication.MIA13 = seg[&apos;MIA.13&apos;][&apos;MIA.13.1&apos;].toString();
+		inpatientAdjudication.MIA14 = seg[&apos;MIA.14&apos;][&apos;MIA.14.1&apos;].toString();
+		inpatientAdjudication.MIA15 = seg[&apos;MIA.15&apos;][&apos;MIA.15.1&apos;].toString();
+		inpatientAdjudication.MIA16 = seg[&apos;MIA.16&apos;][&apos;MIA.16.1&apos;].toString();
+		inpatientAdjudication.MIA17 = seg[&apos;MIA.17&apos;][&apos;MIA.17.1&apos;].toString();
+		inpatientAdjudication.MIA18 = seg[&apos;MIA.18&apos;][&apos;MIA.18.1&apos;].toString();
+		inpatientAdjudication.MIA19 = seg[&apos;MIA.19&apos;][&apos;MIA.19.1&apos;].toString();
+		inpatientAdjudication.MIA20 = seg[&apos;MIA.20&apos;][&apos;MIA.20.1&apos;].toString();
+		inpatientAdjudication.MIA21 = seg[&apos;MIA.21&apos;][&apos;MIA.21.1&apos;].toString();
+		inpatientAdjudication.MIA22 = seg[&apos;MIA.22&apos;][&apos;MIA.22.1&apos;].toString();
+		inpatientAdjudication.MIA23 = seg[&apos;MIA.23&apos;][&apos;MIA.23.1&apos;].toString();
+		inpatientAdjudication.MIA24 = seg[&apos;MIA.24&apos;][&apos;MIA.24.1&apos;].toString();
 	}
 	else if (seg.name().toString() == &quot;LQ&quot;) {
 		var remarkCode = {};
@@ -1061,6 +1154,7 @@ newProviderSupplementalInformationParent(null);
 newServiceParent(null);
 newContactParent(null);
 newReferenceParent(null);
+newQuantityParent(null);
 newDateParent(null);
 newClaimPersonParent(null);
 newAdjustmentParent(null);
@@ -1080,6 +1174,14 @@ function newReferenceParent(newParent) {
 	}
 	references.clear();
 	parentOfReference = newParent;
+}
+
+function newQuantityParent(newParent) {
+	if (parentOfQuantity != null &amp;&amp; !quantities.isEmpty()) {
+		parentOfQuantity.quantities = quantities.toArray();
+	}
+	quantities.clear();
+	parentOfQuantity = newParent;
 }
 
 function newDateParent(newParent) {
@@ -5148,7 +5250,7 @@ function insertTransactionHeaders(transactionId, transaction) {
 			headerId = crs.getLong(1);
 			insertClaims(headerId, header);
 			insertProviderSummaryInformation(headerId, header);
-			insertProviderSupplementalSummaryInformation(headerId, header)
+			insertProviderSupplementalInformation(headerId, header);
 		} else {
 			logger.error(&quot;Error insterting X12 835 header record.&quot;);
 		}
@@ -5159,7 +5261,7 @@ function insertClaims(headerId, header) {
 	for each (var claim in header.claims) {
 		var claimId = null;
 
-		var preparedStatement = &quot;INSERT INTO [X12835].[ClaimBASE] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)&quot;;
+		var preparedStatement = &quot;INSERT INTO [X12835].[ClaimBASE] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)&quot;;
 
 		var parameters = [];
 		parameters[0] = headerId;
@@ -5176,7 +5278,8 @@ function insertClaims(headerId, header) {
 		parameters[11] = claim.CLP11;
 		parameters[12] = claim.CLP12;
 		parameters[13] = claim.CLP13;
-		parameters[14] = loadDts;
+		parameters[14] = claim.CLP14;
+		parameters[15] = loadDts;
 
 		var crs = dbConn.executeUpdateAndGetGeneratedKeys(preparedStatement, java.util.Arrays.asList(parameters));
 
@@ -5188,6 +5291,9 @@ function insertClaims(headerId, header) {
 			insertClaimAmount(claimId, claim);
 			insertDates(&apos;Claim&apos;, claimId, claim);
 			insertReferences(&apos;Claim&apos;, claimId, claim);
+			insertQuantities(&apos;Claim&apos;, claimId, claim)
+			insertInpatientAdjudications(claimId, claim);
+			insertOutpatientAdjudications(claimId, claim);
 		} else {
 			logger.error(&quot;Error insterting X12 835 claim record.&quot;);
 		}
@@ -5195,74 +5301,78 @@ function insertClaims(headerId, header) {
 }
 
 function insertProviderSummaryInformation(headerId, header) {
-	var preparedStatement = &quot;INSERT INTO [X12835].[ProviderSummaryInformationBASE] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)&quot;;
+	if (header.providerSummaryInformation != null) {
+		var preparedStatement = &quot;INSERT INTO [X12835].[ProviderSummaryInformationBASE] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)&quot;;
 
-	var parameters = [];
-	parameters[0] = headerId;
-	parameters[1] = header.providerSummaryInformation.TS301;
-	parameters[2] = header.providerSummaryInformation.TS302;
-	parameters[3] = header.providerSummaryInformation.TS303;
-	parameters[4] = header.providerSummaryInformation.TS304;
-	parameters[5] = header.providerSummaryInformation.TS305;
-	parameters[6] = header.providerSummaryInformation.TS306;
-	parameters[7] = header.providerSummaryInformation.TS307;
-	parameters[8] = header.providerSummaryInformation.TS308;
-	parameters[9] = header.providerSummaryInformation.TS309;
-	parameters[10] = header.providerSummaryInformation.TS310;
-	parameters[11] = header.providerSummaryInformation.TS311;
-	parameters[12] = header.providerSummaryInformation.TS312;
-	parameters[13] = header.providerSummaryInformation.TS313;
-	parameters[14] = header.providerSummaryInformation.TS314;
-	parameters[15] = header.providerSummaryInformation.TS315;
-	parameters[16] = header.providerSummaryInformation.TS316;
-	parameters[17] = header.providerSummaryInformation.TS317;
-	parameters[18] = header.providerSummaryInformation.TS318;
-	parameters[19] = header.providerSummaryInformation.TS319;
-	parameters[20] = header.providerSummaryInformation.TS320;
-	parameters[21] = header.providerSummaryInformation.TS321;
-	parameters[22] = header.providerSummaryInformation.TS322;
-	parameters[23] = header.providerSummaryInformation.TS323;
-	parameters[24] = header.providerSummaryInformation.TS324;
-	parameters[25] = loadDts;
+		var parameters = [];
+		parameters[0] = headerId;
+		parameters[1] = header.providerSummaryInformation.TS301;
+		parameters[2] = header.providerSummaryInformation.TS302;
+		parameters[3] = header.providerSummaryInformation.TS303;
+		parameters[4] = header.providerSummaryInformation.TS304;
+		parameters[5] = header.providerSummaryInformation.TS305;
+		parameters[6] = header.providerSummaryInformation.TS306;
+		parameters[7] = header.providerSummaryInformation.TS307;
+		parameters[8] = header.providerSummaryInformation.TS308;
+		parameters[9] = header.providerSummaryInformation.TS309;
+		parameters[10] = header.providerSummaryInformation.TS310;
+		parameters[11] = header.providerSummaryInformation.TS311;
+		parameters[12] = header.providerSummaryInformation.TS312;
+		parameters[13] = header.providerSummaryInformation.TS313;
+		parameters[14] = header.providerSummaryInformation.TS314;
+		parameters[15] = header.providerSummaryInformation.TS315;
+		parameters[16] = header.providerSummaryInformation.TS316;
+		parameters[17] = header.providerSummaryInformation.TS317;
+		parameters[18] = header.providerSummaryInformation.TS318;
+		parameters[19] = header.providerSummaryInformation.TS319;
+		parameters[20] = header.providerSummaryInformation.TS320;
+		parameters[21] = header.providerSummaryInformation.TS321;
+		parameters[22] = header.providerSummaryInformation.TS322;
+		parameters[23] = header.providerSummaryInformation.TS323;
+		parameters[24] = header.providerSummaryInformation.TS324;
+		parameters[25] = loadDts;	
 
-	var crs = dbConn.executeUpdateAndGetGeneratedKeys(preparedStatement, java.util.Arrays.asList(parameters));
+		var crs = dbConn.executeUpdateAndGetGeneratedKeys(preparedStatement, java.util.Arrays.asList(parameters));	
 
-	if (!crs.next()) {
-		logger.error(&quot;Error insterting X12 835 header provider summary information record.&quot;);
+		if (!crs.next()) {
+			logger.error(&quot;Error insterting X12 835 header provider summary information record.&quot;);
+		}
 	}
 }
 
 function insertProviderSupplementalInformation(headerId, header) {
-	var preparedStatement = &quot;INSERT INTO [X12835].[ProviderSupplementalInformationBASE] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)&quot;;
+	if(header.providerSupplementalInformation != null) {
+		var preparedStatement = &quot;INSERT INTO [X12835].[ProviderSupplementalInformationBASE] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)&quot;;
 
-	var parameters = [];
-	parameters[0] = headerId;
-	parameters[1] = header.providerSupplementalInformation.TS201;
-	parameters[2] = header.providerSupplementalInformation.TS202;
-	parameters[3] = header.providerSupplementalInformation.TS203;
-	parameters[4] = header.providerSupplementalInformation.TS204;
-	parameters[5] = header.providerSupplementalInformation.TS205;
-	parameters[6] = header.providerSupplementalInformation.TS206;
-	parameters[7] = header.providerSupplementalInformation.TS207;
-	parameters[8] = header.providerSupplementalInformation.TS208;
-	parameters[9] = header.providerSupplementalInformation.TS209;
-	parameters[10] = header.providerSupplementalInformation.TS210;
-	parameters[11] = header.providerSupplementalInformation.TS211;
-	parameters[12] = header.providerSupplementalInformation.TS212;
-	parameters[13] = header.providerSupplementalInformation.TS213;
-	parameters[14] = header.providerSupplementalInformation.TS214;
-	parameters[15] = header.providerSupplementalInformation.TS215;
-	parameters[16] = header.providerSupplementalInformation.TS216;
-	parameters[17] = header.providerSupplementalInformation.TS217;
-	parameters[18] = header.providerSupplementalInformation.TS218;
-	parameters[19] = header.providerSupplementalInformation.TS219;
-	parameters[20] = loadDts;
+		var parameters = [];
+		parameters[0] = headerId;
+		parameters[1] = header.providerSupplementalInformation.TS201;
+		parameters[2] = header.providerSupplementalInformation.TS202;
+		parameters[3] = header.providerSupplementalInformation.TS203;
+		parameters[4] = header.providerSupplementalInformation.TS204;
+		parameters[5] = header.providerSupplementalInformation.TS205;
+		parameters[6] = header.providerSupplementalInformation.TS206;
+		parameters[7] = header.providerSupplementalInformation.TS207;
+		parameters[8] = header.providerSupplementalInformation.TS208;
+		parameters[9] = header.providerSupplementalInformation.TS209;
+		parameters[10] = header.providerSupplementalInformation.TS210;
+		parameters[11] = header.providerSupplementalInformation.TS211;
+		parameters[12] = header.providerSupplementalInformation.TS212;
+		parameters[13] = header.providerSupplementalInformation.TS213;
+		parameters[14] = header.providerSupplementalInformation.TS214;
+		parameters[15] = header.providerSupplementalInformation.TS215;
+		parameters[16] = header.providerSupplementalInformation.TS216;
+		parameters[17] = header.providerSupplementalInformation.TS217;
+		parameters[18] = header.providerSupplementalInformation.TS218;
+		parameters[19] = header.providerSupplementalInformation.TS219;
+		parameters[20] = loadDts;
 
-	var crs = dbConn.executeUpdateAndGetGeneratedKeys(preparedStatement, java.util.Arrays.asList(parameters));
+		var crs = dbConn.executeUpdateAndGetGeneratedKeys(preparedStatement, java.util.Arrays.asList(parameters));
 
-	if (!crs.next()) {
-		logger.error(&quot;Error insterting X12 835 header provider supplemental information record.&quot;);
-	}	
+		if (!crs.next()) {
+			logger.error(&quot;Error insterting X12 835 header provider supplemental information record.&quot;);
+		}	
+	}
 }
 
 function insertClaimPersons(claimId, claim) {
@@ -5333,6 +5443,8 @@ function insertServices(claimId, claim) {
 			insertServiceAmount(serviceId, service);
 			insertDates(&apos;Service&apos;, serviceId, service);
 			insertReferences(&apos;Service&apos;, serviceId, service);
+			insertQuantities(&apos;Service&apos;, serviceId, service);
+			insertRemarkCodes(serviceId, service);
 		} else {
 			logger.error(&quot;Error insterting X12 835 service record.&quot;);
 		}
@@ -5521,6 +5633,35 @@ function insertReferences(type, objId, obj) {
 		if (crs.next()) {
 			referenceId = crs.getLong(1);
 		} else {
+			logger.error(&quot;Error insterting X12 835 &quot; + type + &quot; reference record.&quot;);
+		}
+	}
+}
+
+function insertQuantities(type, objId, obj) {
+	for each (var quantity in obj.quantities) {
+		var pareparedStatement = null;
+
+		if(type == &apos;Claim&apos;) {
+			preparedStatement = &quot;INSERT INTO [X12835].[ClaimQuantityBASE] VALUES (?,?,?,?,?,?)&quot;;
+		} else if(type == &apos;Service&apos;) {
+			preparedStatement = &quot;INSERT INTO [X12835].[ServiceQuantityBASE] VALUES (?,?,?,?,?,?)&quot;;
+		} else {
+			logger.error(&quot;No quantity of type &quot; + type);
+			return;
+		}
+
+		var parameters = [];
+		parameters[0] = objId;
+		parameters[1] = quantity.QTY01;
+		parameters[2] = quantity.QTY02;
+		parameters[3] = quantity.QTY03;
+		parameters[4] = quantity.QTY04;
+		parameters[5] = loadDts;
+
+		var crs = dbConn.executeUpdateAndGetGeneratedKeys(preparedStatement, java.util.Arrays.asList(parameters));
+
+		if (!crs.next()) {
 			logger.error(&quot;Error insterting X12 835 &quot; + type + &quot; reference record.&quot;);
 		}
 	}
@@ -5735,7 +5876,93 @@ function insertProviderAdjustment(transactionId, transaction) {
 			logger.error(&quot;Error insterting X12 835 transaction provider adjustment record.&quot;);
 		}	
 	}
-}</query>
+}
+
+function insertInpatientAdjudications(claimId, claim) {
+	if(claim.inpatientAdjudication != null) {
+		var preparedStatement = &quot;INSERT INTO [X12835].[InpatientAdjudicationBASE] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)&quot;;
+
+		var parameters = [];
+		parameters[0] = claimId;
+		parameters[1] = claim.inpatientAdjudication.MIA01;
+		parameters[2] = claim.inpatientAdjudication.MIA02;
+		parameters[3] = claim.inpatientAdjudication.MIA03;
+		parameters[4] = claim.inpatientAdjudication.MIA04;
+		parameters[5] = claim.inpatientAdjudication.MIA05;
+		parameters[6] = claim.inpatientAdjudication.MIA06;
+		parameters[7] = claim.inpatientAdjudication.MIA07;
+		parameters[8] = claim.inpatientAdjudication.MIA08;
+		parameters[9] = claim.inpatientAdjudication.MIA09;
+		parameters[10] = claim.inpatientAdjudication.MIA10;
+		parameters[11] = claim.inpatientAdjudication.MIA11;
+		parameters[12] = claim.inpatientAdjudication.MIA12;
+		parameters[13] = claim.inpatientAdjudication.MIA13;
+		parameters[14] = claim.inpatientAdjudication.MIA14;
+		parameters[15] = claim.inpatientAdjudication.MIA15;
+		parameters[16] = claim.inpatientAdjudication.MIA16;
+		parameters[17] = claim.inpatientAdjudication.MIA17;
+		parameters[18] = claim.inpatientAdjudication.MIA18;
+		parameters[19] = claim.inpatientAdjudication.MIA19;
+		parameters[20] = claim.inpatientAdjudication.MIA20;
+		parameters[21] = claim.inpatientAdjudication.MIA21;
+		parameters[22] = claim.inpatientAdjudication.MIA22;
+		parameters[23] = claim.inpatientAdjudication.MIA23;
+		parameters[24] = claim.inpatientAdjudication.MIA24;
+		parameters[25] = loadDts;
+
+		var crs = dbConn.executeUpdateAndGetGeneratedKeys(preparedStatement, java.util.Arrays.asList(parameters));
+
+		if (!crs.next()) {
+			logger.error(&quot;Error insterting X12 835 inpatient adjudication record.&quot;);
+		} 	
+	}
+}
+
+function insertOutpatientAdjudications(claimId, claim) {
+	if(claim.inpatientAdjudication != null) {
+		var preparedStatement = &quot;INSERT INTO [X12835].[OutpatientAdjudicationBASE] VALUES (?,?,?,?,?,?,?,?,?,?,?)&quot;;
+
+		var parameters = [];
+		parameters[0] = claimId;
+		parameters[1] = claim.inpatientAdjudication.MIA01;
+		parameters[2] = claim.inpatientAdjudication.MIA02;
+		parameters[3] = claim.inpatientAdjudication.MIA03;
+		parameters[4] = claim.inpatientAdjudication.MIA04;
+		parameters[5] = claim.inpatientAdjudication.MIA05;
+		parameters[6] = claim.inpatientAdjudication.MIA06;
+		parameters[7] = claim.inpatientAdjudication.MIA07;
+		parameters[8] = claim.inpatientAdjudication.MIA08;
+		parameters[9] = claim.inpatientAdjudication.MIA09;
+		parameters[10] = loadDts;
+
+		var crs = dbConn.executeUpdateAndGetGeneratedKeys(preparedStatement, java.util.Arrays.asList(parameters));
+
+		if (!crs.next()) {
+			logger.error(&quot;Error insterting X12 835 outpatient adjudication record.&quot;);
+		} 	
+	}
+}
+
+function insertRemarkCodes(serviceId, service) {
+	for each (var remarkCode in service.remarkCodes) {
+		var pareparedStatement = null;
+
+		preparedStatement = &quot;INSERT INTO [X12835].[ServiceRemarkBASE] VALUES (?,?,?,?)&quot;;
+
+		var parameters = [];
+		parameters[0] = serviceId;
+		parameters[1] = remarkCode.LQ01;
+		parameters[2] = remarkCode.LQ02;
+		parameters[3] = loadDts;
+
+		var crs = dbConn.executeUpdateAndGetGeneratedKeys(preparedStatement, java.util.Arrays.asList(parameters));
+
+		if (!crs.next()) {
+			logger.error(&quot;Error insterting X12 835 service remark record.&quot;);
+		}
+	}
+}
+</query>
         <useScript>true</useScript>
       </properties>
       <transformer version="3.4.2">
