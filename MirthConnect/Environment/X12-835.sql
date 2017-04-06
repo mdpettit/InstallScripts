@@ -837,7 +837,7 @@ GO
 
 ALTER TABLE [X12835].[OutpatientAdjudicationBASE] 
  ADD CONSTRAINT [PK_X12835OutpatientAdjudication]
-	PRIMARY KEY CLUSTERED ([OutpatientAjudicationID] ASC)
+	PRIMARY KEY CLUSTERED ([OutpatientAdjudicationID] ASC)
 GO
 
 CREATE NONCLUSTERED INDEX [IXFK_X12835ClaimAdjustment_X12835Claim] 
