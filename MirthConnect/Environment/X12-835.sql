@@ -434,32 +434,22 @@ CREATE TABLE [X12835].[ClaimQuantityBASE]
 (
 	[ClaimQuantityID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[ClaimID] numeric(38) NOT NULL,
-	[MOA01] varchar(255) NOT NULL,
-	[MOA02] varchar(255) NULL,
-	[MOA03] varchar(255) NULL,
-	[MOA04] varchar(255) NULL,
-	[MOA05] varchar(255) NULL,
-	[MOA06] varchar(255) NULL,
-	[MOA07] varchar(255) NULL,
-	[MOA08] varchar(255) NULL,
-	[MOA09] varchar(255) NULL,
+	[QTY01] varchar(255) NOT NULL,
+	[QTY02] varchar(255) NULL,
+	[QTY03] varchar(255) NULL,
+	[QTY04] varchar(255) NULL,
 	[LoadDTS] datetime2
 )
 GO
 
-CREATE TABLE [X12835].[ClaimQuantityBASE]
+CREATE TABLE [X12835].[ServiceQuantityBASE]
 (
 	[ClaimQuantityID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[ClaimID] numeric(38) NOT NULL,
-	[MOA01] varchar(255) NOT NULL,
-	[MOA02] varchar(255) NULL,
-	[MOA03] varchar(255) NULL,
-	[MOA04] varchar(255) NULL,
-	[MOA05] varchar(255) NULL,
-	[MOA06] varchar(255) NULL,
-	[MOA07] varchar(255) NULL,
-	[MOA08] varchar(255) NULL,
-	[MOA09] varchar(255) NULL,
+	[QTY01] varchar(255) NOT NULL,
+	[QTY02] varchar(255) NULL,
+	[QTY03] varchar(255) NULL,
+	[QTY04] varchar(255) NULL,
 	[LoadDTS] datetime2
 )
 GO
