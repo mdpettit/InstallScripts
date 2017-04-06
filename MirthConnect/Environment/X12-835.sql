@@ -417,7 +417,8 @@ CREATE TABLE [X12835].[ServiceBASE]
 	[SVC0101] varchar(255) NOT NULL,
 	[SVC0102] varchar(255) NOT NULL,
 	[SVC0103] varchar(255) NOT NULL,
-	[SVC02] varchar(255) NULL,
+		
+[SVC02] varchar(255) NULL,
 	[SVC03] varchar(255) NULL,
 	[SVC04] varchar(255) NULL,
 	[SVC05] varchar(255) NULL,
