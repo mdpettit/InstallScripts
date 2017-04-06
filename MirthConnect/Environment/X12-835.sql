@@ -99,14 +99,6 @@ IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X128
 ALTER TABLE [X12835].[PayerReferenceBASE] DROP CONSTRAINT [FK_X12835PayerReference_X12835Payer]
 GO
 
-IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X12835FinancialReference_X12835Financial]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
-ALTER TABLE [X12835].[FinancialReferenceBASE] DROP CONSTRAINT [FK_X12835FinancialReference_X12835Financial]
-GO
-
-IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X12835TraceNumberReference_X12835TraceNumber]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
-ALTER TABLE [X12835].[TraceNumberReferenceBASE] DROP CONSTRAINT [FK_X12835TraceNumberReference_X12835TraceNumber]
-GO
-
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X12FunctionalGroup_X12Interchange]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
 ALTER TABLE [X12].[FunctionalGroupBASE] DROP CONSTRAINT [FK_X12FunctionalGroup_X12Interchange]
 GO
@@ -197,20 +189,12 @@ IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[Transac
 DROP TABLE [X12835].[TransactionBASE]
 GO
 
-IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[TraceNumberReferenceBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
-DROP TABLE [X12835].[TraceNumberReferenceBASE]
-GO
-
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[ClaimReferenceBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
 DROP TABLE [X12835].[ClaimReferenceBASE]
 GO
 
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[PayerReferenceBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
 DROP TABLE [X12835].[PayerReferenceBASE]
-GO
-
-IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FinancialReferenceBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
-DROP TABLE [X12835].[FinancialReferenceBASE]
 GO
 
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[TransactionReferenceBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
@@ -606,26 +590,6 @@ CREATE TABLE [X12835].[ClaimReferenceBASE]
 )
 GO
 
-CREATE TABLE [X12835].[TraceNumberReferenceBASE]
-(
-	[ReferenceID] numeric(38) NOT NULL IDENTITY (1, 1),
-	[TraceNumberID] numeric(38) NOT NULL,
-	[REF01] varchar(255) NOT NULL,    -- Receiver Identification Qualifier
-	[REF02] varchar(255) NOT NULL,    -- Receiver Identification Number
-	[LoadDTS] datetime2
-)
-GO
-
-CREATE TABLE [X12835].[FinancialReferenceBASE]
-(
-	[ReferenceID] numeric(38) NOT NULL IDENTITY (1, 1),
-	[FinancialID] numeric(38) NOT NULL,
-	[REF01] varchar(255) NOT NULL,    -- Receiver Identification Qualifier
-	[REF02] varchar(255) NOT NULL,    -- Receiver Identification Number
-	[LoadDTS] datetime2
-)
-GO
-
 CREATE TABLE [X12].[FunctionalGroupBASE]
 (
 	[FunctionalGroupID] numeric(38) NOT NULL IDENTITY (1, 1),
@@ -858,11 +822,6 @@ ALTER TABLE [X12835].[TransactionReferenceBASE]
 	PRIMARY KEY CLUSTERED ([ReferenceID] ASC)
 GO
 
-ALTER TABLE [X12835].[TraceNumberReferenceBASE] 
- ADD CONSTRAINT [PK_X12835TraceNumberReference]
-	PRIMARY KEY CLUSTERED ([ReferenceID] ASC)
-GO
-
 ALTER TABLE [X12835].[ClaimReferenceBASE] 
  ADD CONSTRAINT [PK_X12835ClaimReference]
 	PRIMARY KEY CLUSTERED ([ReferenceID] ASC)
@@ -873,17 +832,8 @@ ALTER TABLE [X12835].[PayerReferenceBASE]
 	PRIMARY KEY CLUSTERED ([ReferenceID] ASC)
 GO
 
-ALTER TABLE [X12835].[FinancialReferenceBASE] 
- ADD CONSTRAINT [PK_X12835FinancialReference]
-	PRIMARY KEY CLUSTERED ([ReferenceID] ASC)
-GO
-
 CREATE NONCLUSTERED INDEX [IXFK_X12835TransactionReference_X12835Transaction] 
  ON [X12835].[TransactionReferenceBASE] ([TransactionID] ASC)
-GO
-
-CREATE NONCLUSTERED INDEX [IXFK_X12835TraceNumberReference_X12835TraceNumber] 
- ON [X12835].[TraceNumberReferenceBASE] ([TraceNumberID] ASC)
 GO
 
 CREATE NONCLUSTERED INDEX [IXFK_X12835ClaimReference_X12835Claim] 
@@ -892,10 +842,6 @@ GO
 
 CREATE NONCLUSTERED INDEX [IXFK_X12835PayerReference_X12835Payer] 
  ON [X12835].[PayerReferenceBASE] ([PayerID] ASC)
-GO
-
-CREATE NONCLUSTERED INDEX [IXFK_X12835FinancialReference_X12835Financial] 
- ON [X12835].[FinancialReferenceBASE] ([FinancialID] ASC)
 GO
 
 ALTER TABLE [X12].[FunctionalGroupBASE] 
@@ -994,20 +940,12 @@ ALTER TABLE [X12835].[TransactionReferenceBASE] ADD CONSTRAINT [FK_X12835Transac
 	FOREIGN KEY ([TransactionID]) REFERENCES [X12835].[TransactionBASE] ([TransactionID]) ON DELETE Cascade ON UPDATE No Action
 GO
 
-ALTER TABLE [X12835].[TraceNumberReferenceBASE] ADD CONSTRAINT [FK_X12835TraceNumberReference_X12835TraceNumber]
-	FOREIGN KEY ([TraceNumberID]) REFERENCES [X12835].[TraceNumberBASE] ([TraceNumberID]) ON DELETE Cascade ON UPDATE No Action
-GO
-
 ALTER TABLE [X12835].[ClaimReferenceBASE] ADD CONSTRAINT [FK_X12835ClaimReference_X12835Claim]
 	FOREIGN KEY ([ClaimID]) REFERENCES [X12835].[ClaimBASE] ([ClaimID]) ON DELETE Cascade ON UPDATE No Action
 GO
 
 ALTER TABLE [X12835].[PayerReferenceBASE] ADD CONSTRAINT [FK_X12835PayerReference_X12835Payer]
 	FOREIGN KEY ([PayerID]) REFERENCES [X12835].[PayerBASE] ([PayerID]) ON DELETE Cascade ON UPDATE No Action
-GO
-
-ALTER TABLE [X12835].[FinancialReferenceBASE] ADD CONSTRAINT [FK_X12835FinancialReference_X12835Financial]
-	FOREIGN KEY ([FinancialID]) REFERENCES [X12835].[FinancialBASE] ([FinancialID]) ON DELETE Cascade ON UPDATE No Action
 GO
 
 ALTER TABLE [X12].[FunctionalGroupBASE] ADD CONSTRAINT [FK_X12FunctionalGroup_X12Interchange]
@@ -1067,12 +1005,6 @@ GO
 EXEC sp_addextendedproperty 'MS_Description', 'Receiver Identification Number', 'Schema', [X12835], 'table', [TransactionReferenceBASE], 'column', [REF02]
 GO
 
-EXEC sp_addextendedproperty 'MS_Description', 'Receiver Identification Qualifier', 'Schema', [X12835], 'table', [TraceNumberReferenceBASE], 'column', [REF01]
-GO
-
-EXEC sp_addextendedproperty 'MS_Description', 'Receiver Identification Qualifier', 'Schema', [X12835], 'table', [TraceNumberReferenceBASE], 'column', [REF02]
-GO
-
 EXEC sp_addextendedproperty 'MS_Description', 'Receiver Identification Qualifier', 'Schema', [X12835], 'table', [ClaimReferenceBASE], 'column', [REF01]
 GO
 
@@ -1084,10 +1016,4 @@ EXEC sp_addextendedproperty 'MS_Description', 'Receiver Identification Qualifier
 GO
 
 EXEC sp_addextendedproperty 'MS_Description', 'Receiver Identification Qualifier', 'Schema', [X12835], 'table', [PayerReferenceBASE], 'column', [REF02]
-GO
-
-EXEC sp_addextendedproperty 'MS_Description', 'Receiver Identification Qualifier', 'Schema', [X12835], 'table', [FinancialReferenceBASE], 'column', [REF01]
-GO
-
-EXEC sp_addextendedproperty 'MS_Description', 'Receiver Identification Qualifier', 'Schema', [X12835], 'table', [FinancialReferenceBASE], 'column', [REF02]
 GO
