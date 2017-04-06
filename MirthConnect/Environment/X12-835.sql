@@ -11,6 +11,14 @@ IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X128
 ALTER TABLE [X12835].[ClaimBASE] DROP CONSTRAINT [FK_X12835Claim_X12835Header]
 GO
 
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X12835ProviderSummaryInformation_X12835Header]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
+ALTER TABLE [X12835].[ProviderSummaryInformationBASE] DROP CONSTRAINT [FK_X12835ProviderSummaryInformation_X12835Header]
+GO
+
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X12835ProviderSupplementalInformation_X12835Header]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
+ALTER TABLE [X12835].[ProviderSupplementalInformationBASE] DROP CONSTRAINT [FK_X12835ProviderSupplementalInformation_X12835Header]
+GO
+
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X12835Header_X12835Transaction]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
 ALTER TABLE [X12835].[HeaderBASE] DROP CONSTRAINT [FK_X12835Header_X12835Transaction]
 GO
@@ -111,6 +119,14 @@ GO
 
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[ClaimBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
 DROP TABLE [X12835].[ClaimBASE]
+GO
+
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[ProviderSummaryInformationBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
+DROP TABLE [X12835].[ProviderSummaryInformationBASE]
+GO
+
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[ProviderSupplementalInformationBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
+DROP TABLE [X12835].[ProviderSupplementalInformationBASE]
 GO
 
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[HeaderBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
@@ -238,6 +254,64 @@ CREATE TABLE [X12835].[ClaimBASE]
 	[LoadDTS] datetime2
 )
 GO
+
+CREATE TABLE [X12835].[ProviderSummaryInformationBASE]
+(
+	[ProviderSummaryInformationID] numeric(38) NOT NULL IDENTITY (1, 1),
+	[HeaderID] numeric(38) NOT NULL,
+	[TS301] varchar(255) NOT NULL,
+	[TS302] varchar(255) NOT NULL,
+	[TS303] varchar(255) NOT NULL,
+	[TS304] varchar(255) NOT NULL,
+	[TS305] varchar(255) NOT NULL,
+	[TS306] varchar(255) NOT NULL,
+	[TS307] varchar(255) NOT NULL,
+	[TS308] varchar(255) NOT NULL,
+	[TS309] varchar(255) NOT NULL,
+	[TS310] varchar(255) NOT NULL,
+	[TS311] varchar(255) NOT NULL,
+	[TS312] varchar(255) NOT NULL,
+	[TS313] varchar(255) NOT NULL,
+	[TS314] varchar(255) NOT NULL,
+	[TS315] varchar(255) NOT NULL,
+	[TS316] varchar(255) NOT NULL,
+	[TS317] varchar(255) NOT NULL,
+	[TS318] varchar(255) NOT NULL,
+	[TS319] varchar(255) NOT NULL,
+	[TS320] varchar(255) NOT NULL,
+	[TS321] varchar(255) NOT NULL,
+	[TS322] varchar(255) NOT NULL,
+	[TS323] varchar(255) NOT NULL,
+	[TS324] varchar(255) NOT NULL,
+	[LoadDTS] datetime2
+)
+GO
+
+CREATE TABLE [X12835].[ProviderSupplementalInformationBASE]
+{
+	[ProviderSupplementalInformationID] numeric(38) NOT NULL IDENTITY (1, 1),
+	[HeaderID] numeric(38) NOT NULL,
+	[TS201] varchar(255) NOT NULL,
+	[TS202] varchar(255) NOT NULL,
+	[TS203] varchar(255) NOT NULL,
+	[TS204] varchar(255) NOT NULL,
+	[TS205] varchar(255) NOT NULL,
+	[TS206] varchar(255) NOT NULL,
+	[TS207] varchar(255) NOT NULL,
+	[TS208] varchar(255) NOT NULL,
+	[TS209] varchar(255) NOT NULL,
+	[TS210] varchar(255) NOT NULL,
+	[TS211] varchar(255) NOT NULL,
+	[TS212] varchar(255) NOT NULL,
+	[TS213] varchar(255) NOT NULL,
+	[TS214] varchar(255) NOT NULL,
+	[TS215] varchar(255) NOT NULL,
+	[TS216] varchar(255) NOT NULL,
+	[TS217] varchar(255) NOT NULL,
+	[TS218] varchar(255) NOT NULL,
+	[TS219] varchar(255) NOT NULL,
+	[LoadDTS] datetime2
+}
 
 CREATE TABLE [X12835].[HeaderBASE]
 (
@@ -654,6 +728,16 @@ ALTER TABLE [X12835].[ClaimBASE]
 	PRIMARY KEY CLUSTERED ([ClaimID] ASC)
 GO
 
+ALTER TABLE [X12835].[ProviderSummaryInformationBASE] 
+ ADD CONSTRAINT [PK_X12835ProviderSummaryInformation]
+	PRIMARY KEY CLUSTERED ([ProviderSummaryInformationID] ASC)
+GO
+
+ALTER TABLE [X12835].[ProviderSupplementalInformationBASE] 
+ ADD CONSTRAINT [PK_X12835ProviderSupplementalInformation]
+	PRIMARY KEY CLUSTERED ([ProviderSupplmentalInformationID] ASC)
+GO
+
 ALTER TABLE [X12835].[HeaderBASE]
  ADD CONSTRAINT [PK_X12835Header]
     PRIMARY KEY CLUSTERED ([HeaderID] ASC)
@@ -661,6 +745,14 @@ GO
 
 CREATE NONCLUSTERED INDEX [IXFK_X12835Claim_X12835Header] 
  ON [X12835].[ClaimBASE] ([HeaderID] ASC)
+GO
+
+CREATE NONCLUSTERED INDEX [IXFK_X12835ProviderSummaryInformation_X12835Header] 
+ ON [X12835].[ProviderSummaryInformationBASE] ([HeaderID] ASC)
+GO
+
+CREATE NONCLUSTERED INDEX [IXFK_X12835ProviderSupplementalInformation_X12835Header] 
+ ON [X12835].[ProviderSupplementalInformationBASE] ([HeaderID] ASC)
 GO
 
 CREATE NONCLUSTERED INDEX [IXFK_X12835Header_X12835Transaction]
@@ -967,6 +1059,14 @@ ALTER TABLE [X12835].[ClaimReferenceBASE] ADD CONSTRAINT [FK_X12835ClaimReferenc
 GO
 
 ALTER TABLE [X12835].[ClaimBASE] ADD CONSTRAINT [FK_X12835Claim_X12835Header]
+	FOREIGN KEY ([HeaderID]) REFERENCES [X12835].[HeaderBASE] ([HeaderID]) ON DELETE Cascade ON UPDATE No Action
+GO
+
+ALTER TABLE [X12835].[ProviderSummaryInformationBASE] ADD CONSTRAINT [FK_X12835ProviderSummaryInformation_X12835Header]
+	FOREIGN KEY ([HeaderID]) REFERENCES [X12835].[HeaderBASE] ([HeaderID]) ON DELETE Cascade ON UPDATE No Action
+GO
+
+ALTER TABLE [X12835].[ProviderSupplementalInformationBASE] ADD CONSTRAINT [FK_X12835ProviderSupplementalInformation_X12835Header]
 	FOREIGN KEY ([HeaderID]) REFERENCES [X12835].[HeaderBASE] ([HeaderID]) ON DELETE Cascade ON UPDATE No Action
 GO
 
