@@ -735,7 +735,7 @@ GO
 
 ALTER TABLE [X12835].[ProviderSupplementalInformationBASE] 
  ADD CONSTRAINT [PK_X12835ProviderSupplementalInformation]
-	PRIMARY KEY CLUSTERED ([ProviderSupplmentalInformationID] ASC)
+	PRIMARY KEY CLUSTERED ([ProviderSupplementalInformationID] ASC)
 GO
 
 ALTER TABLE [X12835].[HeaderBASE]
