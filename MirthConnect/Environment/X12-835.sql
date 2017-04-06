@@ -288,7 +288,7 @@ CREATE TABLE [X12835].[ProviderSummaryInformationBASE]
 GO
 
 CREATE TABLE [X12835].[ProviderSupplementalInformationBASE]
-{
+(
 	[ProviderSupplementalInformationID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[HeaderID] numeric(38) NOT NULL,
 	[TS201] varchar(255) NOT NULL,
@@ -311,7 +311,7 @@ CREATE TABLE [X12835].[ProviderSupplementalInformationBASE]
 	[TS218] varchar(255) NOT NULL,
 	[TS219] varchar(255) NOT NULL,
 	[LoadDTS] datetime2
-}
+)
 
 CREATE TABLE [X12835].[HeaderBASE]
 (
