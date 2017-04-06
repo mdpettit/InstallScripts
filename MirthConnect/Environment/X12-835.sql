@@ -444,8 +444,8 @@ GO
 
 CREATE TABLE [X12835].[ServiceQuantityBASE]
 (
-	[ClaimQuantityID] numeric(38) NOT NULL IDENTITY (1, 1),
-	[ClaimID] numeric(38) NOT NULL,
+	[ServiceQuantityID] numeric(38) NOT NULL IDENTITY (1, 1),
+	[ServiceID] numeric(38) NOT NULL,
 	[QTY01] varchar(255) NOT NULL,
 	[QTY02] varchar(255) NULL,
 	[QTY03] varchar(255) NULL,
@@ -726,7 +726,7 @@ GO
 
 CREATE TABLE [X12835].[ServiceRemarkBASE]
 (
-	[ServiceRemarkID] numeric(38) NOT NULL,
+	[ServiceRemarkID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[ServiceID] numeric(38) NOT NULL,
 	[LQ01] varchar(255) NULL,
 	[LQ02] varchar(255) NULL,
@@ -1137,7 +1137,7 @@ ALTER TABLE [X12835].[ClaimQuantityBASE] ADD CONSTRAINT [FK_X12835ClaimQuantity_
 GO
 
 ALTER TABLE [X12835].[ServiceQuantityBASE] ADD CONSTRAINT [FK_X12835ServiceQuantity_X12835Claim]
-	FOREIGN KEY ([ClaimID]) REFERENCES [X12835].[ClaimBASE] ([ClaimID]) ON DELETE Cascade ON UPDATE No Action
+	FOREIGN KEY ([ServiceID]) REFERENCES [X12835].[ServiceBASE] ([ServiceID]) ON DELETE Cascade ON UPDATE No Action
 GO
 
 ALTER TABLE [X12835].[ClaimAmountBASE] ADD CONSTRAINT [FK_X12835ClaimAmount_X12835Claim]
