@@ -35,6 +35,14 @@ IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X128
 ALTER TABLE [X12835].[OutpatientAdjudicationBASE] DROP CONSTRAINT [FK_X12835OutpatientAdjudication_X12835Claim]
 GO
 
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X12835ClaimQuantity_X12835Claim]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
+ALTER TABLE [X12835].[ClaimQuantityBASE] DROP CONSTRAINT [FK_X12835ClaimQuantity_X12835Claim]
+GO
+
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X12835ServiceQuantity_X12835Claim]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
+ALTER TABLE [X12835].[ServiceQuantityBASE] DROP CONSTRAINT [FK_X12835ServiceQuantity_X12835Claim]
+GO
+
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X12835ClaimAmount_X12835Claim]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
 ALTER TABLE [X12835].[ClaimAmountBASE] DROP CONSTRAINT [FK_X12835ClaimAmount_X12835Claim]
 GO
@@ -151,6 +159,14 @@ GO
 
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[OutpatientAdjudicationBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
 DROP TABLE [X12835].[OutpatientAdjudicationBASE]
+GO
+
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[ClaimQuantityBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
+DROP TABLE [X12835].[ClaimQuantityBASE]
+GO
+
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[ServiceQuantityBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
+DROP TABLE [X12835].[ServiceQuantityBASE]
 GO
 
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[ClaimAmountBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
@@ -400,6 +416,40 @@ GO
 CREATE TABLE [X12835].[OutpatientAdjudicationBASE]
 (
 	[OutpatientAdjudicationID] numeric(38) NOT NULL IDENTITY (1, 1),
+	[ClaimID] numeric(38) NOT NULL,
+	[MOA01] varchar(255) NOT NULL,
+	[MOA02] varchar(255) NULL,
+	[MOA03] varchar(255) NULL,
+	[MOA04] varchar(255) NULL,
+	[MOA05] varchar(255) NULL,
+	[MOA06] varchar(255) NULL,
+	[MOA07] varchar(255) NULL,
+	[MOA08] varchar(255) NULL,
+	[MOA09] varchar(255) NULL,
+	[LoadDTS] datetime2
+)
+GO
+
+CREATE TABLE [X12835].[ClaimQuantityBASE]
+(
+	[ClaimQuantityID] numeric(38) NOT NULL IDENTITY (1, 1),
+	[ClaimID] numeric(38) NOT NULL,
+	[MOA01] varchar(255) NOT NULL,
+	[MOA02] varchar(255) NULL,
+	[MOA03] varchar(255) NULL,
+	[MOA04] varchar(255) NULL,
+	[MOA05] varchar(255) NULL,
+	[MOA06] varchar(255) NULL,
+	[MOA07] varchar(255) NULL,
+	[MOA08] varchar(255) NULL,
+	[MOA09] varchar(255) NULL,
+	[LoadDTS] datetime2
+)
+GO
+
+CREATE TABLE [X12835].[ClaimQuantityBASE]
+(
+	[ClaimQuantityID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[ClaimID] numeric(38) NOT NULL,
 	[MOA01] varchar(255) NOT NULL,
 	[MOA02] varchar(255) NULL,
@@ -840,6 +890,16 @@ ALTER TABLE [X12835].[OutpatientAdjudicationBASE]
 	PRIMARY KEY CLUSTERED ([OutpatientAdjudicationID] ASC)
 GO
 
+ALTER TABLE [X12835].[ClaimQuantityBASE] 
+ ADD CONSTRAINT [PK_X12835ClaimQuantity]
+	PRIMARY KEY CLUSTERED ([ClaimQuantityID] ASC)
+GO
+
+ALTER TABLE [X12835].[ServiceQuantityBASE] 
+ ADD CONSTRAINT [PK_X12835ServiceQuantity]
+	PRIMARY KEY CLUSTERED ([ServiceQuantityID] ASC)
+GO
+
 CREATE NONCLUSTERED INDEX [IXFK_X12835ClaimAdjustment_X12835Claim] 
  ON [X12835].[ClaimAdjustmentBASE] ([ClaimID] ASC)
 GO
@@ -850,6 +910,14 @@ GO
 
 CREATE NONCLUSTERED INDEX [IXFK_X12835OutpatientAdjudication_X12835Claim] 
  ON [X12835].[OutpatientAdjudicationBASE] ([ClaimID] ASC)
+GO
+
+CREATE NONCLUSTERED INDEX [IXFK_X12835ClaimQuantity_X12835Claim] 
+ ON [X12835].[ClaimQuantityBASE] ([ClaimID] ASC)
+GO
+
+CREATE NONCLUSTERED INDEX [IXFK_X12835ServiceQuantity_X12835Claim] 
+ ON [X12835].[ServiceQuantityBASE] ([ClaimID] ASC)
 GO
 
 ALTER TABLE [X12835].[ClaimAmountBASE] 
@@ -1071,6 +1139,14 @@ ALTER TABLE [X12835].[InpatientAdjudicationBASE] ADD CONSTRAINT [FK_X12835Inpati
 GO
 
 ALTER TABLE [X12835].[OutpatientAdjudicationBASE] ADD CONSTRAINT [FK_X12835OutpatientAdjudication_X12835Claim]
+	FOREIGN KEY ([ClaimID]) REFERENCES [X12835].[ClaimBASE] ([ClaimID]) ON DELETE Cascade ON UPDATE No Action
+GO
+
+ALTER TABLE [X12835].[ClaimQuantityBASE] ADD CONSTRAINT [FK_X12835ClaimQuantity_X12835Claim]
+	FOREIGN KEY ([ClaimID]) REFERENCES [X12835].[ClaimBASE] ([ClaimID]) ON DELETE Cascade ON UPDATE No Action
+GO
+
+ALTER TABLE [X12835].[ServiceQuantityBASE] ADD CONSTRAINT [FK_X12835ServiceQuantity_X12835Claim]
 	FOREIGN KEY ([ClaimID]) REFERENCES [X12835].[ClaimBASE] ([ClaimID]) ON DELETE Cascade ON UPDATE No Action
 GO
 
