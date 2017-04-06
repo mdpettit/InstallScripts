@@ -222,7 +222,6 @@ CREATE TABLE [X12835].[ClaimBASE]
 (
 	[ClaimID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[HeaderID] numeric(38) NOT NULL,
-	[LX01] varchar(255) NOT NULL,
 	[CLP01] varchar(255) NULL,
 	[CLP02] varchar(255) NULL,
 	[CLP03] varchar(255) NULL,
