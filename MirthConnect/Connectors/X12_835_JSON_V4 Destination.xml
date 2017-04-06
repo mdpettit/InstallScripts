@@ -1,0 +1,791 @@
+<connector version="3.4.2">
+  <metaDataId>3</metaDataId>
+  <name>Destination 2</name>
+  <properties class="com.mirth.connect.connectors.jdbc.DatabaseDispatcherProperties" version="3.4.2">
+    <pluginProperties/>
+    <destinationConnectorProperties version="3.4.2">
+      <queueEnabled>false</queueEnabled>
+      <sendFirst>false</sendFirst>
+      <retryIntervalMillis>10000</retryIntervalMillis>
+      <regenerateTemplate>false</regenerateTemplate>
+      <retryCount>0</retryCount>
+      <rotate>false</rotate>
+      <includeFilterTransformer>false</includeFilterTransformer>
+      <threadCount>1</threadCount>
+      <threadAssignmentVariable></threadAssignmentVariable>
+      <validateResponse>false</validateResponse>
+      <resourceIds class="linked-hash-map">
+        <entry>
+          <string>Default Resource</string>
+          <string>[Default Resource]</string>
+        </entry>
+      </resourceIds>
+      <queueBufferSize>1000</queueBufferSize>
+    </destinationConnectorProperties>
+    <driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver>
+    <url>jdbc:sqlserver://host:port;databaseName=dbname</url>
+    <username></username>
+    <password></password>
+    <query>var dbConn;
+
+var loadDts = DateUtil.getCurrentDate(&apos;yyyy-MM-dd HH:mm:ss&apos;);
+
+try {	
+	dbConn = DatabaseConnectionFactory.createDatabaseConnection(&apos;com.microsoft.sqlserver.jdbc.SQLServerDriver&apos;,&apos;jdbc:sqlserver://DEVHCSQL01:1433;DatabaseName=MirthSource;integratedSecurity=true;authenticationScheme=JavaKerberos;serverSpn=MSSQLSvc/DEVHCSQL01.Allina.com:1433&apos;);
+
+	var obj = JSON.parse($(&apos;x12Interchange&apos;));
+
+	var interchangeId = insertInterchange(obj);
+
+	insertFunctionalGroups(interchangeId, obj);
+
+} finally {
+	if (dbConn) { 
+		dbConn.close();
+	}
+}
+
+function insertInterchange(X12Interchange) {
+	var interchangeId = null;
+	
+	var insertInterchangeStmt = &quot;INSERT INTO [X12].[InterchangeBASE] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)&quot;;
+
+	var interchangeParameters = [];
+	interchangeParameters[0] = obj.ISA01;
+	interchangeParameters[1] = obj.ISA02;
+	interchangeParameters[2] = obj.ISA03;
+	interchangeParameters[3] = obj.ISA04;
+	interchangeParameters[4] = obj.ISA05;
+	interchangeParameters[5] = obj.ISA06;
+	interchangeParameters[6] = obj.ISA07;
+	interchangeParameters[7] = obj.ISA08;
+	interchangeParameters[8] = obj.ISA09;
+	interchangeParameters[9] = obj.ISA10;
+	interchangeParameters[10] = obj.ISA11;
+	interchangeParameters[11] = obj.ISA12;
+	interchangeParameters[12] = obj.ISA13;
+	interchangeParameters[13] = obj.ISA14;
+	interchangeParameters[14] = obj.ISA15;
+	interchangeParameters[15] = obj.ISA16;
+	interchangeParameters[16] = $(&apos;originalFilename&apos;);
+	interchangeParameters[17] = loadDts;
+
+	var crs = dbConn.executeUpdateAndGetGeneratedKeys(insertInterchangeStmt, java.util.Arrays.asList(interchangeParameters));
+
+	if (crs.next()) {
+		interchangeId = crs.getLong(1);
+	} else {
+		logger.error(&quot;Error insterting X12 835 interchange record.&quot;);
+	}
+
+	return interchangeId;
+}
+
+function insertFunctionalGroups(interchangeId, obj) {
+	for each (var functionalGroup in obj.functionalGroups) {
+		var functionalGroupId = null;
+	
+		var preparedStatement = &quot;INSERT INTO [X12].[FunctionalGroupBASE] VALUES (?,?,?,?,?,?,?,?,?, ?)&quot;;
+	
+		var parameters = [];
+		parameters[0] = interchangeId;
+		parameters[1] = functionalGroup.GS01;
+		parameters[2] = functionalGroup.GS02;
+		parameters[3] = functionalGroup.GS03;
+		parameters[4] = functionalGroup.GS04;
+		parameters[5] = functionalGroup.GS05;
+		parameters[6] = functionalGroup.GS06;
+		parameters[7] = functionalGroup.GS07;
+		parameters[8] = functionalGroup.GS08;
+		parameters[9] = loadDts;
+	
+		var crs = dbConn.executeUpdateAndGetGeneratedKeys(preparedStatement, java.util.Arrays.asList(parameters));
+	
+		if (crs.next()) {
+			functionalGroupId = crs.getLong(1);
+			insertTransactions(interchangeId, functionalGroupId, functionalGroup);
+		} else {
+			logger.error(&quot;Error insterting X12 835 functional group record.&quot;);
+		}
+	}
+}
+
+function insertTransactions(interchangeId, functionalGroupId, obj) {
+	for each (var transaction in obj.transactions) {
+		var transactionId = null;
+		
+		var preparedStatement = &quot;INSERT INTO [X12835].[TransactionBASE] VALUES (?,?,?,?,?)&quot;;
+
+		var parameters = [];
+		parameters[0] = functionalGroupId;
+		parameters[1] = interchangeId;
+		parameters[2] = transaction.ST01;
+		parameters[3] = transaction.ST02;
+		parameters[4] = loadDts;
+
+		var crs = dbConn.executeUpdateAndGetGeneratedKeys(preparedStatement, java.util.Arrays.asList(parameters));
+
+		if (crs.next()) {
+			transactionId = crs.getLong(1);
+			insertTransactionHeaders(transactionId, transaction);
+			insertDates(&apos;Transaction&apos;, transactionId, transaction);
+			insertReferences(&apos;Transaction&apos;, transactionId, transaction);
+			insertFinancial(transactionId, transaction);
+			insertPersons(transactionId, transaction);
+			insertProviderAdjustment(transactionId, transaction);
+			insertTraceNumber(transactionId, transaction);
+		} else {
+			logger.error(&quot;Error insterting X12 835 transaction record.&quot;);
+		}
+	}
+}
+
+function insertTransactionHeaders(transactionId, transaction) {
+	for each (var header in transaction.headers) {
+		var headerId = null;
+
+		var preparedStatement = &quot;INSERT INTO [X12835].[HeaderBASE] VALUES (?, ?, ?)&quot;;
+
+		var parameters = [];
+		parameters[0] = transactionId;
+		parameters[1] = header.LX01;
+		parameters[2] = loadDts;
+
+		var crs = dbConn.executeUpdateAndGetGeneratedKeys(preparedStatement, java.util.Arrays.asList(parameters));
+	
+		if (crs.next()) {
+			headerId = crs.getLong(1);
+			insertClaims(headerId, header);
+			insertProviderSummaryInformation(headerId, header);
+			insertProviderSupplementalSummaryInformation(headerId, header)
+		} else {
+			logger.error(&quot;Error insterting X12 835 header record.&quot;);
+		}
+	}
+}
+
+function insertClaims(headerId, header) {
+	for each (var claim in header.claims) {
+		var claimId = null;
+
+		var preparedStatement = &quot;INSERT INTO [X12835].[ClaimBASE] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)&quot;;
+
+		var parameters = [];
+		parameters[0] = headerId;
+		parameters[1] = claim.CLP01;
+		parameters[2] = claim.CLP02;
+		parameters[3] = claim.CLP03;
+		parameters[4] = claim.CLP04;
+		parameters[5] = claim.CLP05;
+		parameters[6] = claim.CLP06;
+		parameters[7] = claim.CLP07;
+		parameters[8] = claim.CLP08;
+		parameters[9] = claim.CLP09;
+		parameters[10] = claim.CLP10;
+		parameters[11] = claim.CLP11;
+		parameters[12] = claim.CLP12;
+		parameters[13] = claim.CLP13;
+		parameters[14] = loadDts;
+
+		var crs = dbConn.executeUpdateAndGetGeneratedKeys(preparedStatement, java.util.Arrays.asList(parameters));
+
+		if (crs.next()) {
+			claimId = crs.getLong(1);
+			insertClaimPersons(claimId, claim);
+			insertServices(claimId, claim);
+			insertClaimAdjustments(claimId, claim);
+			insertClaimAmount(claimId, claim);
+			insertDates(&apos;Claim&apos;, claimId, claim);
+			insertReferences(&apos;Claim&apos;, claimId, claim);
+		} else {
+			logger.error(&quot;Error insterting X12 835 claim record.&quot;);
+		}
+	}		
+}
+
+function insertProviderSummaryInformation(headerId, header) {
+	var preparedStatement = &quot;INSERT INTO [X12835].[ProviderSummaryInformationBASE] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)&quot;;
+
+	var parameters = [];
+	parameters[0] = headerId;
+	parameters[1] = header.providerSummaryInformation.TS301;
+	parameters[2] = header.providerSummaryInformation.TS302;
+	parameters[3] = header.providerSummaryInformation.TS303;
+	parameters[4] = header.providerSummaryInformation.TS304;
+	parameters[5] = header.providerSummaryInformation.TS305;
+	parameters[6] = header.providerSummaryInformation.TS306;
+	parameters[7] = header.providerSummaryInformation.TS307;
+	parameters[8] = header.providerSummaryInformation.TS308;
+	parameters[9] = header.providerSummaryInformation.TS309;
+	parameters[10] = header.providerSummaryInformation.TS310;
+	parameters[11] = header.providerSummaryInformation.TS311;
+	parameters[12] = header.providerSummaryInformation.TS312;
+	parameters[13] = header.providerSummaryInformation.TS313;
+	parameters[14] = header.providerSummaryInformation.TS314;
+	parameters[15] = header.providerSummaryInformation.TS315;
+	parameters[16] = header.providerSummaryInformation.TS316;
+	parameters[17] = header.providerSummaryInformation.TS317;
+	parameters[18] = header.providerSummaryInformation.TS318;
+	parameters[19] = header.providerSummaryInformation.TS319;
+	parameters[20] = header.providerSummaryInformation.TS320;
+	parameters[21] = header.providerSummaryInformation.TS321;
+	parameters[22] = header.providerSummaryInformation.TS322;
+	parameters[23] = header.providerSummaryInformation.TS323;
+	parameters[24] = header.providerSummaryInformation.TS324;
+	parameters[25] = loadDts;
+
+	var crs = dbConn.executeUpdateAndGetGeneratedKeys(preparedStatement, java.util.Arrays.asList(parameters));
+
+	if (!crs.next()) {
+		logger.error(&quot;Error insterting X12 835 header provider summary information record.&quot;);
+	}
+}
+
+function insertProviderSupplementalInformation(headerId, header) {
+	var preparedStatement = &quot;INSERT INTO [X12835].[ProviderSupplementalInformationBASE] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)&quot;;
+
+	var parameters = [];
+	parameters[0] = headerId;
+	parameters[1] = header.providerSupplementalInformation.TS201;
+	parameters[2] = header.providerSupplementalInformation.TS202;
+	parameters[3] = header.providerSupplementalInformation.TS203;
+	parameters[4] = header.providerSupplementalInformation.TS204;
+	parameters[5] = header.providerSupplementalInformation.TS205;
+	parameters[6] = header.providerSupplementalInformation.TS206;
+	parameters[7] = header.providerSupplementalInformation.TS207;
+	parameters[8] = header.providerSupplementalInformation.TS208;
+	parameters[9] = header.providerSupplementalInformation.TS209;
+	parameters[10] = header.providerSupplementalInformation.TS210;
+	parameters[11] = header.providerSupplementalInformation.TS211;
+	parameters[12] = header.providerSupplementalInformation.TS212;
+	parameters[13] = header.providerSupplementalInformation.TS213;
+	parameters[14] = header.providerSupplementalInformation.TS214;
+	parameters[15] = header.providerSupplementalInformation.TS215;
+	parameters[16] = header.providerSupplementalInformation.TS216;
+	parameters[17] = header.providerSupplementalInformation.TS217;
+	parameters[18] = header.providerSupplementalInformation.TS218;
+	parameters[19] = header.providerSupplementalInformation.TS219;
+	parameters[20] = loadDts;
+
+	var crs = dbConn.executeUpdateAndGetGeneratedKeys(preparedStatement, java.util.Arrays.asList(parameters));
+
+	if (!crs.next()) {
+		logger.error(&quot;Error insterting X12 835 header provider supplemental information record.&quot;);
+	}	
+}
+
+function insertClaimPersons(claimId, claim) {
+	for each (var claimPerson in claim.people) {
+		var claimPersonId = null;
+
+		var preparedStatement = &quot;INSERT INTO [X12835].[ClaimPersonBASE] VALUES (?,?,?,?,?,?,?,?,?,?,?)&quot;;
+
+		var parameters = [];
+		parameters[0] = claimId;
+		parameters[1] = claimPerson.NM101;
+		parameters[2] = claimPerson.NM102;
+		parameters[3] = claimPerson.NM103;
+		parameters[4] = claimPerson.NM104;
+		parameters[5] = claimPerson.NM105;
+		parameters[6] = claimPerson.NM106;
+		parameters[7] = claimPerson.NM107;
+		parameters[8] = claimPerson.NM108;
+		parameters[9] = claimPerson.NM109;
+		parameters[10] = loadDts;
+
+		var crs = dbConn.executeUpdateAndGetGeneratedKeys(preparedStatement, java.util.Arrays.asList(parameters));
+
+		if (crs.next()) {
+			claimPersonId = crs.getLong(1);
+		} else {
+			logger.error(&quot;Error insterting X12 835 patient record.&quot;);
+		}
+	}		
+}
+
+function insertServices(claimId, claim) {
+	for each (var service in claim.services) {
+		var serviceId = null;
+
+		var preparedStatement = &quot;INSERT INTO [X12835].[ServiceBASE] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)&quot;;
+
+		var parameters = [];
+		parameters[0] = claimId;
+		parameters[1] = service.SVC0101;
+		parameters[2] = service.SVC0102;
+		parameters[3] = service.SVC0103;
+		parameters[4] = service.SVC0104;
+		parameters[5] = service.SVC0105;
+		parameters[6] = service.SVC0106;
+		parameters[7] = service.SVC0107;
+		parameters[8] = service.SVC0108;
+		parameters[9] = service.SVC02;
+		parameters[10] = service.SVC03;
+		parameters[11] = service.SVC04;
+		parameters[12] = service.SVC05;
+		parameters[13] = service.SVC0601;
+		parameters[14] = service.SVC0602;
+		parameters[15] = service.SVC0603;
+		parameters[16] = service.SVC0604;
+		parameters[17] = service.SVC0605;
+		parameters[18] = service.SVC0606;
+		parameters[19] = service.SVC0607;
+		parameters[20] = service.SVC0608;
+		parameters[21] = service.SVC07;
+		parameters[22] = loadDts;
+
+		var crs = dbConn.executeUpdateAndGetGeneratedKeys(preparedStatement, java.util.Arrays.asList(parameters));
+
+		if (crs.next()) {
+			serviceId = crs.getLong(1);
+			insertServiceAdjustments(serviceId, service);
+			insertServiceAmount(serviceId, service);
+			insertDates(&apos;Service&apos;, serviceId, service);
+			insertReferences(&apos;Service&apos;, serviceId, service);
+		} else {
+			logger.error(&quot;Error insterting X12 835 service record.&quot;);
+		}
+	}		
+}
+
+function insertClaimAdjustments(claimId, claim) {
+	for each (var adjustment in claim.adjustments) {
+		var adjustmentId = null;
+
+		var preparedStatement = &quot;INSERT INTO [X12835].[ClaimAdjustmentBASE] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)&quot;;
+
+		var parameters = [];
+		parameters[0] = claimId;
+		parameters[1] = adjustment.CAS01;
+		parameters[2] = adjustment.CAS02;
+		parameters[3] = adjustment.CAS03;
+		parameters[4] = adjustment.CAS04;
+		parameters[5] = adjustment.CAS05;
+		parameters[6] = adjustment.CAS06;
+		parameters[7] = adjustment.CAS07;
+		parameters[8] = adjustment.CAS08;
+		parameters[9] = adjustment.CAS09;
+		parameters[10] = adjustment.CAS10;
+		parameters[11] = adjustment.CAS11;
+		parameters[12] = adjustment.CAS12;
+		parameters[13] = adjustment.CAS13;
+		parameters[14] = adjustment.CAS14;
+		parameters[15] = adjustment.CAS15;
+		parameters[16] = adjustment.CAS16;
+		parameters[17] = adjustment.CAS17;
+		parameters[18] = adjustment.CAS18;
+		parameters[19] = adjustment.CAS19;
+		parameters[20] = loadDts;
+
+		var crs = dbConn.executeUpdateAndGetGeneratedKeys(preparedStatement, java.util.Arrays.asList(parameters));
+
+		if (crs.next()) {
+			adjustmentId = crs.getLong(1);
+		} else {
+			logger.error(&quot;Error insterting X12 835 adjustment record.&quot;);
+		}
+	}		
+}
+
+function insertServiceAdjustments(serviceId, service) {
+	for each (var adjustment in service.adjustments) {
+		var adjustmentId = null;
+
+		var preparedStatement = &quot;INSERT INTO [X12835].[ServiceAdjustmentBASE] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)&quot;;
+
+		var parameters = [];
+		parameters[0] = serviceId;
+		parameters[1] = adjustment.CAS01;
+		parameters[2] = adjustment.CAS02;
+		parameters[3] = adjustment.CAS03;
+		parameters[4] = adjustment.CAS04;
+		parameters[5] = adjustment.CAS05;
+		parameters[6] = adjustment.CAS06;
+		parameters[7] = adjustment.CAS07;
+		parameters[8] = adjustment.CAS08;
+		parameters[9] = adjustment.CAS09;
+		parameters[10] = adjustment.CAS10;
+		parameters[11] = adjustment.CAS11;
+		parameters[12] = adjustment.CAS12;
+		parameters[13] = adjustment.CAS13;
+		parameters[14] = adjustment.CAS14;
+		parameters[15] = adjustment.CAS15;
+		parameters[16] = adjustment.CAS16;
+		parameters[17] = adjustment.CAS17;
+		parameters[18] = adjustment.CAS18;
+		parameters[19] = adjustment.CAS19;
+		parameters[20] = loadDts;
+
+		var crs = dbConn.executeUpdateAndGetGeneratedKeys(preparedStatement, java.util.Arrays.asList(parameters));
+
+		if (crs.next()) {
+			adjustmentId = crs.getLong(1);
+		} else {
+			logger.error(&quot;Error insterting X12 835 adjustment record.&quot;);
+		}
+	}		
+}
+
+function insertClaimAmount(claimId, claim) {
+	if(claim.amount != null) {
+		var preparedStatement = &quot;INSERT INTO [X12835].[ClaimAmountBASE] VALUES (?,?,?,?)&quot;;
+	
+		var parameters = [];
+		parameters[0] = claimId;
+		parameters[1] = claim.amount.AMT01;
+		parameters[2] = claim.amount.AMT02;
+		parameters[3] = loadDts;
+	
+		var crs = dbConn.executeUpdateAndGetGeneratedKeys(preparedStatement, java.util.Arrays.asList(parameters));
+	
+		if (crs.next()) {
+			amountId = crs.getLong(1);
+		} else {
+			logger.error(&quot;Error insterting X12 835 claim amount record.&quot;);
+		}	
+	}
+}
+
+function insertServiceAmount(serviceId, service) {
+	if(service.amount != null) {
+		var preparedStatement = &quot;INSERT INTO [X12835].[ServiceAmountBASE] VALUES (?,?,?,?)&quot;;
+	
+		var parameters = [];
+		parameters[0] = serviceId;
+		parameters[1] = service.amount.AMT01;
+		parameters[2] = service.amount.AMT02;
+		parameters[3] = loadDts;
+	
+		var crs = dbConn.executeUpdateAndGetGeneratedKeys(preparedStatement, java.util.Arrays.asList(parameters));
+	
+		if (crs.next()) {
+			amountId = crs.getLong(1);
+		} else {
+			logger.error(&quot;Error insterting X12 835 service amount record.&quot;);
+		}	
+	}
+}
+
+function insertDates(type, objId, obj) {
+	for each (var date in obj.dates) {
+		var dateId = null;
+
+		if (type == &quot;Claim&quot;) {
+			var preparedStatement = &quot;INSERT INTO [X12835].[ClaimDateBASE] VALUES (?,?,?,?)&quot;;	
+		} else if (type == &quot;Service&quot;) {
+			var preparedStatement = &quot;INSERT INTO [X12835].[ServiceDateBASE] VALUES (?,?,?,?)&quot;;	
+		} else if (type == &quot;Transaction&quot;) {
+			var preparedStatement = &quot;INSERT INTO [X12835].[TransactionDateBASE] VALUES (?,?,?,?)&quot;;	
+		} else {
+			logger.error(&quot;No date of type &quot; + type);
+			return;
+		}
+		
+
+		var parameters = [];
+		parameters[0] = objId;
+		parameters[1] = date.DTM01;
+		parameters[2] = date.DTM02;
+		parameters[3] = loadDts;
+
+		var crs = dbConn.executeUpdateAndGetGeneratedKeys(preparedStatement, java.util.Arrays.asList(parameters));
+
+		if (crs.next()) {
+			dateId = crs.getLong(1);
+		} else {
+			logger.error(&quot;Error insterting X12 835 claim date record.&quot;);
+		}
+	}
+}
+
+function insertReferences(type, objId, obj) {
+	for each (var reference in obj.references) {
+		var referenceId = null;
+
+		var pareparedStatement = null;
+
+		if(type == &apos;Transaction&apos;) {
+			preparedStatement = &quot;INSERT INTO [X12835].[TransactionReferenceBASE] VALUES (?,?,?,?)&quot;;
+		} else if(type == &apos;Claim&apos;) {
+			preparedStatement = &quot;INSERT INTO [X12835].[ClaimReferenceBASE] VALUES (?,?,?,?)&quot;;
+		} else if(type == &apos;Service&apos;) {
+			preparedStatement = &quot;INSERT INTO [X12835].[ServiceReferenceBASE] VALUES (?,?,?,?)&quot;;
+		} else if(type == &apos;Payer&apos;) {
+			preparedStatement = &quot;INSERT INTO [X12835].[PayerReferenceBASE] VALUES (?,?,?,?)&quot;;
+		} else if(type == &apos;Payee&apos;) {
+			preparedStatement = &quot;INSERT INTO [X12835].[PayeeReferenceBASE] VALUES (?,?,?,?)&quot;;
+		} else {
+			logger.error(&quot;No reference of type &quot; + type);
+			return;
+		}
+
+		var parameters = [];
+		parameters[0] = objId;
+		parameters[1] = reference.REF01;
+		parameters[2] = reference.REF02;
+		parameters[3] = loadDts;
+
+		var crs = dbConn.executeUpdateAndGetGeneratedKeys(preparedStatement, java.util.Arrays.asList(parameters));
+
+		if (crs.next()) {
+			referenceId = crs.getLong(1);
+		} else {
+			logger.error(&quot;Error insterting X12 835 &quot; + type + &quot; reference record.&quot;);
+		}
+	}
+}
+
+function insertFinancial(transactionId, transaction) {
+	if(transaction.financial != null) {
+		var preparedStatement = &quot;INSERT INTO [X12835].[FinancialBASE] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)&quot;;
+	
+		var parameters = [];
+		parameters[0] = transactionId;
+		parameters[1] = transaction.financial.BPR01;
+		parameters[2] = transaction.financial.BPR02;
+		parameters[3] = transaction.financial.BPR03;
+		parameters[4] = transaction.financial.BPR04;
+		parameters[5] = transaction.financial.BPR05;
+		parameters[6] = transaction.financial.BPR06;
+		parameters[7] = transaction.financial.BPR07;
+		parameters[8] = transaction.financial.BPR08;
+		parameters[9] = transaction.financial.BPR09;
+		parameters[10] = transaction.financial.BPR10;
+		parameters[11] = transaction.financial.BPR11;
+		parameters[12] = transaction.financial.BPR12;
+		parameters[13] = transaction.financial.BPR13;
+		parameters[14] = transaction.financial.BPR14;
+		parameters[15] = transaction.financial.BPR15;
+		parameters[16] = transaction.financial.BPR16;
+		parameters[17] = loadDts;
+	
+		var crs = dbConn.executeUpdateAndGetGeneratedKeys(preparedStatement, java.util.Arrays.asList(parameters));
+	
+		if (crs.next()) {
+			financialId = crs.getLong(1);
+		} else {
+			logger.error(&quot;Error insterting X12 835 financial record.&quot;);
+		}	
+	}
+}
+
+function insertTraceNumber(transactionId, transaction) {
+	if(transaction.traceNumber != null) {
+		var preparedStatement = &quot;INSERT INTO [X12835].[TraceNumberBASE] VALUES (?,?,?,?,?,?)&quot;;
+	
+		var parameters = [];
+		parameters[0] = transactionId;
+		parameters[1] = transaction.traceNumber.TRN01;
+		parameters[2] = transaction.traceNumber.TRN02;
+		parameters[3] = transaction.traceNumber.TRN03;
+		parameters[4] = transaction.traceNumber.TRN04;
+		parameters[5] = loadDts;
+	
+		var crs = dbConn.executeUpdateAndGetGeneratedKeys(preparedStatement, java.util.Arrays.asList(parameters));
+	
+		if (crs.next()) {
+			traceNumberId = crs.getLong(1);
+		} else {
+			logger.error(&quot;Error insterting X12 835 trace number record.&quot;);
+		}	
+	}
+}
+
+function insertCurrency(transactionId, transaction) {
+	if(transaction.traceNumber != null) {
+		var preparedStatement = &quot;INSERT INTO [X12835].[CurrencyBASE] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)&quot;;
+	
+		var parameters = [];
+		parameters[0] = transactionId;
+		parameters[1] = transaction.currency.CUR01;
+		parameters[2] = transaction.currency.CUR02;
+		parameters[3] = transaction.currency.CUR03;
+		parameters[4] = transaction.currency.CUR04;
+		parameters[5] = transaction.currency.CUR05;
+		parameters[6] = transaction.currency.CUR06;
+		parameters[7] = transaction.currency.CUR07;
+		parameters[8] = transaction.currency.CUR08;
+		parameters[9] = transaction.currency.CUR09;
+		parameters[10] = transaction.currency.CUR10;
+		parameters[11] = transaction.currency.CUR11;
+		parameters[12] = transaction.currency.CUR12;
+		parameters[13] = transaction.currency.CUR13;
+		parameters[14] = transaction.currency.CUR14;
+		parameters[15] = transaction.currency.CUR15;
+		parameters[16] = transaction.currency.CUR16;
+		parameters[17] = transaction.currency.CUR17;
+		parameters[18] = transaction.currency.CUR18;
+		parameters[19] = transaction.currency.CUR19;
+		parameters[20] = transaction.currency.CUR20;
+		parameters[21] = transaction.currency.CUR21;
+		parameters[22] = loadDts;
+	
+		var crs = dbConn.executeUpdateAndGetGeneratedKeys(preparedStatement, java.util.Arrays.asList(parameters));
+	
+		if (crs.next()) {
+			currencyId = crs.getLong(1);
+		} else {
+			logger.error(&quot;Error insterting X12 835 currency record.&quot;);
+		}	
+	}
+}
+
+function insertPersons(transactionId, transaction) {
+	for each (var person in transaction.persons) {
+		var personType = null;
+		var preparedStatement = null;
+
+		if (person.N101 == &apos;PR&apos;) {
+			personType = &apos;Payer&apos;;
+			preparedStatement = &quot;INSERT INTO [X12835].[PayerBASE] VALUES (?,?,?,?,?,?,?,?,?,?,?)&quot;;
+		} else if (person.N101 == &apos;PE&apos;) {
+			personType = &apos;Payee&apos;;
+			preparedStatement = &quot;INSERT INTO [X12835].[PayeeBASE] VALUES (?,?,?,?,?,?,?,?,?,?,?)&quot;;
+		} else {
+			logger.error(&quot;No person of type &quot; + personType);
+			return;
+		}
+
+		if (preparedStatement == null) {
+			logger.error(&quot;Error handling transaction person record.&quot;);
+		} else {
+			var parameters = [];
+			parameters[0] = transactionId;
+			parameters[1] = person.N101;
+			parameters[2] = person.N102;
+			parameters[3] = person.N103;
+			parameters[4] = person.N104;
+			parameters[5] = person.N301;
+			parameters[6] = person.N302;
+			parameters[7] = person.N401;
+			parameters[8] = person.N402;
+			parameters[9] = person.N403;
+			parameters[10] = loadDts;
+		
+			var crs = dbConn.executeUpdateAndGetGeneratedKeys(preparedStatement, java.util.Arrays.asList(parameters));
+		
+			if (crs.next()) {
+				personId = crs.getLong(1);
+				insertReferences(personType, personId, person);
+				insertContacts(personType, personId, person);
+			} else {
+				logger.error(&quot;Error insterting X12 835 financial record.&quot;);
+			}	
+		}
+	}
+}
+
+function insertContacts(type, personId, person) {
+	for each (var contact in person.contacts) {
+		var preparedStatement = null;
+
+		if (type == &apos;Payer&apos;) {
+			preparedStatement = &quot;INSERT INTO [X12835].[PayerContactBASE] VALUES (?,?,?,?,?,?,?,?,?,?,?)&quot;;
+		} else {
+			logger.error(&quot;No contact of type &quot; + type);
+			return;
+		}
+
+		if (preparedStatement == null) {
+			logger.error(&quot;Error handling transaction person record.&quot;);
+		} else {
+			var parameters = [];
+			parameters[0] = personId;
+			parameters[1] = contact.PER01;
+			parameters[2] = contact.PER02;
+			parameters[3] = contact.PER03;
+			parameters[4] = contact.PER04;
+			parameters[5] = contact.PER05;
+			parameters[6] = contact.PER06;
+			parameters[7] = contact.PER07;
+			parameters[8] = contact.PER08;
+			parameters[9] = contact.PER09;
+			parameters[10] = loadDts;
+
+			var crs = dbConn.executeUpdateAndGetGeneratedKeys(preparedStatement, java.util.Arrays.asList(parameters));
+		
+			if (crs.next()) {
+				contactId = crs.getLong(1);
+			} else {
+				logger.error(&quot;Error insterting X12 835 contact record.&quot;);
+			}	
+		}
+	}
+}
+
+function insertProviderAdjustment(transactionId, transaction) {
+	if(transaction.providerAdjustment != null) {
+		var preparedStatement = &quot;INSERT INTO [X12835].[ProviderAdjustmentBASE] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)&quot;;
+	
+		var parameters = [];
+		parameters[0] = transactionId;
+		parameters[1] = transaction.providerAdjustment.PLB01;
+		parameters[2] = transaction.providerAdjustment.PLB02;
+		parameters[3] = transaction.providerAdjustment.PLB0301;
+		parameters[4] = transaction.providerAdjustment.PLB0302
+		parameters[5] = transaction.providerAdjustment.PLB04;
+		parameters[6] = transaction.providerAdjustment.PLB05;
+		parameters[7] = transaction.providerAdjustment.PLB06;
+		parameters[8] = transaction.providerAdjustment.PLB07;
+		parameters[9] = transaction.providerAdjustment.PLB08;
+		parameters[10] = transaction.providerAdjustment.PLB09;
+		parameters[11] = transaction.providerAdjustment.PLB10;
+		parameters[12] = transaction.providerAdjustment.PLB11;
+		parameters[13] = transaction.providerAdjustment.PLB12;
+		parameters[14] = transaction.providerAdjustment.PLB13;
+		parameters[15] = transaction.providerAdjustment.PLB14;
+		parameters[16] = loadDts;
+	
+		var crs = dbConn.executeUpdateAndGetGeneratedKeys(preparedStatement, java.util.Arrays.asList(parameters));
+	
+		if (crs.next()) {
+			amountId = crs.getLong(1);
+		} else {
+			logger.error(&quot;Error insterting X12 835 transaction provider adjustment record.&quot;);
+		}	
+	}
+}</query>
+    <useScript>true</useScript>
+  </properties>
+  <transformer version="3.4.2">
+    <steps/>
+    <inboundDataType>JSON</inboundDataType>
+    <outboundDataType>JSON</outboundDataType>
+    <inboundProperties class="com.mirth.connect.plugins.datatypes.json.JSONDataTypeProperties" version="3.4.2">
+      <batchProperties class="com.mirth.connect.plugins.datatypes.json.JSONBatchProperties" version="3.4.2">
+        <splitType>JavaScript</splitType>
+        <batchScript></batchScript>
+      </batchProperties>
+    </inboundProperties>
+    <outboundProperties class="com.mirth.connect.plugins.datatypes.json.JSONDataTypeProperties" version="3.4.2">
+      <batchProperties class="com.mirth.connect.plugins.datatypes.json.JSONBatchProperties" version="3.4.2">
+        <splitType>JavaScript</splitType>
+        <batchScript></batchScript>
+      </batchProperties>
+    </outboundProperties>
+  </transformer>
+  <responseTransformer version="3.4.2">
+    <steps/>
+    <inboundDataType>JSON</inboundDataType>
+    <outboundDataType>JSON</outboundDataType>
+    <inboundProperties class="com.mirth.connect.plugins.datatypes.json.JSONDataTypeProperties" version="3.4.2">
+      <batchProperties class="com.mirth.connect.plugins.datatypes.json.JSONBatchProperties" version="3.4.2">
+        <splitType>JavaScript</splitType>
+        <batchScript></batchScript>
+      </batchProperties>
+    </inboundProperties>
+    <outboundProperties class="com.mirth.connect.plugins.datatypes.json.JSONDataTypeProperties" version="3.4.2">
+      <batchProperties class="com.mirth.connect.plugins.datatypes.json.JSONBatchProperties" version="3.4.2">
+        <splitType>JavaScript</splitType>
+        <batchScript></batchScript>
+      </batchProperties>
+    </outboundProperties>
+  </responseTransformer>
+  <filter version="3.4.2">
+    <rules/>
+  </filter>
+  <transportName>Database Writer</transportName>
+  <mode>DESTINATION</mode>
+  <enabled>true</enabled>
+  <waitForPrevious>true</waitForPrevious>
+</connector>
