@@ -403,6 +403,9 @@ CREATE TABLE [X12835].[PayerContactBASE]
 	[PER04] varchar(255) NULL,
 	[PER05] varchar(255) NULL,
 	[PER06] varchar(255) NULL,
+	[PER07] varchar(255) NULL,
+	[PER08] varchar(255) NULL,
+	[PER09] varchar(255) NULL,
 	[LoadDTS] datetime2
 )
 GO
