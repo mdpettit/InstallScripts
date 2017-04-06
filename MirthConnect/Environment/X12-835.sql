@@ -7,11 +7,11 @@
 /* Drop Foreign Key Constraints */
 USE [MirthSource]
 
-IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_Claim_X12835Header]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X12835Claim_X12835Header]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
 ALTER TABLE [X12835].[ClaimBASE] DROP CONSTRAINT [FK_X12835Claim_X12835Header]
 GO
 
-IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_Header_X12835Transaction]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X12835Header_X12835Transaction]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
 ALTER TABLE [X12835].[HeaderBASE] DROP CONSTRAINT [FK_X12835Header_X12835Transaction]
 GO
 
@@ -661,11 +661,11 @@ ALTER TABLE [X12835].[HeaderBASE]
     PRIMARY KEY CLUSTERED ([HeaderID] ASC)
 GO
 
-CREATE NONCLUSTERED INDEX [IXFK_Claim_X12835Header] 
+CREATE NONCLUSTERED INDEX [IXFK_X12835Claim_X12835Header] 
  ON [X12835].[ClaimBASE] ([HeaderID] ASC)
 GO
 
-CREATE NONCLUSTERED INDEX [IXFK_Header_X12835Transaction]
+CREATE NONCLUSTERED INDEX [IXFK_X12835Header_X12835Transaction]
  ON [X12835].[HeaderBASE] ([TransactionID] ASC)
 GO
 
