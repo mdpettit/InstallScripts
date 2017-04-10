@@ -395,7 +395,7 @@ CREATE TABLE [X12835].[InpatientAdjudicationBASE]
 	[MIA08] varchar(255) NULL,
 	[MIA09] varchar(255) NULL,
 	[MIA10] varchar(255) NULL,
-	[MIAS11] varchar(255) NULL,
+	[MIA11] varchar(255) NULL,
 	[MIA12] varchar(255) NULL,
 	[MIA13] varchar(255) NULL,
 	[MIA14] varchar(255) NULL,
@@ -822,7 +822,7 @@ CREATE TABLE [X12].[InterchangeBASE]
 	[ISA14] varchar(255) NULL,
 	[ISA15] varchar(255) NULL,
 	[ISA16] varchar(255) NULL,
-	[SourceMessage] varchar(max) NOT NULL,
+	[SourceFileNM] varchar(max) NOT NULL,
 	[LoadDTS] datetime2(7) NOT NULL
 )
 GO
@@ -907,7 +907,7 @@ CREATE NONCLUSTERED INDEX [IXFK_X12835ClaimQuantity_X12835Claim]
 GO
 
 CREATE NONCLUSTERED INDEX [IXFK_X12835ServiceQuantity_X12835Claim] 
- ON [X12835].[ServiceQuantityBASE] ([ClaimID] ASC)
+ ON [X12835].[ServiceQuantityBASE] ([ServiceID] ASC)
 GO
 
 ALTER TABLE [X12835].[ClaimAmountBASE] 
