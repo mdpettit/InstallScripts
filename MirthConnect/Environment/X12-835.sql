@@ -822,8 +822,9 @@ CREATE TABLE [X12].[InterchangeBASE]
 	[ISA14] varchar(255) NULL,
 	[ISA15] varchar(255) NULL,
 	[ISA16] varchar(255) NULL,
-	[SourceMessage] varchar(max),
 	[SourceFileNM] varchar(255) NOT NULL,
+	[SourceMessage] varchar(max),
+	[DiscrepancyCD] numeric(38),
 	[LoadDTS] datetime2(7) NOT NULL
 )
 GO
