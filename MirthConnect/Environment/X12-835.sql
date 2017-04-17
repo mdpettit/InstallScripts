@@ -825,6 +825,7 @@ CREATE TABLE [X12].[InterchangeBASE]
 	[SourceFileNM] varchar(255) NOT NULL,
 	[SourceMessage] varchar(max),
 	[DiscrepancyCD] numeric(38),
+	[DiscrepancyDSC] varchar(4000),
 	[LoadDTS] datetime2(7) NOT NULL
 )
 GO
