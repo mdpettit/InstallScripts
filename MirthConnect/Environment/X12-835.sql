@@ -801,6 +801,8 @@ CREATE TABLE [X12].[FunctionalGroupBASE]
 	[GS06] varchar(255) NULL,
 	[GS07] varchar(255) NULL,
 	[GS08] varchar(255) NULL,
+	[DiscrepancyCD] numeric(38),
+	[DiscrepancyDSC] varchar(4000),
 	[LoadDTS] datetime2
 )
 GO
@@ -1082,6 +1084,10 @@ ALTER TABLE [X12835].[TransactionBASE]
 	PRIMARY KEY CLUSTERED ([TransactionID] ASC)
 GO
 
+CREATE NONCLUSTERED INDEX [IX_X12835Transaction_DiscrepancyCD] 
+ ON [X12835].[TransactionBASE] ([DiscrepancyCD] ASC)
+GO
+
 ALTER TABLE [X12835].[TransactionReferenceBASE] 
  ADD CONSTRAINT [PK_X12835TransactionReference]
 	PRIMARY KEY CLUSTERED ([ReferenceID] ASC)
@@ -1112,6 +1118,10 @@ GO
 ALTER TABLE [X12].[FunctionalGroupBASE] 
  ADD CONSTRAINT [PK_X12FunctionalGroup]
 	PRIMARY KEY CLUSTERED ([FunctionalGroupID] ASC)
+GO
+
+CREATE NONCLUSTERED INDEX [IX_X12FunctionalGroup_DiscrepancyCD] 
+ ON [X12].[FunctionalGroupBASE] ([DiscrepancyCD] ASC)
 GO
 
 CREATE NONCLUSTERED INDEX [IXFK_X12FunctionalGroup_X12Interchange] 
