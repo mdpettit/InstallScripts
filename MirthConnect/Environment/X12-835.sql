@@ -753,6 +753,8 @@ CREATE TABLE [X12835].[TransactionBASE]
 	[InterchangeID] bigint NULL,
 	[ST01] varchar(255) NOT NULL,
 	[ST02] varchar(255) NULL,
+	[DiscrepancyCD] numeric(38),
+	[DiscrepancyDSC] varchar(4000),
 	[LoadDTS] datetime2
 )
 GO
@@ -1119,6 +1121,10 @@ GO
 ALTER TABLE [X12].[InterchangeBASE] 
  ADD CONSTRAINT [PK_X12Interchange]
 	PRIMARY KEY CLUSTERED ([InterchangeID] ASC)
+GO
+
+CREATE NONCLUSTERED INDEX [IX_X12Interchange_DiscrepancyCD] 
+ ON [X12].[InterchangeBASE] ([DiscrepancyCD] ASC)
 GO
 
 /* Create Foreign Key Constraints */
