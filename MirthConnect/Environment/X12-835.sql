@@ -1324,3 +1324,27 @@ GO
 
 EXEC sp_addextendedproperty 'MS_Description', 'Receiver Identification Qualifier', 'Schema', [X12835], 'table', [PayerReferenceBASE], 'column', [REF02]
 GO
+
+CREATE NONCLUSTERED INDEX [IX_X12835ServiceDate_DTM01]  
+ON [X12835].[ServiceDateBASE] ([DTM01] ASC) 
+GO 
+
+CREATE NONCLUSTERED INDEX [IX_X12835ServiceReference_REF01]  
+ON [X12835].[ServiceReferenceBASE] ([REF01] ASC) 
+GO 
+
+CREATE NONCLUSTERED INDEX [IX_X12835ClaimDate_DTM01]  
+ON [X12835].[ClaimDateBASE] ([DTM01] ASC) 
+GO 
+
+CREATE NONCLUSTERED INDEX [IX_X12835ClaimReference_REF01]  
+ON [X12835].[ClaimReferenceBASE] ([REF01] ASC) 
+GO 
+
+CREATE NONCLUSTERED INDEX [IX_X12835TransactionDate_DTM01]  
+ON [X12835].[TransactionDateBASE] ([DTM01] ASC) 
+GO 
+
+CREATE NONCLUSTERED INDEX [IX_X12835TransactionReference_REF01]  
+ON [X12835].[TransactionReferenceBASE] ([REF01] ASC) 
+GO 
