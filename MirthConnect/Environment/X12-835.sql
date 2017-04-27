@@ -131,6 +131,10 @@ IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X12F
 ALTER TABLE [X12].[FunctionalGroupBASE] DROP CONSTRAINT [FK_X12FunctionalGroup_X12Interchange]
 GO
 
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X12835Transaction_X12FunctionalGroup]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
+ALTER TABLE [X12835].[FunctionalGroupBASE] DROP CONSTRAINT [FK_X12835Transaction_X12FunctionalGroup]
+GO
+
 /* Drop Tables */
 
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[ClaimBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
@@ -270,6 +274,7 @@ CREATE TABLE [X12835].[ClaimBASE]
 (
 	[ClaimID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[HeaderID] numeric(38) NOT NULL,
+	[ClaimLoadSequenceNBR] numeric(38) NOT NULL,
 	[CLP01] varchar(255) NULL,
 	[CLP02] varchar(255) NULL,
 	[CLP03] varchar(255) NULL,
@@ -632,6 +637,7 @@ CREATE TABLE [X12835].[ServiceBASE]
 (
 	[ServiceID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[ClaimID] numeric(38) NOT NULL,
+	[ServiceLoadSequenceNBR] numeric(38) NOT NULL,
 	[SVC0101] varchar(255) NOT NULL,
 	[SVC0102] varchar(255) NOT NULL,
 	[SVC0103] varchar(255) NOT NULL,
@@ -1128,6 +1134,10 @@ CREATE NONCLUSTERED INDEX [IXFK_X12FunctionalGroup_X12Interchange]
  ON [X12].[FunctionalGroupBASE] ([InterchangeID] ASC)
 GO
 
+CREATE NONCLUSTERED INDEX [IXFK_X12835Transaction_X12FunctionalGroup] 
+ ON [X12835].[TransactionBASE] ([FunctionalGroupID] ASC)
+GO
+
 ALTER TABLE [X12].[InterchangeBASE] 
  ADD CONSTRAINT [PK_X12Interchange]
 	PRIMARY KEY CLUSTERED ([InterchangeID] ASC)
@@ -1258,6 +1268,10 @@ GO
 ALTER TABLE [X12].[FunctionalGroupBASE] ADD CONSTRAINT [FK_X12FunctionalGroup_X12Interchange]
 	FOREIGN KEY ([InterchangeID]) REFERENCES [X12].[InterchangeBASE] ([InterchangeID]) ON DELETE Cascade ON UPDATE No Action
 GO
+
+ALTER TABLE [X12835].[TransactionBASE] ADD CONSTRAINT [FK_X12835Transaction_X12FunctionalGroup]
+    FOREIGN KEY ([FunctionalGroupID]) REFERENCES [X12].[FunctionalGroupBASE] ([FunctionalGroupID]) ON DELETE Cascade ON UPDATE No Action
+GO	
 
 /* Create Table Comments */
 
