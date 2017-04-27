@@ -132,7 +132,7 @@ ALTER TABLE [X12].[FunctionalGroupBASE] DROP CONSTRAINT [FK_X12FunctionalGroup_X
 GO
 
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X12835Transaction_X12FunctionalGroup]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
-ALTER TABLE [X12835].[FunctionalGroupBASE] DROP CONSTRAINT [FK_X12835Transaction_X12FunctionalGroup]
+ALTER TABLE [X12835].[TransactionBASE] DROP CONSTRAINT [FK_X12835Transaction_X12FunctionalGroup]
 GO
 
 /* Drop Tables */
