@@ -135,6 +135,10 @@ IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X128
 ALTER TABLE [X12835].[TransactionBASE] DROP CONSTRAINT [FK_X12835Transaction_X12FunctionalGroup]
 GO
 
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[FK_X12835Currency_X12835Transaction]') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1) 
+ALTER TABLE [X12835].[CurrencyBASE] DROP CONSTRAINT [FK_X12835Currency_X12835Transaction]
+GO
+
 /* Drop Tables */
 
 IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[ClaimBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) 
@@ -363,6 +367,7 @@ CREATE TABLE [X12835].[ClaimAdjustmentBASE]
 (
 	[ClaimAdjustmentID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[ClaimID] numeric(38) NOT NULL,
+	[ClaimAdjustmentLoadSequenceNBR] numeric(38) NOT NULL,
 	[CAS01] varchar(255) NOT NULL,
 	[CAS02] varchar(255) NULL,
 	[CAS03] varchar(255) NULL,
@@ -667,6 +672,7 @@ CREATE TABLE [X12835].[ServiceAdjustmentBASE]
 (
 	[ServiceAdjustmentID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[ServiceID] numeric(38) NOT NULL,
+	[ServiceAdjustmentLoadSequenceNBR] numeric(38) NOT NULL,
 	[CAS01] varchar(255) NOT NULL,
 	[CAS02] varchar(255) NULL,
 	[CAS03] varchar(255) NULL,
@@ -958,6 +964,10 @@ GO
 ALTER TABLE [X12835].[CurrencyBASE] 
  ADD CONSTRAINT [PK_X12835Currency]
 	PRIMARY KEY CLUSTERED ([CurrencyID] ASC)
+GO
+
+CREATE NONCLUSTERED INDEX [IXFK_X12835Currency_X12835Transaction]
+ ON [X12835].[CurrencyBASE] ([TransactionID] ASC)
 GO
 
 CREATE NONCLUSTERED INDEX [IXFK_BPR_X12Transaction] 
@@ -1272,6 +1282,12 @@ GO
 ALTER TABLE [X12835].[TransactionBASE] ADD CONSTRAINT [FK_X12835Transaction_X12FunctionalGroup]
     FOREIGN KEY ([FunctionalGroupID]) REFERENCES [X12].[FunctionalGroupBASE] ([FunctionalGroupID]) ON DELETE Cascade ON UPDATE No Action
 GO	
+
+ALTER TABLE [X12835].[CurrencyBASE] ADD CONSTRAINT [FK_X12835Currency_X12835Transaction]
+    FOREIGN KEY ([TransactionID]) REFERENCES [X12835].[TransactionBASE] ([TransactionID]) ON DELETE Cascade ON UPDATE No Action
+GO
+
+
 
 /* Create Table Comments */
 
