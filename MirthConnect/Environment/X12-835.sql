@@ -740,6 +740,7 @@ CREATE TABLE [X12835].[ServiceRemarkBASE]
 (
 	[ServiceRemarkID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[ServiceID] numeric(38) NOT NULL,
+	[ServiceRemarkLoadSequenceNBR] numeric(38) NOT NULL,
 	[LQ01] varchar(255) NULL,
 	[LQ02] varchar(255) NULL,
 	[LoadDTS] datetime2
