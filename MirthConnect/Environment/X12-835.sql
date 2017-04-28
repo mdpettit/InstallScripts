@@ -456,6 +456,7 @@ CREATE TABLE [X12835].[ServiceQuantityBASE]
 (
 	[ServiceQuantityID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[ServiceID] numeric(38) NOT NULL,
+	[ServiceQuantityLoadSequenceNBR] numeric(38) NOT NULL,
 	[QTY01] varchar(255) NOT NULL,
 	[QTY02] varchar(255) NULL,
 	[QTY03] varchar(255) NULL,
