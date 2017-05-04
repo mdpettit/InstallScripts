@@ -1,3 +1,12 @@
+/*
+ * Discrepancy Dictionary
+ * 1 = Duplicate interchange identifiers
+ * 2 = Duplicate functional group identifiers within one interchange
+ * 3 = Duplicate transaction identifiers within one functional group
+ * 6 = Bad interchange date format
+ * 7 = Bad interchange time format
+ */
+
 CREATE PROCEDURE [ClientAdmin].[MirthSourceAssignDiscrepancyCodes]
 	@BatchID int
 AS
@@ -103,9 +112,10 @@ FROM MirthSource.X12835.TransactionBASE t
 JOIN transaction_dup d on t.TransactionID = d.TransactionID
 WHERE rownum > 1'
 
---SELECT @InterchangeScript
---SELECT @FunctionalGroupScript
---SELECT @TransactionScript
+-- For debug purposes only
+-- SELECT @InterchangeScript
+-- SELECT @FunctionalGroupScript
+-- SELECT @TransactionScript
 
 EXECUTE sp_executesql @InterchangeScript;
 --Log interchange script
@@ -149,9 +159,12 @@ EXEC EDWAdmin.CatalystAdmin.etlSetSSISEventLog
 , @ProcedureNM = 'ClientAdmin.MirthSourceAssignDiscrepancyCodes'
 , @ExecStatment = @transactionscript;
 
+-- Add additional filters here
 UPDATE MirthSource.X12.interchangebase SET DiscrepancyCD = 6, DiscrepancyDSC = 'Invalid date format: ISA09 [' + ISA09 + ']', ISA09 = '' WHERE discrepancycd is NULL AND LEN(isa09) <> 6;
 UPDATE MirthSource.X12.interchangebase SET DiscrepancyCD = 7, DiscrepancyDSC = 'Invalid time format: ISA10 [' + ISA10 + ']', ISA10 = '' WHERE discrepancycd is NULL AND LEN(isa10) <> 4;
 
+　
+-- After all is said and done, activate all remaining, good records with a "0"
 UPDATE MirthSource.X12.InterchangeBASE SET DiscrepancyCD = 0 WHERE DiscrepancyCD IS NULL;
 UPDATE MirthSource.X12.FunctionalGroupBASE SET DiscrepancyCD = 0 WHERE DiscrepancyCD IS NULL;
 UPDATE MirthSource.X12835.TransactionBASE SET DiscrepancyCD = 0 WHERE DiscrepancyCD IS NULL;
