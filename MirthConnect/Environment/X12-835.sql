@@ -576,6 +576,7 @@ CREATE TABLE [X12835].[PayeeReferenceBASE]
 (
 	[PayeeReferenceID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[PayeeID] numeric(38) NOT NULL,
+	[LoadSequenceNBR] numeric(38) NOT NULL,
 	[REF01] varchar(255) NULL,
 	[REF02] varchar(255) NULL,
 	[LoadDTS] datetime2
@@ -731,6 +732,7 @@ CREATE TABLE [X12835].[ServiceReferenceBASE]
 (
 	[ServiceReferenceID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[ServiceID] numeric(38) NOT NULL,
+	[LoadSequenceNBR] numeric(38) NOT NULL,
 	[REF01] varchar(255) NOT NULL,
 	[REF02] varchar(255) NULL,
 	[LoadDTS] datetime2
@@ -777,6 +779,7 @@ CREATE TABLE [X12835].[TransactionReferenceBASE]
 (
 	[ReferenceID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[TransactionID] numeric(38) NOT NULL,
+	[LoadSequenceNBR] numeric(38) NOT NULL,
 	[REF01] varchar(255) NOT NULL,    -- Receiver Identification Qualifier
 	[REF02] varchar(255) NOT NULL,    -- Receiver Identification Number
 	[LoadDTS] datetime2
@@ -787,6 +790,7 @@ CREATE TABLE [X12835].[PayerReferenceBASE]
 (
 	[ReferenceID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[PayerID] numeric(38) NOT NULL,
+	[LoadSequenceNBR] numeric(38) NOT NULL,
 	[REF01] varchar(255) NOT NULL,    -- Receiver Identification Qualifier
 	[REF02] varchar(255) NOT NULL,    -- Receiver Identification Number
 	[LoadDTS] datetime2
@@ -797,6 +801,7 @@ CREATE TABLE [X12835].[ClaimReferenceBASE]
 (
 	[ReferenceID] numeric(38) NOT NULL IDENTITY (1, 1),
 	[ClaimID] numeric(38) NOT NULL,
+	[LoadSequenceNBR] numeric(38) NOT NULL,
 	[REF01] varchar(255) NOT NULL,    -- Receiver Identification Qualifier
 	[REF02] varchar(255) NOT NULL,    -- Receiver Identification Number
 	[LoadDTS] datetime2
