@@ -5,7 +5,7 @@ AS
 BEGIN TRY
 BEGIN TRANSACTION;
 
-DECLARE @DatamartID int = 424;
+DECLARE @DatamartNM varchar(255) = 'MirthSource';
 DECLARE @SchemaNM varchar(255)
 , @EntityNM varchar(255)
 , @DelimitedListOfKeyColumns varchar(max)
@@ -24,9 +24,10 @@ SET @EntityNM = 'Interchange'
 SET @DelimitedListOfKeyColumns = NULL
 
 SELECT @DelimitedListOfKeyColumns = COALESCE(@DelimitedListOfKeyColumns + ', ', '') + c.SourceColumnNM
-FROM EDWAdmin.CatalystAdmin.TableBASE t
+FROM EDWAdmin.CatalystAdmin.DatamartBASE d
+JOIN EDWAdmin.CatalystAdmin.TableBASE t ON d.DatamartID = t.DataMartID
 JOIN EDWAdmin.CatalystAdmin.ColumnBASE c ON t.TableID = c.TableID
-WHERE t.DatamartID = @DatamartID 
+WHERE d.DatamartNM = @DatamartNM
 AND t.SchemaNM = @SchemaNM
 AND t.TableNM = @EntityNM
 AND c.PrimaryKeyFLG = 'Y'
@@ -47,9 +48,10 @@ SET @EntityNM = 'FunctionalGroup'
 SET @DelimitedListOfKeyColumns = NULL
 
 SELECT @DelimitedListOfKeyColumns = COALESCE(@DelimitedListOfKeyColumns + ', ', '') + c.SourceColumnNM
-FROM EDWAdmin.CatalystAdmin.TableBASE t
+FROM EDWAdmin.CatalystAdmin.DatamartBASE d
+JOIN EDWAdmin.CatalystAdmin.TableBASE t ON d.DatamartID = t.DataMartID
 JOIN EDWAdmin.CatalystAdmin.ColumnBASE c ON t.TableID = c.TableID
-WHERE t.DatamartID = @DatamartID 
+WHERE d.DatamartNM = @DatamartNM
 AND t.SchemaNM = @SchemaNM
 AND t.TableNM = @EntityNM
 AND c.PrimaryKeyFLG = 'Y'
@@ -76,9 +78,10 @@ SET @EntityNM = 'Transaction'
 SET @DelimitedListOfKeyColumns = NULL
 
 SELECT @DelimitedListOfKeyColumns = COALESCE(@DelimitedListOfKeyColumns + ', ', '') + c.SourceColumnNM
-FROM EDWAdmin.CatalystAdmin.TableBASE t
+FROM EDWAdmin.CatalystAdmin.DatamartBASE d
+JOIN EDWAdmin.CatalystAdmin.TableBASE t ON d.DatamartID = t.DataMartID
 JOIN EDWAdmin.CatalystAdmin.ColumnBASE c ON t.TableID = c.TableID
-WHERE t.DatamartID = @DatamartID 
+WHERE d.DatamartNM = @DatamartNM
 AND t.SchemaNM = @SchemaNM
 AND t.TableNM = @EntityNM
 AND c.PrimaryKeyFLG = 'Y'
