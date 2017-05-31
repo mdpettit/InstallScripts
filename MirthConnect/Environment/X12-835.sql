@@ -273,6 +273,24 @@ IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12].[Interchang
 DROP TABLE [X12].[InterchangeBASE]
 GO
 
+IF EXISTS (SELECT 1 FROM dbo.sysobjects WHERE id = object_id(N'[X12835].[QualifierDescriptionBASE]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+DROP TABLE [X12835].[QualifierDescriptionBASE]
+GO
+
+CREATE TABLE [X12835].[QualifierDescriptionBASE]
+(
+	[QualifierTypeCD] varchar(255) NOT NULL, 
+	[QualifierCD] varchar(255) NOT NULL, 
+	[QualifierDSC] varchar(max) NULL,
+	[LoadDTS] datetime2
+)
+GO
+
+ALTER TABLE [X12835].[QualifierDescriptionBASE]
+ ADD CONSTRAINT [PK_X12835QualifierDescription]
+	PRIMARY KEY CLUSTERED ([QualifierTypeCD] ASC, [QualifierCD] ASC)
+GO
+
 /* Create Tables */
 CREATE TABLE [X12835].[ClaimBASE]
 (
