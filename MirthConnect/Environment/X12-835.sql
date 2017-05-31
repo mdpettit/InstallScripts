@@ -282,7 +282,7 @@ CREATE TABLE [X12835].[QualifierDescriptionBASE]
 	[QualifierTypeCD] varchar(255) NOT NULL, 
 	[QualifierCD] varchar(255) NOT NULL, 
 	[QualifierDSC] varchar(max) NULL,
-	[LoadDTS] datetime2
+	[LoadDTS] datetime2 DEFAULT getdate()
 )
 GO
 
