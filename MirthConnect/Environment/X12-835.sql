@@ -864,6 +864,7 @@ CREATE TABLE [X12].[InterchangeBASE]
 	[ISA15] varchar(255) NULL,
 	[ISA16] varchar(255) NULL,
 	[SourceFileNM] varchar(255) NOT NULL,
+	[SourceMessageChecksum] varchar(8000),
 	[SourceMessage] varchar(max),
 	[DiscrepancyCD] numeric(38),
 	[DiscrepancyDSC] varchar(4000),
