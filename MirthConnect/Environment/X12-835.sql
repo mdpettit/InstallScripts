@@ -864,7 +864,7 @@ CREATE TABLE [X12].[InterchangeBASE]
 	[ISA15] varchar(255) NULL,
 	[ISA16] varchar(255) NULL,
 	[SourceFileNM] varchar(255) NOT NULL,
-	[SourceMessageChecksum] varchar(8000),
+	[SourceMessageChecksum] varchar(255),
 	[SourceMessage] varchar(max),
 	[DiscrepancyCD] numeric(38),
 	[DiscrepancyDSC] varchar(4000),
@@ -1181,6 +1181,10 @@ GO
 
 CREATE NONCLUSTERED INDEX [IX_X12Interchange_DiscrepancyCD] 
  ON [X12].[InterchangeBASE] ([DiscrepancyCD] ASC)
+GO
+
+CREATE NONCLUSTERED INDEX [IX_X12Interchange_SourceMessageCheckSum]
+ ON [X12].[InterchangeBASE] ([SourceMessageCheckSum] ASC)
 GO
 
 /* Create Foreign Key Constraints */
