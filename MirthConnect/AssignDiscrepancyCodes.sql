@@ -1,3 +1,10 @@
+USE [EDWAdmin]
+GO
+/****** Object:  StoredProcedure [ClientAdmin].[MirthSourceAssignDiscrepancyCodes]    Script Date: 6/8/2017 11:17:58 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
 /*
  * Discrepancy Dictionary
  * 1 = Duplicate interchange identifiers
@@ -7,7 +14,7 @@
  * 7 = Bad interchange time format
  */
 
-CREATE PROCEDURE [ClientAdmin].[MirthSourceAssignDiscrepancyCodes]
+ALTER PROCEDURE [ClientAdmin].[MirthSourceAssignDiscrepancyCodes]
 	@BatchID int
 AS
 
@@ -28,28 +35,14 @@ SELECT
 @HostNM = HOST_NAME();
 
 -- Interchange discrepancies
-SET @SchemaNM = 'X12'
-SET @EntityNM = 'Interchange'
-SET @DelimitedListOfKeyColumns = NULL
-
-SELECT @DelimitedListOfKeyColumns = COALESCE(@DelimitedListOfKeyColumns + ', ', '') + c.SourceColumnNM
-FROM EDWAdmin.CatalystAdmin.DatamartBASE d
-JOIN EDWAdmin.CatalystAdmin.TableBASE t ON d.DatamartID = t.DataMartID
-JOIN EDWAdmin.CatalystAdmin.ColumnBASE c ON t.TableID = c.TableID
-WHERE d.DatamartNM = @DatamartNM
-AND t.SchemaNM = @SchemaNM
-AND t.TableNM = @EntityNM
-AND c.PrimaryKeyFLG = 'Y'
-ORDER BY c.OrdinalNBR
-
 DECLARE @InterchangeScript nvarchar(max) = 
-'WITH interchange_dup (rownum, interchangeID) as (SELECT ROW_NUMBER() OVER ( PARTITION BY ' + @DelimitedListOfKeyColumns +' ORDER BY InterchangeID) AS rownum, InterchangeID
+'WITH interchange_dup (rownum, interchangeID) as (SELECT ROW_NUMBER() OVER ( PARTITION BY SourceMessageChecksum ORDER BY InterchangeID) AS rownum, InterchangeID
 FROM MirthSource.X12.InterchangeBASE)
 UPDATE i
-SET i.discrepancycd = 1, DiscrepancyDSC = ISNULL(DiscrepancyDSC, '''') + ''Duplicate ' + @DelimitedListOfKeyColumns + '; '' 
+SET i.discrepancycd = 1, DiscrepancyDSC = ''Unique checksum conflicts with another Interchange record.'' 
 FROM MirthSource.X12.InterchangeBase i
 JOIN interchange_dup d ON i.interchangeid = d.interchangeid
-WHERE d.rownum > 1'
+WHERE d.rownum > 1 AND (i.DiscrepancyCD IS NULL OR i.DiscrepancyCD <> 1)'
 
 -- Functional group discrepancies
 SET @SchemaNM = 'X12'
@@ -75,10 +68,10 @@ JOIN MirthSource.X12.InterchangeBASE i ON f.InterchangeID = i.InterchangeID
 WHERE  i.DiscrepancyCD IS NULL OR i.DiscrepancyCD NOT IN (1)
 ) 
 UPDATE f
-SET f.DiscrepancyCD = 2, DiscrepancyDSC = ISNULL(DiscrepancyDSC, '''') + ''Duplicate ' + @DelimitedListOfKeyColumns + '; '' 
+SET f.DiscrepancyCD = 2, DiscrepancyDSC = ISNULL(DiscrepancyDSC, '''') + convert(varchar(255),getdate(),120) + '': Duplicate ' + @DelimitedListOfKeyColumns + '; '' 
 FROM MirthSource.X12.FunctionalGroupBASE f
 JOIN functional_dup d on f.FunctionalGroupID = d.FunctionalGroupID
-WHERE d.rownum > 1'
+WHERE d.rownum > 1 AND f.DiscrepancyCD <> 2'
 
 　
 -- Transaction discrepancies
@@ -107,10 +100,10 @@ JOIN MirthSource.X12.InterchangeBASE i ON f.InterchangeID = i.InterchangeID
 WHERE (i.DiscrepancyCD IS NULL OR i.DiscrepancyCD NOT IN (1)) AND (f.DiscrepancyCD IS NULL OR f.DiscrepancyCD NOT IN (2))
 )
 UPDATE t
-SET DiscrepancyCD = 3, DiscrepancyDSC = ISNULL(DiscrepancyDSC, '''') + ''Duplicate ' + @DelimitedListOfKeyColumns + '; '' 
+SET DiscrepancyCD = 3, DiscrepancyDSC = ISNULL(DiscrepancyDSC, '''') + convert(varchar(255),getdate(),120) + '': Duplicate ' + @DelimitedListOfKeyColumns + '; '' 
 FROM MirthSource.X12835.TransactionBASE t
 JOIN transaction_dup d on t.TransactionID = d.TransactionID
-WHERE rownum > 1'
+WHERE rownum > 1 AND t.DiscrepancyCD <> 3'
 
 -- For debug purposes only
 -- SELECT @InterchangeScript
