@@ -17,8 +17,8 @@ while :; do
     if [ $( date +%s ) -ge $EXPIRE_TIME ]; then
       kdestroy -c $CACHE_FILE &> /dev/null
       echo "$(date): Removed expired ticket cache ($CACHE_FILE) for user $OWNER"
-	  kinit -k -t /opt/mirthconnect/conf/mirth.keytab username@domain
-	  echo "$(date): Created new ticket cache for username@domain"
+      kinit -k -t /opt/mirthconnect/conf/mirth.keytab username@domain
+      echo "$(date): Created new ticket cache for username@domain"
 
     # Otherwise renew it
     elif [ $( expr $EXPIRE_TIME - $( date +%s ) ) -le 300 ]; then
