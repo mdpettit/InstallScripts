@@ -86,7 +86,7 @@ if [[ -f "$kerberospath" ]]; then
    docker cp $installfolder/mirth.keytab mirthconnect:/opt/mirthconnect/conf/mirth.keytab   
    docker exec mirthconnect sed -i "\$a-Djava.security.auth.login.config=/opt/mirthconnect/conf/SQLJDBCDriver.conf" /opt/mirthconnect/mcservice.vmoptions
    docker exec mirthconnect sed -i "\$a-Djava.security.krb5.conf=/etc/krb5.conf" /opt/mirthconnect/mcservice.vmoptions
-   docker exec mirthconnect sed -i -e 's/username@domain/' + $mirthuser + '/g' /opt/mirthconnect/startmirthandrenewcredentials.sh
+   docker exec mirthconnect sed -i -e 's/username@domain/'$mirthuser'/g' /opt/mirthconnect/startmirthandrenewcredentials.sh
    docker exec mirthconnect kinit $mirthuser -k -t /opt/mirthconnect/conf/mirth.keytab
    docker restart mirthconnect
 else
