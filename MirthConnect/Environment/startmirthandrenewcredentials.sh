@@ -14,9 +14,11 @@ while :; do
     # Find the expirey time of the ticket granting ticket
     EXPIRE_TIME=$( date -d "$( klist -c $CACHE_FILE | grep krbtgt | awk '{print $3, $4}' )" +%s )
 
+    # If ticket is about to expire, remove and recreate it
     if [ $( date +%s ) -ge $EXPIRE_TIME ]; then
       kdestroy -c $CACHE_FILE &> /dev/null
       echo "$(date): Removed expired ticket cache ($CACHE_FILE) for user $OWNER"
+      # Separate install script will replace username@domain with parameterized values
 	  kinit -k -t /opt/mirthconnect/conf/mirth.keytab username@domain
 	  echo "$(date): Created new ticket cache for username@domain"
 
