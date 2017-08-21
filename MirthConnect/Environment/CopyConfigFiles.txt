@@ -1,0 +1,8 @@
+#!/bin/sh
+
+docker cp krb5.conf mirthconnect:/etc/krb5.conf
+docker cp mcservice.vmoptions mirthconnect:/opt/mirthconnect/mcservice.vmoptions
+docker cp mirth.properties mirthconnect:/opt/mirthconnect/conf/mirth.properties
+docker cp mcservice mirthconnect:/opt/mirthconnect/mcservice
+docker cp mirth.keytab mirthconnect:/opt/mirthconnect/conf/mirth.keytab
+docker cp SQLJDBCDriver.conf mirthconnect:/opt/mirthconnect/conf/SQLJDBCDriver.conf
